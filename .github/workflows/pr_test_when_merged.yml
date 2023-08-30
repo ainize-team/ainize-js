@@ -1,0 +1,78 @@
+name: Test Pipeline for Merged PR
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [ closed ]
+concurrency: 
+      group: ${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+jobs:
+  run_test:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ 14, 16 ]
+    name: Run Test on Node ${{ matrix.node }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: yarn install --immutable --immutable-cache --check-cache
+      - run: yarn test
+  publish:
+    needs: [ run_test ]
+    if: ${{ startsWith(github.head_ref, 'release/') && (github.base_ref == 'main') && (github.event.pull_request.merged == true) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: yarn
+      - name: Test Success
+        run: yarn test
+      - name: Publish package
+        run: |
+          yarn
+          yarn build
+          yarn publish --access public
+          echo "NEW_VERSION=$(npm pkg get version | tr -d '"')" >> $GITHUB_ENV
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      - name: Push tag
+        run: |
+          git tag ${{ env.NEW_VERSION }}
+          git push --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Notify package published to slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "text": "Ainize-SDK ${{ env.NEW_VERSION }} is published",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Ainize-SDK Release"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Version ${{ env.NEW_VERSION }} is published"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
