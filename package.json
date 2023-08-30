@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "dev": "rm -rf ./dist && tsc",
-    "test": "NODE_ENV=dev jest",
+    "test": "NODE_ENV=dev jest --passWithNoTests",
     "docs": "yarn build && typedoc --out docs"
   },
   "engines": {
