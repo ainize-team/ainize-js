@@ -57,6 +57,28 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
   }
 }
 
+const defaultAppFunctions = (appName: string) => {
+  const rootRef = `/apps/${appName}`
+  return {
+    deposit: (url: string) => {
+      return {
+        ref: `${rootRef}/deposit/$userAddress/$transferKey`,
+        function_type: "REST",
+        function_id: "deposit-trigger",
+        function_url: url,
+      }
+    },
+    service: (url: string) => {
+      return {
+        ref: `${rootRef}/${appName}/usage/$userAddress/$requestKey/request`,
+        function_type: "REST",
+        function_id: "service-trigger",
+        function_url: url,
+      }
+    }
+  }
+}
+
 // FIXME(yoojin): move to types.
 // NOTE(yoojin): temporary type. service url may be changed to array?
 interface TriggerFunctionUrlMap {
@@ -111,31 +133,24 @@ export default class App {
   }
 
   private buildSetDefaultFunctionsOp(appName: string, urls: TriggerFunctionUrlMap): SetOperation[] {
-    const depositFunctionId = "deposit-trigger";
-    const depositFunctionVal = {
-      ".function": {
-        [depositFunctionId]: {
-          function_type: "REST",
-          function_url: urls.deposit,
-          function_id: depositFunctionId,
+    const defaultFunctions = defaultAppFunctions(appName);
+    const functions: SetOperation[] = [];
+    for (const [type, func] of Object.entries(defaultFunctions)) {
+      const { ref, function_type, function_url, function_id } = func(type);
+      const value = {
+        ".function": {
+          [function_id]: {
+            function_type,
+            function_url,
+            function_id,
+          }
         }
       }
+      const funcOp = this.buildSetFunctionOp(ref, value);
+      functions.push(funcOp);
     }
-    const depositFunction = this.buildSetFunctionOp(appName, depositFunctionVal);
-
-    const serviceFunctionId = "service-trigger";
-    const serviceFunctionVal = {
-      ".function": {
-        [serviceFunctionId]: {
-          function_type: "REST",
-          function_url: urls.service,
-          function_id: serviceFunctionId,
-        }
-      }
-    }
-    const serviceFunction = this.buildSetFunctionOp(appName, serviceFunctionVal);
    
-    return [depositFunction, serviceFunction];
+    return functions;
   }
 
   async signAndSendTransaction(txBody: TransactionBody) {
