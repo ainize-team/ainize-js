@@ -138,8 +138,8 @@ export default class App {
     return [depositFunction, serviceFunction];
   }
 
-  signAndSendTransaction(txBody: TransactionBody) {
-    return this.ain.sendTransaction(txBody);
+  async signAndSendTransaction(txBody: TransactionBody) {
+    return await this.ain.sendTransaction(txBody);
   }
 
   private buildTxBody(operation: SetOperation | SetOperation[]): TransactionBody {
