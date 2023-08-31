@@ -12,6 +12,16 @@ export default class Service extends ModuleBase {
     return await this.sendTransaction(txBody);
   }
 
+  async request(appName: string, serviceName: string, data: any) {
+    const userAddress = this.ain.wallet.defaultAccount!.address;
+    const ref = `/apps/${appName}/service/${serviceName}/${userAddress}/request`;
+    const value = data;
+    const op = this.buildSetValueOp(ref, value);
+    const txBody = this.buildTxBody(op);
+    return await this.sendTransaction(txBody);
+  }
+
+
   private async getAppDepositAddress(appName: string) {
     const depositAddrPath = `/apps/${appName}/billingConfig/depositAddress`;
     const address = await this.ain.db.ref().getValue(depositAddrPath);
@@ -42,5 +52,13 @@ export default class Service extends ModuleBase {
       ref: `/apps/${appName}/deposit/${userAddress}/${transferKey}`,
       value: amount,
     }
+  }
+
+  private buildSetValueOp(ref: string, value: object): SetOperation {
+    return {
+      type: "SET_VALUE",
+      ref,
+      value,
+    } 
   }
 }
