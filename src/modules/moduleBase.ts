@@ -1,5 +1,5 @@
 import Ain from "@ainblockchain/ain-js";
-import { TransactionBody } from "@ainblockchain/ain-js/lib/types";
+import { SetOperation, TransactionBody } from "@ainblockchain/ain-js/lib/types";
 
 
 export default class ModuleBase {
@@ -9,7 +9,19 @@ export default class ModuleBase {
     this.ain = ain;
   }
   
-  async sendTransaction(txBody: TransactionBody) {
+  protected buildTxBody(operation: SetOperation | SetOperation[]): TransactionBody {
+    return {
+      operation: Array.isArray(operation) ? {
+        type: "SET",
+        op_list: operation
+      } : operation,
+      gas_price: 500,
+      timestamp: Date.now(),
+      nonce: -1
+    }
+  }
+
+  protected async sendTransaction(txBody: TransactionBody) {
     return await this.ain.sendTransaction(txBody);
   }
 }
