@@ -38,7 +38,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     request: {
-      ref: `${rootRef}/usage/$userAddress/$requestKey/request`,
+      ref: `${rootRef}/service/$serviceName/$userAddress/$requestKey/request`,
       value: {
         '.rule': {
           write: 
@@ -47,7 +47,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     response: {
-      ref: `${rootRef}/usage/$userAddress/$requestKey/response`,
+      ref: `${rootRef}/service/$serviceName/$userAddress/$requestKey/response`,
       value: {
         '.rule': {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
@@ -70,7 +70,7 @@ const defaultAppFunctions = (appName: string) => {
     },
     service: (url: string) => {
       return {
-        ref: `${rootRef}/${appName}/usage/$userAddress/$requestKey/request`,
+        ref: `${rootRef}/${appName}/service/$serviceName/$userAddress/$requestKey/request`,
         function_type: "REST",
         function_id: "service-trigger",
         function_url: url,
