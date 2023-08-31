@@ -98,7 +98,7 @@ export default class App {
   async create(appName: string, urls: TriggerFunctionUrlMap) {
     const createAppOp = this.buildCreateAppOp(appName);
     const setRulesOp = this.buildSetDefaultAppRulesOps(appName);
-    const setFunctionsOp = this.buildSetDefaultFunctionsOp(appName, urls);
+    const setFunctionsOp = this.buildSetDefaultFunctionsOps(appName, urls);
 
     const txBody = this.buildTxBody([createAppOp, ...setRulesOp, ...setFunctionsOp]);
 
@@ -132,7 +132,7 @@ export default class App {
     return ruleOps;
   }
 
-  private buildSetDefaultFunctionsOp(appName: string, urls: TriggerFunctionUrlMap): SetOperation[] {
+  private buildSetDefaultFunctionsOps(appName: string, urls: TriggerFunctionUrlMap): SetOperation[] {
     const defaultFunctions = defaultAppFunctions(appName);
     const functions: SetOperation[] = [];
     for (const [type, func] of Object.entries(defaultFunctions)) {
