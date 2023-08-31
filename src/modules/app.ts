@@ -63,17 +63,17 @@ const defaultAppFunctions = (appName: string) => {
     deposit: (url: string) => {
       return {
         ref: `${rootRef}/deposit/$userAddress/$transferKey`,
-        function_type: "REST",
-        function_id: "deposit-trigger",
-        function_url: url,
+        functionType: "REST",
+        functionId: "deposit-trigger",
+        functionUrl: url,
       }
     },
     service: (url: string) => {
       return {
         ref: `${rootRef}/${appName}/service/$serviceName/$userAddress/$requestKey/request`,
-        function_type: "REST",
-        function_id: "service-trigger",
-        function_url: url,
+        functionType: "REST",
+        functionId: "service-trigger",
+        functionUrl: url,
       }
     }
   }
@@ -97,10 +97,25 @@ export default class App {
 
   async create(appName: string, urls: TriggerFunctionUrlMap) {
     const createAppOp = this.buildCreateAppOp(appName);
-    const setRulesOp = this.buildSetDefaultAppRulesOps(appName);
-    const setFunctionsOp = this.buildSetDefaultFunctionsOps(appName, urls);
 
-    const txBody = this.buildTxBody([createAppOp, ...setRulesOp, ...setFunctionsOp]);
+    const defaultRules = defaultAppRules(appName);
+    const setRuleOps: SetOperation[] = [];
+    for (const rule of Object.values(defaultRules)) {
+      const { ref, value } = rule;
+      const ruleOp = this.buildSetRuleOp(ref, value);
+      setRuleOps.push(ruleOp);
+    }
+
+    const defaultFunctions = defaultAppFunctions(appName);
+    const setFunctionOps: SetOperation[] = [];
+    for (const func of Object.values(defaultFunctions)) {
+      const { ref, functionId, functionType, functionUrl } = func(appName);
+      const value = this.buildSetFunctionValue(functionId, functionType, functionUrl);
+      const funcOp = this.buildSetFunctionOp(ref, value);
+      setFunctionOps.push(funcOp);
+    }
+
+    const txBody = this.buildTxBody([createAppOp, ...setRuleOps, ...setFunctionOps]);
 
     return await this.signAndSendTransaction(txBody);
   }
@@ -121,36 +136,16 @@ export default class App {
     return this.buildSetValueOp(ref, value);
   }
 
-  private buildSetDefaultAppRulesOps(appName: string): SetOperation[] {
-    const defaultRules = defaultAppRules(appName);
-    const ruleOps: SetOperation[] = [];
-    for (const rule of Object.values(defaultRules)) {
-      const { ref, value } = rule;
-      const ruleOp = this.buildSetRuleOp(ref, value);
-      ruleOps.push(ruleOp);
-    }
-    return ruleOps;
-  }
-
-  private buildSetDefaultFunctionsOps(appName: string, urls: TriggerFunctionUrlMap): SetOperation[] {
-    const defaultFunctions = defaultAppFunctions(appName);
-    const functions: SetOperation[] = [];
-    for (const [type, func] of Object.entries(defaultFunctions)) {
-      const { ref, function_type, function_url, function_id } = func(type);
-      const value = {
-        ".function": {
-          [function_id]: {
-            function_type,
-            function_url,
-            function_id,
-          }
+  buildSetFunctionValue(functionType: string, functionId: string, functionUrl: string) {
+    return {
+      ".function": {
+        [functionId]: {
+          function_type: functionType,
+          function_url: functionUrl,
+          function_id: functionId,
         }
       }
-      const funcOp = this.buildSetFunctionOp(ref, value);
-      functions.push(funcOp);
     }
-   
-    return functions;
   }
 
   async signAndSendTransaction(txBody: TransactionBody) {
