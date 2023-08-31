@@ -146,17 +146,6 @@ export default class App extends ModuleBase {
     return functions;
   }
 
-  private buildTxBody(operation: SetOperation | SetOperation[]): TransactionBody {
-    return {
-      operation: Array.isArray(operation) ? {
-        type: "SET",
-        op_list: operation
-      } : operation,
-      gas_price: 500,
-      timestamp: Date.now(),
-      nonce: -1
-    }
-  }
   private buildSetValueOp(ref: string, value: object): SetOperation {
     return {
       type: "SET_VALUE",
