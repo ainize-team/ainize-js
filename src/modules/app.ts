@@ -1,5 +1,6 @@
 import Ain from '@ainblockchain/ain-js'
 import { SetMultiOperation, SetOperation, TransactionBody } from '@ainblockchain/ain-js/lib/types';
+import ModuleBase from './moduleBase';
 
 // FIXME(yoojin): move to constant.
 const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
@@ -86,15 +87,7 @@ interface TriggerFunctionUrlMap {
   service: string,
 }
 
-
-export default class App {
-  private ain: Ain;
-  constructor(
-    ain: Ain
-  ) {
-    this.ain = ain;
-  }
-
+export default class App extends ModuleBase {
   async create(appName: string, urls: TriggerFunctionUrlMap) {
     const createAppOp = this.buildCreateAppOp(appName);
 
@@ -117,7 +110,7 @@ export default class App {
 
     const txBody = this.buildTxBody([createAppOp, ...setRuleOps, ...setFunctionOps]);
 
-    return await this.signAndSendTransaction(txBody);
+    return await this.sendTransaction(txBody);
   }
 
   private buildCreateAppOp(appName: string): SetOperation {
@@ -146,10 +139,6 @@ export default class App {
         }
       }
     }
-  }
-
-  async signAndSendTransaction(txBody: TransactionBody) {
-    return await this.ain.sendTransaction(txBody);
   }
 
   private buildTxBody(operation: SetOperation | SetOperation[]): TransactionBody {
