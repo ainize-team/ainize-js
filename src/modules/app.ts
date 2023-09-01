@@ -1,5 +1,6 @@
-import Ain from '@ainblockchain/ain-js'
-import { SetMultiOperation, SetOperation, TransactionBody } from '@ainblockchain/ain-js/lib/types';
+import { SetOperation } from "@ainblockchain/ain-js/lib/types";
+import { buildSetOperation } from "../utils/builder";
+import ModuleBase from "./moduleBase";
 
 // FIXME(yoojin): move to constant.
 const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
@@ -86,15 +87,7 @@ interface TriggerFunctionUrlMap {
   service: string,
 }
 
-
-export default class App {
-  private ain: Ain;
-  constructor(
-    ain: Ain
-  ) {
-    this.ain = ain;
-  }
-
+export default class App extends ModuleBase {
   async create(appName: string, urls: TriggerFunctionUrlMap) {
     const createAppOp = this.buildCreateAppOp(appName);
 
@@ -102,7 +95,7 @@ export default class App {
     const setRuleOps: SetOperation[] = [];
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
-      const ruleOp = this.buildSetRuleOp(ref, value);
+      const ruleOp = buildSetOperation("SET_RULE" , ref, value);
       setRuleOps.push(ruleOp);
     }
 
@@ -111,13 +104,13 @@ export default class App {
     for (const func of Object.values(defaultFunctions)) {
       const { ref, functionId, functionType, functionUrl } = func(appName);
       const value = this.buildSetFunctionValue(functionId, functionType, functionUrl);
-      const funcOp = this.buildSetFunctionOp(ref, value);
+      const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
       setFunctionOps.push(funcOp);
     }
 
     const txBody = this.buildTxBody([createAppOp, ...setRuleOps, ...setFunctionOps]);
 
-    return await this.signAndSendTransaction(txBody);
+    return await this.sendTransaction(txBody);
   }
 
   private buildCreateAppOp(appName: string): SetOperation {
@@ -132,8 +125,7 @@ export default class App {
         [adminAccount.address]: true,
       }
     }
-
-    return this.buildSetValueOp(ref, value);
+    return buildSetOperation("SET_VALUE", ref, value);
   }
 
   buildSetFunctionValue(functionType: string, functionId: string, functionUrl: string) {
@@ -145,43 +137,6 @@ export default class App {
           function_id: functionId,
         }
       }
-    }
-  }
-
-  async signAndSendTransaction(txBody: TransactionBody) {
-    return await this.ain.sendTransaction(txBody);
-  }
-
-  private buildTxBody(operation: SetOperation | SetOperation[]): TransactionBody {
-    return {
-      operation: Array.isArray(operation) ? {
-        type: "SET",
-        op_list: operation
-      } : operation,
-      gas_price: 500,
-      timestamp: Date.now(),
-      nonce: -1
-    }
-  }
-  private buildSetValueOp(ref: string, value: object): SetOperation {
-    return {
-      type: "SET_VALUE",
-      ref,
-      value,
-    } 
-  }
-  private buildSetRuleOp(ref: string, value: object): SetOperation {
-    return {
-      type: "SET_RULE",
-      ref,
-      value,
-    }
-  }
-  private buildSetFunctionOp(ref: string, value: object): SetOperation {
-    return {
-      type: "SET_FUNCTION",
-      ref,
-      value,
     }
   }
 }
