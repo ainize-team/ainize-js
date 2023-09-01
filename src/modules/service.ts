@@ -1,5 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { buildSetOperation } from "../utils/builder";
+import { Path } from "../constants";
 import ModuleBase from "./moduleBase";
 
 export default class Service extends ModuleBase {
@@ -15,7 +16,8 @@ export default class Service extends ModuleBase {
 
   async request(appName: string, serviceName: string, data: any) {
     const userAddress = this.ain.wallet.defaultAccount!.address;
-    const path = `/apps/${appName}/service/${serviceName}/${userAddress}/request`;
+    const timestamp = Date.now();
+    const path = Path.app(appName).request(serviceName, userAddress, timestamp);
     const value = data;
     const op = buildSetOperation("SET_VALUE", path, value);
     const txBody = this.buildTxBody(op);
@@ -24,14 +26,14 @@ export default class Service extends ModuleBase {
 
   async getCreditBalance(appName: string): Promise<number> {
     const userAddress = this.ain.wallet.defaultAccount!.address;
-    const path = `/apps/${appName}/balance/${userAddress}/balance`
+    const path = Path.app(appName).balanceOfUser(userAddress);
     const balance = await this.ain.db.ref().getValue(path);
     return balance || 0;
   }
 
   // FIXME(yoojin): add billing config type and change.
   async getBillingConfig(appName: string): Promise<any> {
-    const path = `/apps/${appName}/billingConfig`
+    const path = Path.app(appName).billingConfig;
     const config = await this.ain.db.ref().getValue(path);
     return config;
   }
@@ -52,7 +54,7 @@ export default class Service extends ModuleBase {
   getSubscribeList() {}
 
   private async getAppDepositAddress(appName: string) {
-    const depositAddrPath = `/apps/${appName}/billingConfig/depositAddress`;
+    const depositAddrPath = `${Path.app(appName).billingConfig}/depositAddress`;
     const address = await this.ain.db.ref().getValue(depositAddrPath);
     return address;
   }
@@ -62,8 +64,10 @@ export default class Service extends ModuleBase {
     amount: number, 
     transferKey?: string
   ): SetOperation {
+    if (!transferKey)
+      transferKey = Date.now().toString();
     const from = this.ain.wallet.defaultAccount!.address;
-    const path = `/transfer/${from}/${to}/${transferKey}/value`;
+    const path = Path.transfer(from, to, transferKey);
     return buildSetOperation("SET_VALUE", path, amount);
   }
 
@@ -73,7 +77,7 @@ export default class Service extends ModuleBase {
     amount: number
   ): SetOperation {
     const userAddress = this.ain.wallet.defaultAccount!.address;
-    const path = `/apps/${appName}/deposit/${userAddress}/${transferKey}`;
+    const path = `${Path.app(appName).depositOfUser(userAddress)}/${transferKey}`;
     return buildSetOperation("SET_VALUE", path, amount)
   }
 }

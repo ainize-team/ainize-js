@@ -1,10 +1,11 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
+import { Path } from "../constants";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
 // FIXME(yoojin): move to constant.
 const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
-  const rootRef = `/apps/${appName}`;
+  const rootRef = Path.app(appName).root;
   return {
     root: {
       ref: rootRef,
@@ -15,7 +16,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     deposit: {
-      ref: `${rootRef}/deposit/$userAddress/$transferKey`,
+      ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       value: {
         '.rule': {
           write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
@@ -23,7 +24,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     balance: {
-      ref: `${rootRef}/balance/$userAddress/balance`,
+      ref: Path.app(appName).balanceOfUser("$userAddress"),
       value: {
         '.rule': {
           write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData)"
@@ -39,7 +40,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     request: {
-      ref: `${rootRef}/service/$serviceName/$userAddress/$requestKey/request`,
+      ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
       value: {
         '.rule': {
           write: 
@@ -48,7 +49,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     response: {
-      ref: `${rootRef}/service/$serviceName/$userAddress/$requestKey/response`,
+      ref: Path.app(appName).response("$serviceName", "userAddress", "$requestKey"),
       value: {
         '.rule': {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
@@ -63,7 +64,7 @@ const defaultAppFunctions = (appName: string) => {
   return {
     deposit: (url: string) => {
       return {
-        ref: `${rootRef}/deposit/$userAddress/$transferKey`,
+        ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
         functionType: "REST",
         functionId: "deposit-trigger",
         functionUrl: url,
@@ -71,7 +72,7 @@ const defaultAppFunctions = (appName: string) => {
     },
     service: (url: string) => {
       return {
-        ref: `${rootRef}/${appName}/service/$serviceName/$userAddress/$requestKey/request`,
+        ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
         functionType: "REST",
         functionId: "service-trigger",
         functionUrl: url,
