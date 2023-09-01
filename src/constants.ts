@@ -1,3 +1,3 @@
 export const getBlockChainEndpoint = (chainId:number) =>{
-  return chainId === 1 ? 'https://mainnet-api.ainetwork.ai' : 'https://testnet-api.ainetwork.ai'
+  return chainId === 1 ? 'https://mainnet-event.ainetwork.ai' : 'https://testnet-event.ainetwork.ai'
 }

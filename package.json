@@ -1,7 +1,8 @@
 {
   "name": "@ainize-team/ainize-sdk",
   "version": "0.0.1",
-  "main": "lib/ainize.js",
+  "main": "dist/ainize.js",
+  "types": "dist/ainize.d.ts",
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "dev": "rm -rf ./dist && tsc",
