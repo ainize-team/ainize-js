@@ -2,15 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import Ainize from "../ainize";
 import NodeCache = require("node-cache");
 import Ain from "@ainblockchain/ain-js";
+import Util from "../utils/util";
 
 export default class Handler {
   cache: NodeCache;
   isConnected: boolean = false;
   subscribeTable:any = {};
+  util: Util;
   ain: Ain;
   constructor(ainize: Ainize) {
     this.cache = ainize.cache;
     this.ain = ainize.ain;
+    this.util = ainize.util;
   }
   async connect() {
     await this.ain.em.connect({
@@ -31,7 +34,7 @@ export default class Handler {
     const filterId = await this.ain.em.subscribe(
       'VALUE_CHANGED',
       {
-        path: `/apps/${appName}/service/${serviceName}/${requester}/$timestamp/response`,
+        path: this.util.toReponsePath(requester, appName, serviceName),
         event_source: 'USER',
       },
       (valueChangedEvent) => {
