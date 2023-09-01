@@ -14,13 +14,41 @@ export default class Service extends ModuleBase {
 
   async request(appName: string, serviceName: string, data: any) {
     const userAddress = this.ain.wallet.defaultAccount!.address;
-    const ref = `/apps/${appName}/service/${serviceName}/${userAddress}/request`;
+    const path = `/apps/${appName}/service/${serviceName}/${userAddress}/request`;
     const value = data;
-    const op = this.buildSetValueOp(ref, value);
+    const op = this.buildSetValueOp(path, value);
     const txBody = this.buildTxBody(op);
     return await this.sendTransaction(txBody);
   }
 
+  async getCreditBalance(appName: string): Promise<number> {
+    const userAddress = this.ain.wallet.defaultAccount!.address;
+    const path = `/apps/${appName}/balance/${userAddress}/balance`
+    const balance = await this.ain.db.ref().getValue(path);
+    return balance || 0;
+  }
+
+  // FIXME(yoojin): add billing config type and change.
+  async getBillingConfig(appName: string): Promise<any> {
+    const path = `/apps/${appName}/billingConfig`
+    const config = await this.ain.db.ref().getValue(path);
+    return config;
+  }
+
+  async getAppInfo(appName: string) {
+    // TODO(yoojin): app info was not added on schema.
+  }
+
+  async calculateCost(billingConfig: any) {
+    // TODO(yoojin): add logic.
+  } 
+  
+  // TODO(yoojin -> woojae): add handler functions.
+  subscribe() {}
+
+  unsubscribe() {}
+
+  getSubscribeList() {}
 
   private async getAppDepositAddress(appName: string) {
     const depositAddrPath = `/apps/${appName}/billingConfig/depositAddress`;
