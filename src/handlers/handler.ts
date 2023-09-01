@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+const _ = require('lodash');
 import Ainize from "../ainize";
 import NodeCache = require("node-cache");
 import Ain from "@ainblockchain/ain-js";
@@ -42,21 +42,15 @@ export default class Handler {
         throw new Error(err.message);
       },
     );
-    this.createSubscribeTableIfNotExists(requester, appName, serviceName);
-    this.subscribeTable[requester][appName][serviceName] = filterId;
+    this.addToSubscribeTable(requester, appName, serviceName, filterId);
   }
   
   private checkSubscribeTableExists(requester:string, appName:string, serviceName: string) {
-    if(!this.subscribeTable[requester]) return false;
-    if(!this.subscribeTable[requester][appName]) return false;
-    if(!this.subscribeTable[requester][appName][serviceName]) return false;
-    return true;
+    return _.has(this.subscribeTable, [requester, appName, serviceName]);
   }
 
-  private createSubscribeTableIfNotExists(requester:string, appName: string, serviceName: string) {
-    if(!this.subscribeTable[requester]) this.subscribeTable[requester] = {};
-    if(!this.subscribeTable[requester][appName]) this.subscribeTable[requester][appName] = {};
-    if(!this.subscribeTable[requester][appName][serviceName]) this.subscribeTable[requester][appName][serviceName] = null;
+  private addToSubscribeTable(requester:string, appName: string, serviceName: string, filterId: string) {
+    _.set(this.subscribeTable, [requester, appName, serviceName], {});
   }
 
   getSubscribeList(requester?: string) {
