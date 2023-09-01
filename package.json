@@ -1,7 +1,8 @@
 {
   "name": "@ainize-team/ainize-sdk",
   "version": "0.0.1",
-  "main": "lib/ainize.js",
+  "main": "dist/ainize.js",
+  "types": "dist/ainize.d.ts",
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "dev": "rm -rf ./dist && tsc",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.197",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "typedoc": "^0.23.17",
@@ -44,6 +46,7 @@
     "axios": "^0.26.1",
     "express": "^4.18.2",
     "fast-json-stable-stringify": "^2.1.0",
+    "lodash": "^4.17.21",
     "node-cache": "^5.1.2"
   }
 }
