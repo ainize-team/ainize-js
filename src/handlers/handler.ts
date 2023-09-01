@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Ainize from "../ainize";
 import NodeCache = require("node-cache");
 import Ain from "@ainblockchain/ain-js";
-import { toResponsePath } from "../constants";
+import { HANDLER_HEARBEAT_INTERVAL, HANDLER_TIMEOUT, toResponsePath } from "../constants";
 
 export default class Handler {
   cache: NodeCache;
@@ -15,8 +15,8 @@ export default class Handler {
   }
   async connect() {
     await this.ain.em.connect({
-      handshakeTimeout: 30000, // Timeout in milliseconds for the web socket handshake request.  
-      heartbeatIntervalMs: 16000,
+      handshakeTimeout: HANDLER_TIMEOUT, // Timeout in milliseconds for the web socket handshake request.  
+      heartbeatIntervalMs: HANDLER_HEARBEAT_INTERVAL,
     }, this.disconnectedCallback);
     this.isConnected = true;
   };
