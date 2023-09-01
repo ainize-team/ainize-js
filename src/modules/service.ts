@@ -1,4 +1,5 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
+import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
 export default class Service extends ModuleBase {
@@ -16,7 +17,7 @@ export default class Service extends ModuleBase {
     const userAddress = this.ain.wallet.defaultAccount!.address;
     const path = `/apps/${appName}/service/${serviceName}/${userAddress}/request`;
     const value = data;
-    const op = this.buildSetValueOp(path, value);
+    const op = buildSetOperation("SET_VALUE", path, value);
     const txBody = this.buildTxBody(op);
     return await this.sendTransaction(txBody);
   }
@@ -62,11 +63,8 @@ export default class Service extends ModuleBase {
     transferKey?: string
   ): SetOperation {
     const from = this.ain.wallet.defaultAccount!.address;
-    return {
-      type: "SET_VALUE",
-      ref: `/transfer/${from}/${to}/${transferKey}/value`,
-      value: amount,
-    }
+    const path = `/transfer/${from}/${to}/${transferKey}/value`;
+    return buildSetOperation("SET_VALUE", path, amount);
   }
 
   private buildSetDepositOp(
@@ -75,18 +73,7 @@ export default class Service extends ModuleBase {
     amount: number
   ): SetOperation {
     const userAddress = this.ain.wallet.defaultAccount!.address;
-    return {
-      type: "SET_VALUE",
-      ref: `/apps/${appName}/deposit/${userAddress}/${transferKey}`,
-      value: amount,
-    }
-  }
-
-  private buildSetValueOp(ref: string, value: object): SetOperation {
-    return {
-      type: "SET_VALUE",
-      ref,
-      value,
-    } 
+    const path = `/apps/${appName}/deposit/${userAddress}/${transferKey}`;
+    return buildSetOperation("SET_VALUE", path, amount)
   }
 }
