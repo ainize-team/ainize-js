@@ -33,7 +33,7 @@ export default class Handler {
     const filterId = await this.ain.em.subscribe(
       'VALUE_CHANGED',
       {
-        path: Path.app(appName).response(serviceName,requester,'$requestKey'),
+        path: Path.app(appName).response(serviceName, requester, '$requestKey'),
         event_source: 'USER',
       },
       (valueChangedEvent) => {
