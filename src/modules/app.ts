@@ -1,8 +1,9 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { billingConfig, setDefaultFlag } from "../types/type";
+import { billingConfig, setDefaultFlag, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
+import {  } from "@ainblockchain/ain-js"
 
 // FIXME(yoojin): move to constant.
 const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
@@ -59,6 +60,8 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
     },
   }
 }
+
+
 
 const defaultAppFunctions = (appName: string) => {
   return {
@@ -135,6 +138,35 @@ export default class App extends ModuleBase {
     return await this.ain.db.ref().getValue(Path.app(appName).billingConfig);
   }
 
+  async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
+    const setFunctionOps: SetOperation[] = [];
+    for (const func of Object.values(functions)) {
+      const { ref } = func;
+      const value = this.buildSetFunctionValue(func);
+      const op = buildSetOperation("SET_FUNCTION", ref, value);
+      setFunctionOps.push(op);
+    }
+    if (setFunctionOps.length <= 0) {
+      // TODO(yoojin): Will make TransactionWrapper and catch error in wrapper. I think it will add in moduleBase.
+      // FIXME(yoojin): error message.
+      throw new Error ("Please input setTriggerFunctionParams.")
+    }
+    const txBody = this.buildTxBody(setFunctionOps)
+    return await this.sendTransaction(txBody);
+  }
+
+  async setRules(appName: string, rules: setRuleParam[]) {
+    const setRuleOps: SetOperation[] = [];
+    for (const rule of Object.values(rules)) {
+      const { ref } = rule;
+      const value = rule.write;
+      const op = buildSetOperation("SET_RULE", ref, value);
+      setRuleOps.push(op);
+    }
+    const txBody = this.buildTxBody(setRuleOps);
+    return await this.sendTransaction(txBody);
+  }
+
   private buildSetBillingConfigOp(appName: string, config: billingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
@@ -155,13 +187,13 @@ export default class App extends ModuleBase {
     return buildSetOperation("SET_VALUE", path, value);
   }
 
-  buildSetFunctionValue(functionType: string, functionId: string, functionUrl: string) {
+  buildSetFunctionValue({function_type, function_url, function_id}: triggerFunctionConfig) {
     return {
       ".function": {
-        [functionId]: {
-          function_type: functionType,
-          function_url: functionUrl,
-          function_id: functionId,
+        [function_id]: {
+          function_type,
+          function_url,
+          function_id, 
         }
       }
     }
