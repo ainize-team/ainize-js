@@ -1,5 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
+import { billingConfig, setDefaultFlag } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
@@ -89,33 +90,57 @@ interface TriggerFunctionUrlMap {
 }
 
 export default class App extends ModuleBase {
-  async create(appName: string, urls: TriggerFunctionUrlMap) {
-    const createAppOp = this.buildCreateAppOp(appName);
-
-    const defaultRules = defaultAppRules(appName);
+  async create(appName: string, setDefaultFlag?: setDefaultFlag) {
+    if (!setDefaultFlag)
+      setDefaultFlag = { triggerFuncton: true, billingConfig: true };
     const setRuleOps: SetOperation[] = [];
+    const setFunctionOps: SetOperation[] = [];
+    const setBillingConfigOps: SetOperation[] = [] ;
+
+    const createAppOp = this.buildCreateAppOp(appName);
+    const defaultRules = defaultAppRules(appName);
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
       const ruleOp = buildSetOperation("SET_RULE" , ref, value);
       setRuleOps.push(ruleOp);
     }
 
-    const defaultFunctions = defaultAppFunctions(appName);
-    const setFunctionOps: SetOperation[] = [];
-    for (const func of Object.values(defaultFunctions)) {
-      const { ref, functionId, functionType, functionUrl } = func(appName);
-      const value = this.buildSetFunctionValue(functionId, functionType, functionUrl);
-      const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
-      setFunctionOps.push(funcOp);
+    if (setDefaultFlag.triggerFuncton) {
+      const defaultFunctions = defaultAppFunctions(appName);
+      for (const func of Object.values(defaultFunctions)) {
+        const { ref, functionId, functionType, functionUrl } = func(appName);
+        const value = this.buildSetFunctionValue(functionId, functionType, functionUrl);
+        const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
+        setFunctionOps.push(funcOp);
+      }
     }
 
-    const txBody = this.buildTxBody([createAppOp, ...setRuleOps, ...setFunctionOps]);
+    if (setDefaultFlag.billingConfig) {
+      // TODO(yoojin): Add billing config default setting.
+      const defaultConfig: billingConfig = {
+        depositAddress: this.ain.wallet.defaultAccount!.address,
+        tokenPerCost: 0,
+      }
+      const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
+      setBillingConfigOps.push(configOp);
+    }
 
+    const txBody = this.buildTxBody([
+      createAppOp, 
+      ...setRuleOps, 
+      ...setFunctionOps,
+      ...setBillingConfigOps,
+    ]);
     return await this.sendTransaction(txBody);
   }
 
+  private buildSetBillingConfigOp(appName: string, config: billingConfig) {
+    const path = Path.app(appName).billingConfig();
+    return buildSetOperation("SET_VALUE", path, config);
+  }
+
   private buildCreateAppOp(appName: string): SetOperation {
-    const ref = `/manage_app/${appName}/create/${Date.now()}`;
+    const path = `/manage_app/${appName}/create/${Date.now()}`;
     const adminAccount = this.ain.wallet.defaultAccount!;
     if (adminAccount && adminAccount.address) {
       // FIXME(yoojin): change Error to Custom error when it added.
@@ -126,7 +151,7 @@ export default class App extends ModuleBase {
         [adminAccount.address]: true,
       }
     }
-    return buildSetOperation("SET_VALUE", ref, value);
+    return buildSetOperation("SET_VALUE", path, value);
   }
 
   buildSetFunctionValue(functionType: string, functionId: string, functionUrl: string) {
@@ -140,5 +165,4 @@ export default class App extends ModuleBase {
       }
     }
   }
-
 }
