@@ -61,7 +61,6 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
 }
 
 const defaultAppFunctions = (appName: string) => {
-  const rootRef = `/apps/${appName}`
   return {
     deposit: (url: string) => {
       return {
@@ -80,13 +79,6 @@ const defaultAppFunctions = (appName: string) => {
       }
     }
   }
-}
-
-// FIXME(yoojin): move to types.
-// NOTE(yoojin): temporary type. service url may be changed to array?
-interface TriggerFunctionUrlMap {
-  deposit: string,
-  service: string,
 }
 
 export default class App extends ModuleBase {
@@ -116,7 +108,6 @@ export default class App extends ModuleBase {
     }
 
     if (setDefaultFlag.billingConfig) {
-      // TODO(yoojin): Add billing config default setting.
       const defaultConfig: billingConfig = {
         depositAddress: this.ain.wallet.defaultAccount!.address,
         tokenPerCost: 0,
