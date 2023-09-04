@@ -19,10 +19,18 @@ export const Path = {
       service: (serviceName: string) => `${Path.app(appName).root}/service/${serviceName}`,
       userOfService: (serviceName: string, userAddress: string) => 
         `${Path.app(appName).service(serviceName)}/${userAddress}`,
-      request: (serviceName: string, userAddress: string, requestKey: string) =>
-        `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/request`,
-      response: (serviceName: string, userAddress: string, requestKey: string) =>
+      request: (serviceName: string, userAddress: string, requestKey?: string) => {
+        if(!requestKey) {
+          requestKey = '$requestKey';
+        };
+        `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/request`
+      },
+      response: (serviceName: string, userAddress: string, requestKey?: string) => {
+        if(!requestKey) {
+          requestKey = '$requestKey';
+        }
         `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/response`
+      },
     }
   },
   transfer: (from: string, to: string, transferKey: string) => 

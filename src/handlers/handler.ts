@@ -2,7 +2,7 @@ const _ = require('lodash');
 import Ainize from "../ainize";
 import NodeCache = require("node-cache");
 import Ain from "@ainblockchain/ain-js";
-import { HANDLER_HEARBEAT_INTERVAL, HANDLER_TIMEOUT, getResponsePath } from "../constants";
+import { HANDLER_HEARBEAT_INTERVAL, HANDLER_TIMEOUT, Path, getResponsePath } from "../constants";
 
 export default class Handler {
   cache: NodeCache;
@@ -33,7 +33,7 @@ export default class Handler {
     const filterId = await this.ain.em.subscribe(
       'VALUE_CHANGED',
       {
-        path: getResponsePath(requester, appName, serviceName),
+        path: Path.app(appName).response(serviceName,requester,'$requestKey'),
         event_source: 'USER',
       },
       (valueChangedEvent) => {
