@@ -134,6 +134,16 @@ export default class App extends ModuleBase {
     return await this.sendTransaction(txBody);
   }
 
+  async setBillingConfig(appName: string, config: billingConfig) {
+    const setConfigOp = this.buildSetBillingConfigOp(appName, config);
+    const txBody = this.buildTxBody(setConfigOp);
+    return await this.sendTransaction(txBody);
+  }
+
+  async getBillingConfig(appName: string): Promise<billingConfig> {
+    return await this.ain.db.ref().getValue(Path.app(appName).billingConfig);
+  }
+
   private buildSetBillingConfigOp(appName: string, config: billingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
