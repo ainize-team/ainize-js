@@ -60,8 +60,6 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
   }
 }
 
-
-
 const defaultAppFunctions = (appName: string) => {
   return {
     deposit: (url: string) => {
@@ -148,9 +146,9 @@ export default class App extends ModuleBase {
     if (setFunctionOps.length <= 0) {
       // TODO(yoojin): Will make TransactionWrapper and catch error in wrapper. I think it will add in moduleBase.
       // FIXME(yoojin): error message.
-      throw new Error ("Please input setTriggerFunctionParams.")
+      throw new Error ("Please input setTriggerFunctionParams.");
     }
-    const txBody = this.buildTxBody(setFunctionOps)
+    const txBody = this.buildTxBody(setFunctionOps);
     return await this.sendTransaction(txBody);
   }
 
@@ -195,6 +193,6 @@ export default class App extends ModuleBase {
           function_id, 
         }
       }
-    }
+    };
   }
 }
