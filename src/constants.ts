@@ -2,14 +2,8 @@ export const getBlockChainEndpoint = (chainId:number) =>{
   return chainId === 1 ? 'https://mainnet-event.ainetwork.ai' : 'https://testnet-event.ainetwork.ai'
 }
 
-// TODO(yoojin -> woojae): deprecated?
-export const toResponsePath = (requester:string, appName: string, serviceName: string, timestamp?: number)=> {
-  const timestampStr = timestamp ? timestamp.toString() : '$timestamp';
-  return `/apps/${appName}/service/${serviceName}/${requester}/${timestampStr}/response`;
-}
-
 export const Path = {
-  app: (appName: string) => {
+  app: (appName: string): any => {
     return {
       root: `/apps/${appName}`,
       balance: `${Path.app(appName).root}/balance`,
@@ -20,10 +14,10 @@ export const Path = {
       service: (serviceName: string) => `${Path.app(appName).root}/service/${serviceName}`,
       userOfService: (serviceName: string, userAddress: string) => 
         `${Path.app(appName).service(serviceName)}/${userAddress}`,
-      request: (serviceName: string, userAddress: string, requestKey: string) =>
+      request: (serviceName: string, userAddress: string, requestKey: string) => 
         `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/request`,
-      response: (serviceName: string, userAddress: string, requestKey: string) =>
-        `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/response`
+      response: (serviceName: string, userAddress: string, requestKey: string) => 
+        `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/response`,
     }
   },
   transfer: (from: string, to: string, transferKey: string) => 
