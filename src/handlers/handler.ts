@@ -20,6 +20,7 @@ export default class Handler {
     }, this.disconnectedCallback);
     this.isConnected = true;
   };
+
   private disconnectedCallback() {
     this.isConnected = false;
     this.connect();

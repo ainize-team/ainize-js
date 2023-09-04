@@ -1,23 +1,25 @@
 import Ainize from "../ainize";
 import Ain from "@ainblockchain/ain-js";
-import { Path } from "../constants";
 import ModuleBase from "./moduleBase";
 
-export default class Wallet extends  ModuleBase{
+export default class Wallet extends ModuleBase {
   ain: Ain;
-  defaultUserAddress: string ;
-  private defaultPrivateKey: string ;
   constructor(ainize: Ainize, privateKey: string) {
     super(ainize);
     this.ain = ainize.ain;
-    this.defaultPrivateKey = privateKey;
-    this.defaultUserAddress = this.ain.wallet.addAndSetDefaultAccount(privateKey);
+    this.ain.wallet.addAndSetDefaultAccount(privateKey);
+  }
+
+  getDefaultAccount() {
+    if(!this.ain.wallet.defaultAccount) {
+      throw new Error('You need to set default account.');
+    }
+    return this.ain.wallet.defaultAccount.address;
   }
 
   setDefaultAccount(privateKey: string) {
-    this.defaultPrivateKey = privateKey;
-    this.defaultUserAddress = this.ain.wallet.addAndSetDefaultAccount(privateKey);
-    return this.defaultUserAddress;
+    this.ain.wallet.addAndSetDefaultAccount(privateKey);
+    return this.getDefaultAccount();
   }
 
   addAccount(privateKey: string) {
@@ -26,7 +28,7 @@ export default class Wallet extends  ModuleBase{
 
   getAinBalance(address?: string) {
     if(!address) {
-      address = this.defaultUserAddress;
+      address = this.getDefaultAccount();
     }
     return this.ain.wallet.getBalance(address);
   }

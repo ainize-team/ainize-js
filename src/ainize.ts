@@ -19,8 +19,7 @@ export default class Ainize {
     this.cache = new NodeCache();
     this.middleware = new Middleware(this);
     this.handler = new Handler(this);
-    this.wallet = new Wallet(this,privateKey);
-    
+    this.wallet = new Wallet(this, privateKey);
   }
 
   test() {
