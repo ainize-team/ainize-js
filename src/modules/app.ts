@@ -65,17 +65,17 @@ const defaultAppFunctions = (appName: string) => {
     deposit: (url: string) => {
       return {
         ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-        functionType: "REST",
-        functionId: "deposit-trigger",
-        functionUrl: url,
+        function_type: "REST",
+        function_id: "deposit-trigger",
+        function_url: url,
       }
     },
     service: (url: string) => {
       return {
         ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
-        functionType: "REST",
-        functionId: "service-trigger",
-        functionUrl: url,
+        function_type: "REST",
+        function_id: "service-trigger",
+        function_url: url,
       }
     }
   }
@@ -100,8 +100,8 @@ export default class App extends ModuleBase {
     if (setDefaultFlag.triggerFuncton) {
       const defaultFunctions = defaultAppFunctions(appName);
       for (const func of Object.values(defaultFunctions)) {
-        const { ref, functionId, functionType, functionUrl } = func(appName);
-        const value = this.buildSetFunctionValue(functionId, functionType, functionUrl);
+        const { ref, function_id, function_type, function_url } = func(appName);
+        const value = this.buildSetFunctionValue({function_id, function_type, function_url});
         const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
         setFunctionOps.push(funcOp);
       }
