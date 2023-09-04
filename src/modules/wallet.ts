@@ -1,12 +1,14 @@
 import Ainize from "../ainize";
 import Ain from "@ainblockchain/ain-js";
-import { getAppBalancePath } from "../constants";
+import { Path } from "../constants";
+import ModuleBase from "./moduleBase";
 
-export default class Wallet {
+export default class Wallet extends  ModuleBase{
   ain: Ain;
   defaultUserAddress: string ;
   private defaultPrivateKey: string ;
   constructor(ainize: Ainize, privateKey: string) {
+    super(ainize);
     this.ain = ainize.ain;
     this.defaultPrivateKey = privateKey;
     this.defaultUserAddress = this.ain.wallet.addAndSetDefaultAccount(privateKey);
@@ -28,18 +30,4 @@ export default class Wallet {
     }
     return this.ain.wallet.getBalance(address);
   }
-
-  async getAppBalance(appName: string, address?: string) {
-    if(!address) {
-      if(!this.defaultUserAddress) {
-        throw new Error('No default user address');
-      }
-      address = this.defaultUserAddress;
-    }
-    const balance = await this.ain.db.ref(getAppBalancePath(appName,address)).getValue();
-    return balance || 0;
-  }
-
-
-
 }

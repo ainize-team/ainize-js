@@ -1,9 +1,11 @@
-import Ain from '@ainblockchain/ain-js'
-import { SetMultiOperation, SetOperation, TransactionBody } from '@ainblockchain/ain-js/lib/types';
+import { SetOperation } from "@ainblockchain/ain-js/lib/types";
+import { Path } from "../constants";
+import { buildSetOperation } from "../utils/builder";
+import ModuleBase from "./moduleBase";
 
 // FIXME(yoojin): move to constant.
 const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
-  const rootRef = `/apps/${appName}`;
+  const rootRef = Path.app(appName).root;
   return {
     root: {
       ref: rootRef,
@@ -14,7 +16,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     deposit: {
-      ref: `${rootRef}/deposit/$userAddress/$transferKey`,
+      ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       value: {
         '.rule': {
           write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
@@ -22,7 +24,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     balance: {
-      ref: `${rootRef}/balance/$userAddress/balance`,
+      ref: Path.app(appName).balanceOfUser("$userAddress"),
       value: {
         '.rule': {
           write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData)"
@@ -38,7 +40,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     request: {
-      ref: `${rootRef}/service/$serviceName/$userAddress/$requestKey/request`,
+      ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
       value: {
         '.rule': {
           write: 
@@ -47,7 +49,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       }
     },
     response: {
-      ref: `${rootRef}/service/$serviceName/$userAddress/$requestKey/response`,
+      ref: Path.app(appName).response("$serviceName", "userAddress", "$requestKey"),
       value: {
         '.rule': {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
@@ -62,7 +64,7 @@ const defaultAppFunctions = (appName: string) => {
   return {
     deposit: (url: string) => {
       return {
-        ref: `${rootRef}/deposit/$userAddress/$transferKey`,
+        ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
         functionType: "REST",
         functionId: "deposit-trigger",
         functionUrl: url,
@@ -70,7 +72,7 @@ const defaultAppFunctions = (appName: string) => {
     },
     service: (url: string) => {
       return {
-        ref: `${rootRef}/${appName}/service/$serviceName/$userAddress/$requestKey/request`,
+        ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
         functionType: "REST",
         functionId: "service-trigger",
         functionUrl: url,
@@ -86,15 +88,7 @@ interface TriggerFunctionUrlMap {
   service: string,
 }
 
-
-export default class App {
-  private ain: Ain;
-  constructor(
-    ain: Ain
-  ) {
-    this.ain = ain;
-  }
-
+export default class App extends ModuleBase {
   async create(appName: string, urls: TriggerFunctionUrlMap) {
     const createAppOp = this.buildCreateAppOp(appName);
 
@@ -102,7 +96,7 @@ export default class App {
     const setRuleOps: SetOperation[] = [];
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
-      const ruleOp = this.buildSetRuleOp(ref, value);
+      const ruleOp = buildSetOperation("SET_RULE" , ref, value);
       setRuleOps.push(ruleOp);
     }
 
@@ -111,13 +105,13 @@ export default class App {
     for (const func of Object.values(defaultFunctions)) {
       const { ref, functionId, functionType, functionUrl } = func(appName);
       const value = this.buildSetFunctionValue(functionId, functionType, functionUrl);
-      const funcOp = this.buildSetFunctionOp(ref, value);
+      const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
       setFunctionOps.push(funcOp);
     }
 
     const txBody = this.buildTxBody([createAppOp, ...setRuleOps, ...setFunctionOps]);
 
-    return await this.signAndSendTransaction(txBody);
+    return await this.sendTransaction(txBody);
   }
 
   private buildCreateAppOp(appName: string): SetOperation {
@@ -132,8 +126,7 @@ export default class App {
         [adminAccount.address]: true,
       }
     }
-
-    return this.buildSetValueOp(ref, value);
+    return buildSetOperation("SET_VALUE", ref, value);
   }
 
   buildSetFunctionValue(functionType: string, functionId: string, functionUrl: string) {
@@ -148,40 +141,4 @@ export default class App {
     }
   }
 
-  async signAndSendTransaction(txBody: TransactionBody) {
-    return await this.ain.sendTransaction(txBody);
-  }
-
-  private buildTxBody(operation: SetOperation | SetOperation[]): TransactionBody {
-    return {
-      operation: Array.isArray(operation) ? {
-        type: "SET",
-        op_list: operation
-      } : operation,
-      gas_price: 500,
-      timestamp: Date.now(),
-      nonce: -1
-    }
-  }
-  private buildSetValueOp(ref: string, value: object): SetOperation {
-    return {
-      type: "SET_VALUE",
-      ref,
-      value,
-    } 
-  }
-  private buildSetRuleOp(ref: string, value: object): SetOperation {
-    return {
-      type: "SET_RULE",
-      ref,
-      value,
-    }
-  }
-  private buildSetFunctionOp(ref: string, value: object): SetOperation {
-    return {
-      type: "SET_FUNCTION",
-      ref,
-      value,
-    }
-  }
 }

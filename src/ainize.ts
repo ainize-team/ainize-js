@@ -4,7 +4,7 @@ import * as NodeCache from 'node-cache';
 import Middleware from './middlewares/middleware';
 import { getBlockChainEndpoint } from './constants';
 import Handler from './handlers/handler';
-import Wallet from './wallets/wallet';
+import Wallet from './modules/wallet';
 export default class Ainize {
   cache: NodeCache;
   ain: Ain;
