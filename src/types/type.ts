@@ -29,3 +29,8 @@ export type billingConfig = {
   maxCost?: number,
   responseTimeout?: number,
 };
+
+export enum HISTORY_TYPE {
+  DEPOSIT = "DEPOSIT",
+  USAGE = "USAGE",
+}

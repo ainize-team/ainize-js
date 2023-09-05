@@ -1,22 +1,27 @@
 import Ain from "@ainblockchain/ain-js";
 import { SetOperation, TransactionBody } from "@ainblockchain/ain-js/lib/types";
 import Ainize from "../ainize";
+import Wallet from "./wallet";
+import App from "./app";
 
 export default class ModuleBase {
   public ain: Ain;
-
+  public wallet: Wallet;
+  public app: App;
   constructor(ainize: Ainize) {
     this.ain = ainize.ain;
+    this.wallet = ainize.wallet;
+    this.app = ainize.app;
   }
   
-  protected buildTxBody(operation: SetOperation | SetOperation[]): TransactionBody {
+  protected buildTxBody(operation: SetOperation | SetOperation[], timestamp? : number): TransactionBody {
     return {
       operation: Array.isArray(operation) ? {
         type: "SET",
         op_list: operation
       } : operation,
       gas_price: 500,
-      timestamp: Date.now(),
+      timestamp: timestamp? timestamp : Date.now(),
       nonce: -1
     }
   }
