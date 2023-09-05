@@ -4,8 +4,8 @@ import UseService from "./service/useService";
 import Ainize from "../ainize";
 
 export default class Service extends ModuleBase {
-  depositService: DepositService;
-  useService: UseService;
+  private depositService: DepositService;
+  private useService: UseService;
   constructor(ainize: Ainize, depositService: DepositService, useService: UseService) {
     super(ainize);
     this.depositService = depositService;

@@ -3,15 +3,15 @@ import Ainize from "../ainize";
 import NodeCache = require("node-cache");
 import Ain from "@ainblockchain/ain-js";
 import { HANDLER_HEARBEAT_INTERVAL, HANDLER_TIMEOUT, Path } from "../constants";
+import ModuleBase from "../modules/moduleBase";
 
-export default class Handler {
-  cache: NodeCache;
+export default class Handler extends ModuleBase {
+  private cache: NodeCache;
   isConnected: boolean = false;
   subscribeTable:any = {};
-  ain: Ain;
-  constructor(ainize: Ainize) {
-    this.cache = ainize.cache;
-    this.ain = ainize.ain;
+  constructor(ainize: Ainize, cache: NodeCache) {
+    super(ainize);
+    this.cache = cache;
   }
   async connect() {
     await this.ain.em.connect({

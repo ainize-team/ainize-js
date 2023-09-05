@@ -5,8 +5,8 @@ import DepositService from "./service/depositService";
 import UseService from "./service/useService";
 
 export default class Admin extends ModuleBase {
-  depositService: DepositService;
-  useService: UseService;
+  private depositService: DepositService;
+  private useService: UseService;
   constructor(ainize: Ainize, depositService: DepositService, useService: UseService) {
     super(ainize);
     this.depositService = depositService;

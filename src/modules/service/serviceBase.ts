@@ -7,8 +7,8 @@ import Wallet from "../wallet";
 import App from "../app";
 
 export default class ServiceBase extends ModuleBase { 
-  app: App;
-  wallet: Wallet;
+  private app: App;
+  private wallet: Wallet;
   constructor(ainize: Ainize) {
     super(ainize);
     this.app = ainize.app;

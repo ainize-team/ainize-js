@@ -10,7 +10,7 @@ import UseService from './modules/service/useService';
 import Service from './modules/service';
 import Admin from './modules/admin';
 export default class Ainize {
-  cache: NodeCache;
+  private cache: NodeCache;
   ain: Ain;
   middleware: Middleware;
   handler: Handler;
@@ -25,8 +25,8 @@ export default class Ainize {
     this.ain = new Ain(blockChainEndpoint, chainId);
     this.app = new App(this);
     this.cache = new NodeCache();
-    this.middleware = new Middleware(this);
-    this.handler = new Handler(this);
+    this.middleware = new Middleware(this.cache);
+    this.handler = new Handler(this, this.cache);
     this.wallet = new Wallet(this, privateKey);
     const depositService = new DepositService(this);
     const useService = new UseService(this);
