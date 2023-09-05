@@ -26,7 +26,7 @@ export default class Ainize {
     this.app = new App(this);
     this.cache = new NodeCache();
     this.middleware = new Middleware(this.cache);
-    this.handler = new Handler(this, this.cache);
+    this.handler = new Handler(this);
     this.wallet = new Wallet(this, privateKey);
     const depositService = new DepositService(this);
     const useService = new UseService(this);

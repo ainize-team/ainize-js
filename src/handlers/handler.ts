@@ -1,6 +1,4 @@
 const _ = require('lodash');
-import Ainize from "../ainize";
-import NodeCache = require("node-cache");
 import { HANDLER_HEARBEAT_INTERVAL, HANDLER_TIMEOUT, Path } from "../constants";
 import ModuleBase from "../modules/moduleBase";
 
