@@ -1,6 +1,3 @@
-import { SetOperation } from "@ainblockchain/ain-js/lib/types";
-import { buildSetOperation } from '../utils/builder';
-import { Path } from "../constants";
 import ModuleBase from "./moduleBase";
 import DepositService from "./service/depositService";
 import UseService from "./service/useService";

@@ -22,7 +22,7 @@ export default class ModuleBase {
       } : operation,
       gas_price: 500,
       timestamp: timestamp? timestamp : Date.now(),
-      nonce: -1
+      nonce: -1,
     }
   }
 

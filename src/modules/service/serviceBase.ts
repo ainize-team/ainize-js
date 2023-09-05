@@ -38,7 +38,7 @@ export default class ServiceBase extends ModuleBase {
       transferKey: type === HISTORY_TYPE.DEPOSIT ? key : undefined,
       requestTimestamp: type === HISTORY_TYPE.USAGE ? key : undefined,
     };
-    const wrieHistoryOp = buildSetOperation("SET_VALUE", historyPath,value);
+    const wrieHistoryOp = buildSetOperation("SET_VALUE", historyPath, value);
     const txBody = this.buildTxBody(wrieHistoryOp);
     return await this.sendTransaction(txBody);
   }
