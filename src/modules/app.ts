@@ -1,5 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
+import { billingConfig, setDefaultFlag, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
@@ -60,62 +61,116 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
 }
 
 const defaultAppFunctions = (appName: string) => {
-  const rootRef = `/apps/${appName}`
   return {
     deposit: (url: string) => {
       return {
         ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-        functionType: "REST",
-        functionId: "deposit-trigger",
-        functionUrl: url,
+        function_type: "REST",
+        function_id: "deposit-trigger",
+        function_url: url,
       }
     },
     service: (url: string) => {
       return {
         ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
-        functionType: "REST",
-        functionId: "service-trigger",
-        functionUrl: url,
+        function_type: "REST",
+        function_id: "service-trigger",
+        function_url: url,
       }
     }
   }
 }
 
-// FIXME(yoojin): move to types.
-// NOTE(yoojin): temporary type. service url may be changed to array?
-interface TriggerFunctionUrlMap {
-  deposit: string,
-  service: string,
-}
-
 export default class App extends ModuleBase {
-  async create(appName: string, urls: TriggerFunctionUrlMap) {
-    const createAppOp = this.buildCreateAppOp(appName);
-
-    const defaultRules = defaultAppRules(appName);
+  async create(appName: string, setDefaultFlag?: setDefaultFlag) {
+    if (!setDefaultFlag)
+      setDefaultFlag = { triggerFuncton: true, billingConfig: true };
     const setRuleOps: SetOperation[] = [];
+    const setFunctionOps: SetOperation[] = [];
+    const setBillingConfigOps: SetOperation[] = [] ;
+
+    const createAppOp = this.buildCreateAppOp(appName);
+    const defaultRules = defaultAppRules(appName);
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
       const ruleOp = buildSetOperation("SET_RULE" , ref, value);
       setRuleOps.push(ruleOp);
     }
 
-    const defaultFunctions = defaultAppFunctions(appName);
-    const setFunctionOps: SetOperation[] = [];
-    for (const func of Object.values(defaultFunctions)) {
-      const { ref, functionId, functionType, functionUrl } = func(appName);
-      const value = this.buildSetFunctionValue(functionId, functionType, functionUrl);
-      const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
-      setFunctionOps.push(funcOp);
+    if (setDefaultFlag.triggerFuncton) {
+      const defaultFunctions = defaultAppFunctions(appName);
+      for (const func of Object.values(defaultFunctions)) {
+        const { ref, function_id, function_type, function_url } = func(appName);
+        const value = this.buildSetFunctionValue({function_id, function_type, function_url});
+        const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
+        setFunctionOps.push(funcOp);
+      }
     }
 
-    const txBody = this.buildTxBody([createAppOp, ...setRuleOps, ...setFunctionOps]);
+    if (setDefaultFlag.billingConfig) {
+      const defaultConfig: billingConfig = {
+        depositAddress: this.ain.wallet.defaultAccount!.address,
+        tokenPerCost: 0,
+      }
+      const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
+      setBillingConfigOps.push(configOp);
+    }
 
+    const txBody = this.buildTxBody([
+      createAppOp, 
+      ...setRuleOps, 
+      ...setFunctionOps,
+      ...setBillingConfigOps,
+    ]);
     return await this.sendTransaction(txBody);
   }
 
+  async setBillingConfig(appName: string, config: billingConfig) {
+    const setConfigOp = this.buildSetBillingConfigOp(appName, config);
+    const txBody = this.buildTxBody(setConfigOp);
+    return await this.sendTransaction(txBody);
+  }
+
+  async getBillingConfig(appName: string): Promise<billingConfig> {
+    return await this.ain.db.ref().getValue(Path.app(appName).billingConfig);
+  }
+
+  async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
+    const setFunctionOps: SetOperation[] = [];
+    for (const func of Object.values(functions)) {
+      const { ref } = func;
+      const value = this.buildSetFunctionValue(func);
+      const op = buildSetOperation("SET_FUNCTION", ref, value);
+      setFunctionOps.push(op);
+    }
+    if (setFunctionOps.length <= 0) {
+      // TODO(yoojin): Will make TransactionWrapper and catch error in wrapper. I think it will add in moduleBase.
+      // FIXME(yoojin): error message.
+      throw new Error ("Please input setTriggerFunctionParams.");
+    }
+    const txBody = this.buildTxBody(setFunctionOps);
+    return await this.sendTransaction(txBody);
+  }
+
+  async setRules(appName: string, rules: setRuleParam[]) {
+    const setRuleOps: SetOperation[] = [];
+    for (const rule of Object.values(rules)) {
+      const { ref } = rule;
+      const value = rule.write;
+      const op = buildSetOperation("SET_RULE", ref, value);
+      setRuleOps.push(op);
+    }
+    const txBody = this.buildTxBody(setRuleOps);
+    return await this.sendTransaction(txBody);
+  }
+
+  private buildSetBillingConfigOp(appName: string, config: billingConfig) {
+    const path = Path.app(appName).billingConfig();
+    return buildSetOperation("SET_VALUE", path, config);
+  }
+
   private buildCreateAppOp(appName: string): SetOperation {
-    const ref = `/manage_app/${appName}/create/${Date.now()}`;
+    const path = `/manage_app/${appName}/create/${Date.now()}`;
     const adminAccount = this.ain.wallet.defaultAccount!;
     if (adminAccount && adminAccount.address) {
       // FIXME(yoojin): change Error to Custom error when it added.
@@ -126,25 +181,19 @@ export default class App extends ModuleBase {
         [adminAccount.address]: true,
       }
     }
-    return buildSetOperation("SET_VALUE", ref, value);
+    return buildSetOperation("SET_VALUE", path, value);
   }
 
-  buildSetFunctionValue(functionType: string, functionId: string, functionUrl: string) {
+  buildSetFunctionValue({function_type, function_url, function_id}: triggerFunctionConfig) {
     return {
       ".function": {
-        [functionId]: {
-          function_type: functionType,
-          function_url: functionUrl,
-          function_id: functionId,
+        [function_id]: {
+          function_type,
+          function_url,
+          function_id, 
         }
       }
-    }
+    };
   }
 
-  private async getDepositAddress(appName: string) {
-    const billingConfig = await this.ain.db.ref().getValue(Path.app(appName).billingConfig);
-    const depositAddress = billingConfig.depositAddress;
-    return depositAddress;
-  }
-  
 }

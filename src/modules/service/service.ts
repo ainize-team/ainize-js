@@ -3,6 +3,8 @@ import { buildSetOperation } from '../../utils/builder';
 import { Path } from "../../constants";
 import ModuleBase from ".././moduleBase";
 import DepositService from "./depositService";
+import UseService from "./useService";
+import Ainize from "../../ainize";
 
 export default class Service extends ModuleBase {
   depositService: DepositService;
@@ -11,16 +13,6 @@ export default class Service extends ModuleBase {
     super(ainize);
     this.depositService = new DepositService(ainize);
     this.useService = new UseService(ainize);
-  }
-
-  async deposit(appName: string, amount: number) {
-    const transferKey = Date.now().toString();
-    const depositAddress = await this.getAppDepositAddress(appName);
-    const transferOp = this.buildTransferOp(depositAddress, amount, transferKey);
-    const depositOp = this.buildSetDepositOp(appName, transferKey, amount);
-
-    const txBody = this.buildTxBody([transferOp, depositOp]);
-    return await this.sendTransaction(txBody);
   }
 
   async request(appName: string, serviceName: string, data: any) {
@@ -54,19 +46,6 @@ export default class Service extends ModuleBase {
   async calculateCost(billingConfig: any) {
     // TODO(yoojin): add logic.
   } 
-  
-  // TODO(yoojin -> woojae): add handler functions.
-  subscribe() {}
-
-  unsubscribe() {}
-
-  getSubscribeList() {}
-
-  private async getAppDepositAddress(appName: string) {
-    const depositAddrPath = `${Path.app(appName).billingConfig}/depositAddress`;
-    const address = await this.ain.db.ref().getValue(depositAddrPath);
-    return address;
-  }
 
   private buildTransferOp(
     to: string, 

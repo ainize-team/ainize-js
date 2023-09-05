@@ -1,13 +1,13 @@
-import { Path } from "../../constants";
+import { HISTORY_TYPE, Path } from "../../constants";
 import { Request } from 'express'; 
-import moduleBase from "../moduleBase";
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
+import ServiceBase from "./serviceBase";
 
-export default class DepositService extends moduleBase{
+export default class DepositService extends ServiceBase {
   async requestDeposit(appName: string, amount: number, userAddress?: string) {
   const transferKey = Date.now();
   userAddress = userAddress ? userAddress : this.wallet.getDefaultAccount();
-  const depositAddress = await this.app.getDepositAddress(appName);
+  const depositAddress = await this.getDepositAddress(appName);
 
   const op_list: SetOperation[]  = [
     {
@@ -28,9 +28,10 @@ export default class DepositService extends moduleBase{
   async handleDeposit(req: Request) {
     const transferKey = req.body.valuePath[4];
     const transferValue = req.body.value;
-    await this.changeBalance(req,'INC', transferValue);
-    await this.writeHistory(req, historyType.DEPOSIT, transferValue, transferKey);
+    const appName = req.body.baluePath[1];
+    const requesterAddress = req.body.auth.addr;
+    await this.changeBalance(appName, requesterAddress,'INC', transferValue);
+    await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.DEPOSIT, transferValue, transferKey);
   }
-
 
 }

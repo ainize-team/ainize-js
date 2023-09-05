@@ -18,10 +18,17 @@ export const Path = {
         `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/request`,
       response: (serviceName: string, userAddress: string, requestKey: string) => 
         `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/response`,
+      histsory: `${Path.app(appName).root}/history`,
+      historyOfUser: (userAddress: string) => `${Path.app(appName).histsory}/${userAddress}`,
     }
   },
   transfer: (from: string, to: string, transferKey: string) => 
     `/transfer/${from}/${to}/${transferKey}/value`,
+}
+
+export const HISTORY_TYPE = {
+  DEPOSIT: 'DEPOSIT',
+  USAGE: 'USAGE',
 }
 
 export const SECOND = 1000;

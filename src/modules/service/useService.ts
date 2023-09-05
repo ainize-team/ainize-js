@@ -1,3 +1,5 @@
-export default class UseService {
+import ServiceBase from "./serviceBase";
+
+export default class UseService extends ServiceBase{
   
 }
