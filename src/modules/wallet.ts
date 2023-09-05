@@ -5,13 +5,13 @@ export default class Wallet {
   ain: Ain;
   constructor(ainize: Ainize, privateKey?: string) {
     this.ain = ainize.ain;
-    if(privateKey){
+    if (privateKey) {
       this.ain.wallet.addAndSetDefaultAccount(privateKey);
     }
   }
 
   getDefaultAccount() {
-    if(!this.ain.wallet.defaultAccount) {
+    if (!this.ain.wallet.defaultAccount) {
       throw new Error("You need to set default account.");
     }
     return this.ain.wallet.defaultAccount.address;
@@ -43,5 +43,4 @@ export default class Wallet {
     txBody.address = signerAddress;
     return await this.ain.sendTransaction(txBody);
   }
-
 }
