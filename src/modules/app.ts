@@ -164,6 +164,18 @@ export default class App extends ModuleBase {
     return await this.sendTransaction(txBody);
   }
 
+  async addAdmin(appName: string, userAddress: string) {
+    const op = this.buildSetAdminOp(appName, userAddress);
+    const txBody = this.buildTxBody(op);
+    return await this.sendTransaction(txBody);
+  }
+
+  async deleteAdmin(appName: string, userAddress: string) {
+    const op = this.buildSetAdminOp(appName, userAddress, true);
+    const txBody = this.buildTxBody(op);
+    return await this.sendTransaction(txBody);
+  }
+
   private buildSetBillingConfigOp(appName: string, config: billingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
@@ -184,7 +196,7 @@ export default class App extends ModuleBase {
     return buildSetOperation("SET_VALUE", path, value);
   }
 
-  buildSetFunctionValue({function_type, function_url, function_id}: triggerFunctionConfig) {
+  private buildSetFunctionValue({function_type, function_url, function_id}: triggerFunctionConfig) {
     return {
       ".function": {
         [function_id]: {
@@ -194,5 +206,11 @@ export default class App extends ModuleBase {
         },
       },
     };
+  }
+
+  private buildSetAdminOp(appName: string, userAddress: string, isRemoveOp?: boolean) {
+    const path = `/manage_app/${appName}/config/admin/${userAddress}`;
+    const value = !isRemoveOp ? null : true;
+    return buildSetOperation("SET_VALUE", path, value);
   }
 }
