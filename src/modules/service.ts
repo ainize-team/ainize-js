@@ -1,10 +1,10 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
-import { buildSetOperation } from '../../utils/builder';
-import { Path } from "../../constants";
-import ModuleBase from ".././moduleBase";
-import DepositService from "./depositService";
-import UseService from "./useService";
-import Ainize from "../../ainize";
+import { buildSetOperation } from '../utils/builder';
+import { Path } from "../constants";
+import ModuleBase from "./moduleBase";
+import DepositService from "./service/depositService";
+import UseService from "./service/useService";
+import Ainize from "../ainize";
 
 export default class Service extends ModuleBase {
   depositService: DepositService;
