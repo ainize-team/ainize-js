@@ -11,7 +11,6 @@ export default class Admin extends ModuleBase {
     super(ainize);
     this.depositService = depositService;
     this.useService = useService;
-
   }
 
   async deposit(req: Request) {

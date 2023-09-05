@@ -6,7 +6,7 @@ import Ainize from "../ainize";
 export default class Service extends ModuleBase {
   depositService: DepositService;
   useService: UseService;
-  constructor(ainize: Ainize,depositService: DepositService, useService: UseService) {
+  constructor(ainize: Ainize, depositService: DepositService, useService: UseService) {
     super(ainize);
     this.depositService = depositService;
     this.useService = useService;
@@ -15,4 +15,6 @@ export default class Service extends ModuleBase {
   async deposit(appName: string, amount: number, userAddress?: string) {
     return await this.depositService.requestDeposit(appName, amount, userAddress);
   }
+
 }
+
