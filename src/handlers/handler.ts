@@ -1,18 +1,12 @@
 const _ = require('lodash');
 import Ainize from "../ainize";
 import NodeCache = require("node-cache");
-import Ain from "@ainblockchain/ain-js";
 import { HANDLER_HEARBEAT_INTERVAL, HANDLER_TIMEOUT, Path } from "../constants";
 import ModuleBase from "../modules/moduleBase";
 
 export default class Handler extends ModuleBase {
-  private cache: NodeCache;
   isConnected: boolean = false;
   subscribeTable:any = {};
-  constructor(ainize: Ainize, cache: NodeCache) {
-    super(ainize);
-    this.cache = cache;
-  }
   async connect() {
     await this.ain.em.connect({
       handshakeTimeout: HANDLER_TIMEOUT, // Timeout in milliseconds for the web socket handshake request.  
@@ -51,7 +45,7 @@ export default class Handler extends ModuleBase {
   }
 
   private addToSubscribeTable(requester:string, appName: string, serviceName: string, filterId: string) {
-    _.set(this.subscribeTable, [requester, appName, serviceName], {});
+    _.set(this.subscribeTable, [requester, appName], {serviceName:filterId});
   }
 
   getSubscribeList(requester?: string) {

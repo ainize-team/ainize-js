@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import Ainize from "../ainize";
 import NodeCache = require("node-cache");
 
 export default class Middleware {
