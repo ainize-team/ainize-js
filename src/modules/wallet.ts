@@ -33,17 +33,15 @@ export default class Wallet {
     return this.ain.wallet.getBalance(address);
   }
 
-
   async sendTxWithAddress(txBody: any, signerAddress?: string) {
     if(!signerAddress) {
       signerAddress = this.getDefaultAccount();
     }
-    if(this.ain.wallet.isAdded(signerAddress)){
+    if(this.ain.wallet.isAdded(signerAddress)) {
       throw new Error ("You need to add account");
     }
     txBody.address = signerAddress;
     return await this.ain.sendTransaction(txBody);
   }
-
 
 }

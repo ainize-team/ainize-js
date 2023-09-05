@@ -30,7 +30,6 @@ export type billingConfig = {
   responseTimeout?: number,
 };
 
-
 export enum HISTORY_TYPE {
   DEPOSIT = "DEPOSIT",
   USAGE = "USAGE",
