@@ -2,12 +2,13 @@ import Ainize from "../ainize";
 import Ain from "@ainblockchain/ain-js";
 import ModuleBase from "./moduleBase";
 
-export default class Wallet extends ModuleBase {
+export default class Wallet {
   ain: Ain;
-  constructor(ainize: Ainize, privateKey: string) {
-    super(ainize);
+  constructor(ainize: Ainize, privateKey?: string) {
     this.ain = ainize.ain;
-    this.ain.wallet.addAndSetDefaultAccount(privateKey);
+    if(privateKey){
+      this.ain.wallet.addAndSetDefaultAccount(privateKey);
+    }
   }
 
   getDefaultAccount() {
@@ -32,4 +33,18 @@ export default class Wallet extends ModuleBase {
     }
     return this.ain.wallet.getBalance(address);
   }
+
+
+  async sendWithAccount(txBody: any, signerAddress?: string) {
+    if(!signerAddress) {
+      signerAddress = this.getDefaultAccount();
+    }
+    if(this.ain.wallet.isAdded(signerAddress)){
+      throw new Error ('You need to add account');
+    }
+    txBody.address = signerAddress;
+    return await this.ain.sendTransaction(txBody);
+  }
+
+
 }

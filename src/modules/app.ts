@@ -141,4 +141,10 @@ export default class App extends ModuleBase {
     }
   }
 
+  private async getDepositAddress(appName: string) {
+    const billingConfig = await this.ain.db.ref().getValue(Path.app(appName).billingConfig);
+    const depositAddress = billingConfig.depositAddress;
+    return depositAddress;
+  }
+  
 }
