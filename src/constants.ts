@@ -1,5 +1,5 @@
 export const getBlockChainEndpoint = (chainId:number) =>{
-  return chainId === 1 ? 'https://mainnet-event.ainetwork.ai' : 'https://testnet-event.ainetwork.ai'
+  return chainId === 1 ? "https://mainnet-event.ainetwork.ai" : "https://testnet-event.ainetwork.ai"
 }
 
 export const Path = {
@@ -8,6 +8,7 @@ export const Path = {
       root: `/apps/${appName}`,
       balance: `${Path.app(appName).root}/balance`,
       balanceOfUser: (userAddress: string) => `${Path.app(appName).balance}/${userAddress}/balance`,
+      historyOfUser: (userAddress: string) => `${Path.app(appName).balance}/${userAddress}/history`,
       deposit: `${Path.app(appName).root}/deposit`,
       depositOfUser: (userAddress: string) => `${Path.app(appName).deposit}/${userAddress}`,
       billingConfig: `${Path.app(appName).root}/billingConfig`,
