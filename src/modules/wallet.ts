@@ -34,7 +34,7 @@ export default class Wallet {
   }
 
 
-  async sendWithAccount(txBody: any, signerAddress?: string) {
+  async sendTxWithAddress(txBody: any, signerAddress?: string) {
     if(!signerAddress) {
       signerAddress = this.getDefaultAccount();
     }

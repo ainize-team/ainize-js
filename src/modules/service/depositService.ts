@@ -23,7 +23,7 @@ export default class DepositService extends ServiceBase {
     }
   ] 
   const txBody = this.buildTxBody(op_list, transferKey);
-  return this.wallet.sendWithAccount(txBody, userAddress);
+  return this.wallet.sendTxWithAddress(txBody, userAddress);
   }
 
   async handleDeposit(req: Request) {
