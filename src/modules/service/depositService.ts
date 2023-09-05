@@ -1,5 +1,5 @@
 import { Path } from "../../constants";
-import { Request } from 'express'; 
+import { Request } from "express"; 
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import ServiceBase from "./serviceBase";
 import { HISTORY_TYPE } from "../../types/type";
