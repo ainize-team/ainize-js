@@ -18,5 +18,4 @@ export default class Service extends ModuleBase {
   async requestDeposit(appName: string, amount: number, userAddress?: string) {
     return await this.depositService.requestDeposit(appName, amount, userAddress);
   }
-
 }

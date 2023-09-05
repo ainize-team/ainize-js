@@ -43,5 +43,4 @@ export default class Wallet {
     txBody.address = signerAddress;
     return await this.ain.sendTransaction(txBody);
   }
-
 }
