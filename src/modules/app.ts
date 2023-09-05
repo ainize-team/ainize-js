@@ -11,7 +11,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
     root: {
       ref: rootRef,
       value: {
-        '.rule': {
+        ".rule": {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
         }
       }
@@ -19,7 +19,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
     deposit: {
       ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       value: {
-        '.rule': {
+        ".rule": {
           write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
         }
       }
@@ -27,7 +27,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
     balance: {
       ref: Path.app(appName).balanceOfUser("$userAddress"),
       value: {
-        '.rule': {
+        ".rule": {
           write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData)"
         }
       }
@@ -35,7 +35,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
     balanceHistory: {
       ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
       value: {
-        '.rule': {
+        ".rule": {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
         }
       }
@@ -43,7 +43,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
     request: {
       ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
       value: {
-        '.rule': {
+        ".rule": {
           write: 
             "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`)" 
         }
@@ -52,7 +52,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
     response: {
       ref: Path.app(appName).response("$serviceName", "userAddress", "$requestKey"),
       value: {
-        '.rule': {
+        ".rule": {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
         }
       },
@@ -174,7 +174,7 @@ export default class App extends ModuleBase {
     const adminAccount = this.ain.wallet.defaultAccount!;
     if (adminAccount && adminAccount.address) {
       // FIXME(yoojin): change Error to Custom error when it added.
-      throw new Error('You need to enter your private key when initialize sdk.');
+      throw new Error("You need to enter your private key when initialize sdk.");
     }
     const value = {
       admin: {

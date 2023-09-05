@@ -13,8 +13,8 @@ export default class Middleware {
       next();
     }
     const txHash = req.body.transaction.hash;
-    if (this.cache.get(txHash) && this.cache.get(txHash) !== 'error') {
-      res.send('duplicated');
+    if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
+      res.send("duplicated");
       return;
     }
       // if request is first request, set cache 

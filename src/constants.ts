@@ -1,5 +1,5 @@
 export const getBlockChainEndpoint = (chainId:number) =>{
-  return chainId === 1 ? 'https://mainnet-event.ainetwork.ai' : 'https://testnet-event.ainetwork.ai'
+  return chainId === 1 ? "https://mainnet-event.ainetwork.ai" : "https://testnet-event.ainetwork.ai"
 }
 
 export const Path = {
@@ -27,8 +27,8 @@ export const Path = {
 }
 
 export const HISTORY_TYPE = {
-  DEPOSIT: 'DEPOSIT',
-  USAGE: 'USAGE',
+  DEPOSIT: "DEPOSIT",
+  USAGE: "USAGE",
 }
 
 export const SECOND = 1000;

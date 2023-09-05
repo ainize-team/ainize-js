@@ -28,13 +28,13 @@ export default class Handler {
 
   async subscribe(requester:string, appName: string, serviceName: string, callback: (valueChangedEvent: any) => any) {
     if(this.checkSubscribeTableExists(requester, appName, serviceName)){
-      throw new Error('Already subscribed');
+      throw new Error("Already subscribed");
     }
     const filterId = await this.ain.em.subscribe(
-      'VALUE_CHANGED',
+      "VALUE_CHANGED",
       {
-        path: Path.app(appName).response(serviceName, requester, '$requestKey'),
-        event_source: 'USER',
+        path: Path.app(appName).response(serviceName, requester, "$requestKey"),
+        event_source: "USER",
       },
       (valueChangedEvent) => {
         callback(valueChangedEvent);
@@ -61,7 +61,7 @@ export default class Handler {
 
   unsubscribe(requester:string, appName: string, serviceName: string) {
     if(!this.checkSubscribeTableExists(requester, appName, serviceName)) {
-      throw new Error('Not subscribed');
+      throw new Error("Not subscribed");
     }
     this.ain.em.unsubscribe(
       this.subscribeTable[requester][appName][serviceName],

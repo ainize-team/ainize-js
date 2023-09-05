@@ -11,7 +11,7 @@ export default class ServiceBase extends ModuleBase {
   //ADMIN: need defaultAccount
   protected async changeBalance(appName: string, requesterAddress: string, type: string, value: number) {
     const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
-    if(type === 'INC') {
+    if(type === "INC") {
       const result = await this.ain.db.ref(balancePath).incrementValue({
         value,
         gas_price: 500,
@@ -30,7 +30,7 @@ export default class ServiceBase extends ModuleBase {
   
   //ADMIN: need defaultAccount
   protected async writeHistory(appName: string, requesterAddress: string, type: string, amount: number, key: string) {
-    const historyPath = Path.app(appName).historyOfUser(requesterAddress) + '/' + Date.now().toString();
+    const historyPath = Path.app(appName).historyOfUser(requesterAddress) + "/" + Date.now().toString();
     const value = {
       type,
       amount,
