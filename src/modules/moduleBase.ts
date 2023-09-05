@@ -1,11 +1,9 @@
 import Ain from "@ainblockchain/ain-js";
 import { SetOperation, TransactionBody } from "@ainblockchain/ain-js/lib/types";
 import Ainize from "../ainize";
-import Wallet from "./wallet";
-import App from "./app";
 
 export default class ModuleBase {
-  public ain: Ain;
+  protected ain: Ain;
   constructor(ainize: Ainize) {
     this.ain = ainize.ain;
   }
