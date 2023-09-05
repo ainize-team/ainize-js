@@ -8,6 +8,7 @@ export const Path = {
       root: `/apps/${appName}`,
       balance: `${Path.app(appName).root}/balance`,
       balanceOfUser: (userAddress: string) => `${Path.app(appName).balance}/${userAddress}/balance`,
+      historyOfUser: (userAddress: string) => `${Path.app(appName).balance}/${userAddress}/history`,
       deposit: `${Path.app(appName).root}/deposit`,
       depositOfUser: (userAddress: string) => `${Path.app(appName).deposit}/${userAddress}`,
       billingConfig: `${Path.app(appName).root}/billingConfig`,
@@ -18,8 +19,6 @@ export const Path = {
         `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/request`,
       response: (serviceName: string, userAddress: string, requestKey: string) => 
         `${Path.app(appName).userOfService(serviceName, userAddress)}/${requestKey}/response`,
-      histsory: `${Path.app(appName).root}/history`,
-      historyOfUser: (userAddress: string) => `${Path.app(appName).histsory}/${userAddress}`,
     }
   },
   transfer: (from: string, to: string, transferKey: string) => 
