@@ -1,6 +1,3 @@
-import { SetOperation } from "@ainblockchain/ain-js/lib/types";
-import { buildSetOperation } from '../utils/builder';
-import { Path } from "../constants";
 import ModuleBase from "./moduleBase";
 import DepositService from "./service/depositService";
 import UseService from "./service/useService";
@@ -9,13 +6,13 @@ import Ainize from "../ainize";
 export default class Service extends ModuleBase {
   depositService: DepositService;
   useService: UseService;
-  constructor(ainize: Ainize) {
+  constructor(ainize: Ainize,depositService: DepositService, useService: UseService) {
     super(ainize);
-    this.depositService = new DepositService(ainize);
-    this.useService = new UseService(ainize);
+    this.depositService = depositService;
+    this.useService = useService;
   }
 
-  async requestDeposit(appName: string, amount: number, userAddress?: string) {
+  async deposit(appName: string, amount: number, userAddress?: string) {
     return await this.depositService.requestDeposit(appName, amount, userAddress);
   }
 

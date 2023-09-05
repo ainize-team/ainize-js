@@ -2,9 +2,19 @@ import { Path } from "../../constants";
 import ModuleBase from "../moduleBase";
 import { buildSetOperation } from "../../utils/builder";
 import { HISTORY_TYPE } from "../../types/type";
+import Ainize from "../../ainize";
+import Wallet from "../wallet";
+import App from "../app";
 
 export default class ServiceBase extends ModuleBase { 
-  
+  app: App;
+  wallet: Wallet;
+  constructor(ainize: Ainize) {
+    super(ainize);
+    this.app = ainize.app;
+    this.wallet = ainize.wallet;
+  }
+
   protected async getDepositAddress(appName: string) {
     return (await this.app.getBillingConfig(appName)).depositAddress;
   }
