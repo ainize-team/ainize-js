@@ -1,6 +1,7 @@
-import { HISTORY_TYPE, Path } from "../../constants";
+import { Path } from "../../constants";
 import ModuleBase from "../moduleBase";
 import { buildSetOperation } from "../../utils/builder";
+import { HISTORY_TYPE } from "../../types/type";
 
 export default class ServiceBase extends ModuleBase { 
   

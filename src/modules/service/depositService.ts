@@ -1,7 +1,8 @@
-import { HISTORY_TYPE, Path } from "../../constants";
+import { Path } from "../../constants";
 import { Request } from 'express'; 
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import ServiceBase from "./serviceBase";
+import { HISTORY_TYPE } from "../../types/type";
 
 export default class DepositService extends ServiceBase {
   async requestDeposit(appName: string, amount: number, userAddress?: string) {
