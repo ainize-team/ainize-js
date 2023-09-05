@@ -1,10 +1,9 @@
 import Ainize from "../ainize";
-import Ain from "@ainblockchain/ain-js";
+import ModuleBase from "./moduleBase";
 
-export default class Wallet {
-  ain: Ain;
+export default class Wallet extends ModuleBase{
   constructor(ainize: Ainize, privateKey?: string) {
-    this.ain = ainize.ain;
+    super(ainize);
     if (privateKey) {
       this.ain.wallet.addAndSetDefaultAccount(privateKey);
     }
