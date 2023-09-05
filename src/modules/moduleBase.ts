@@ -2,7 +2,6 @@ import Ain from "@ainblockchain/ain-js";
 import { SetOperation, TransactionBody } from "@ainblockchain/ain-js/lib/types";
 import Ainize from "../ainize";
 
-
 export default class ModuleBase {
   public ain: Ain;
 
