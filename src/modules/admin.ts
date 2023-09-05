@@ -16,5 +16,4 @@ export default class Admin extends ModuleBase {
   async deposit(req: Request) {
     return await this.depositService.handleDeposit(req);
   }
-
 }
