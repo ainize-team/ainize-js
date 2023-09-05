@@ -37,5 +37,4 @@ export default class Ainize {
   test() {
     console.log("test");
   }
-
 }
