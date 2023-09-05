@@ -19,7 +19,7 @@ export default class ServiceBase extends ModuleBase {
     return (await this.app.getBillingConfig(appName)).depositAddress;
   }
   
-  //ADMIN: need defaultAccount
+  // ADMIN: need defaultAccount
   protected async changeBalance(appName: string, requesterAddress: string, type: string, value: number) {
     const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
     if(type === "INC") {
@@ -28,27 +28,27 @@ export default class ServiceBase extends ModuleBase {
         gas_price: 500,
         nonce: -1
       });
-      console.log("incvalue result",result);
+      console.log("incvalue result", result);
     }else {
       const result = await this.ain.db.ref(balancePath).decrementValue({
         value,
         gas_price: 500,
         nonce: -1
       });
-      console.log("incvalue result",result);
+      console.log("incvalue result", result);
     }
   }
   
-  //ADMIN: need defaultAccount
+  // ADMIN: need defaultAccount
   protected async writeHistory(appName: string, requesterAddress: string, type: string, amount: number, key: string) {
-    const historyPath = Path.app(appName).historyOfUser(requesterAddress) + "/" + Date.now().toString();
+    const historyPath = `${Path.app(appName).historyOfUser(requesterAddress)}/${Date.now()}`;
     const value = {
       type,
       amount,
       transferKey: type === HISTORY_TYPE.DEPOSIT ? key : undefined,
       requestTimestamp: type === HISTORY_TYPE.USAGE ? key : undefined,
     };
-    const wrieHistoryOp = buildSetOperation("SET_VALUE", historyPath,value);
+    const wrieHistoryOp = buildSetOperation("SET_VALUE", historyPath, value);
     const txBody = this.buildTxBody(wrieHistoryOp);
     return await this.sendTransaction(txBody);
   }

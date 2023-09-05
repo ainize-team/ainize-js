@@ -191,9 +191,8 @@ export default class App extends ModuleBase {
           function_type,
           function_url,
           function_id, 
-        }
-      }
+        },
+      },
     };
   }
-
 }

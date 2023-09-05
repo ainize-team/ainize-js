@@ -4,7 +4,6 @@ import Ainize from "../ainize";
 import Wallet from "./wallet";
 import App from "./app";
 
-
 export default class ModuleBase {
   public ain: Ain;
   constructor(ainize: Ainize) {
@@ -19,7 +18,7 @@ export default class ModuleBase {
       } : operation,
       gas_price: 500,
       timestamp: timestamp? timestamp : Date.now(),
-      nonce: -1
+      nonce: -1,
     }
   }
 
