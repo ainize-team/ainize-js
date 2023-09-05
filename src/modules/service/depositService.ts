@@ -17,7 +17,7 @@ export default class DepositService extends ServiceBase {
     },
     {
       type: 'SET_VALUE',
-      ref: `/apps/${appName}/deposit/${userAddress}/${transferKey}`,
+      ref: `${Path.app(appName).depositOfUser(userAddress)}/${transferKey}`,
       value: amount,
     }
   ] 
