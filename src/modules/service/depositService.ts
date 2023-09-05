@@ -30,7 +30,7 @@ export default class DepositService extends ServiceBase {
     const transferValue = req.body.value;
     const appName = req.body.baluePath[1];
     const requesterAddress = req.body.auth.addr;
-    await this.changeBalance(appName, requesterAddress,'INC', transferValue);
+    await this.changeBalance(appName, requesterAddress, 'INC', transferValue);
     await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.DEPOSIT, transferValue, transferKey);
   }
 

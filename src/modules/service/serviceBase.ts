@@ -2,7 +2,7 @@ import { HISTORY_TYPE, Path } from "../../constants";
 import ModuleBase from "../moduleBase";
 import { buildSetOperation } from "../../utils/builder";
 
-export default class ServiceBase extends ModuleBase{
+export default class ServiceBase extends ModuleBase { 
   
   protected async getDepositAddress(appName: string) {
     return (await this.app.getBillingConfig(appName)).depositAddress;
@@ -11,7 +11,7 @@ export default class ServiceBase extends ModuleBase{
   //ADMIN: need defaultAccount
   protected async changeBalance(appName: string, requesterAddress: string, type: string, value: number) {
     const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
-    if(type === 'INC'){
+    if(type === 'INC') {
       const result = await this.ain.db.ref(balancePath).incrementValue({
         value,
         gas_price: 500,
