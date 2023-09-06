@@ -24,7 +24,7 @@ export type setRuleParam = {
 
 export type billingConfig = {
   depositAddress: string,
-  tokenPerCost: number,
+  costPerToken: number,
   minCost?: number,
   maxCost?: number,
   responseTimeout?: number,
@@ -46,3 +46,8 @@ export type txResult = {
     };
   };
 };
+
+export enum RESPONSE_STATUS {
+  SUCCESS = "SUCCESS",
+  FAIL = "FAIL",
+}

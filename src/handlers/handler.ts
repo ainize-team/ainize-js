@@ -19,7 +19,7 @@ export default class Handler extends ModuleBase {
   }
 
   async subscribe(requester:string, appName: string, serviceName: string, callback: (valueChangedEvent: any) => any) {
-    if(this.checkSubscribeTableExists(requester, appName, serviceName)){
+    if (this.checkSubscribeTableExists(requester, appName, serviceName)){
       throw new Error("Already subscribed");
     }
     const filterId = await this.ain.em.subscribe(
@@ -47,12 +47,12 @@ export default class Handler extends ModuleBase {
   }
 
   getSubscribeList(requester?: string) {
-    if(!requester) return this.subscribeTable;
+    if (!requester) return this.subscribeTable;
     return this.subscribeTable[requester];
   }
 
   unsubscribe(requester:string, appName: string, serviceName: string) {
-    if(!this.checkSubscribeTableExists(requester, appName, serviceName)) {
+    if (!this.checkSubscribeTableExists(requester, appName, serviceName)) {
       throw new Error("Not subscribed");
     }
     this.ain.em.unsubscribe(
