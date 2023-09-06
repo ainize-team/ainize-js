@@ -37,17 +37,17 @@ export default class ModuleBase {
 
   private handleTxResultWrapper(operation: Function) {
     return async (args: any) => {
-      const res = await operation(args[0]);
-      const { tx_hash } = res.result;
-      const { code, message } = res.result.result;
-      if (this.isFailedTxResult(res.result.result)) {
+      const res = await operation(args);
+      const { tx_hash, result } = res;
+      if (this.isFailedTxResult(result)) {
+        // TODO(yoojin): need to add throw error message tx by tx.
         throw new Error(
-          `Failed to send transaction (${tx_hash}).\n - Code: ${code}\n - Error: ${message}`
+          `Failed to send transaction (${tx_hash}).\n`
         );
       }
       return tx_hash;
     }
   }
 
-  protected sendTransaction = this.handleTxResultWrapper(this._sendTransaction);
+  protected sendTransaction = this.handleTxResultWrapper(this._sendTransaction.bind(this));
 }
