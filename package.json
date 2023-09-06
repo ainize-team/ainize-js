@@ -1,6 +1,6 @@
 {
   "name": "@ainize-team/ainize-sdk",
-  "version": "0.0.1",
+  "version": "0.0.1-beta.0",
   "main": "dist/ainize.js",
   "types": "dist/ainize.d.ts",
   "scripts": {
@@ -12,10 +12,7 @@
   "engines": {
     "node": ">=16"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ainize-team/ainize-sdk.git"
-  },
+  "repository": "git@github.com:ainize-team/ainize-sdk.git",
   "keywords": [
     "ainize",
     "ainetwork",
