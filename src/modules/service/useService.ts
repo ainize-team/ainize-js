@@ -13,7 +13,7 @@ export default class UseService extends ServiceBase{
     }
     const requestOp = buildSetOperation("SET_VALUE", requestPath, requestData);
     const txBody = this.buildTxBody(requestOp);
-    await this.sendTransaction(txBody);
+    await this.wallet.sendTxWithAddress(txBody, requesterAddress);
     return requestKey;
   }
 
@@ -52,6 +52,6 @@ export default class UseService extends ServiceBase{
       ops.push(writeHistoryOp);
     }
     const txBody = this.buildTxBody(ops);
-    return await this.sendTransaction(txBody);
+    return await this.wallet.sendTxWithAddress(txBody);
   }
 }
