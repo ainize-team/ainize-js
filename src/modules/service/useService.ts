@@ -6,11 +6,13 @@ import ServiceBase from "./serviceBase";
 export default class UseService extends ServiceBase{
   async writeRequest(appName: string, serviceName: string, value: string, requesterAddress?: string) {
     const requestKey = Date.now();
-    const requestPath = Path.app(appName).request(serviceName, requesterAddress,requestKey);
+    const requestPath = Path.app(appName).request(serviceName, requesterAddress, requestKey);
     const requestData = {
       prompt: value,
     }
-    this.sendTransaction(this.buildTxBody(buildSetOperation("SET_VALUE", requestPath, requestData)));
+    const requestOp = buildSetOperation("SET_VALUE", requestPath, requestData);
+    const txBody = this.buildTxBody(requestOp);
+    this.sendTransaction(txBody);
     return requestKey;
   }
 
