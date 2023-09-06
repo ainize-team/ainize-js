@@ -9,6 +9,7 @@ on:
           - patch
           - minor
           - major
+          - beta
 jobs:
   release:
     runs-on: ubuntu-latest
