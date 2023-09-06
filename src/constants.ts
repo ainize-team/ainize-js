@@ -5,14 +5,14 @@ export const getBlockChainEndpoint = (chainId:number) =>{
 export const Path = {
   app: (appName: string): any => {
     return {
-      root: `/apps/${appName}`,
-      balance: `${Path.app(appName).root}/balance`,
-      balanceOfUser: (userAddress: string) => `${Path.app(appName).balance}/${userAddress}/balance`,
-      historyOfUser: (userAddress: string) => `${Path.app(appName).balance}/${userAddress}/history`,
-      deposit: `${Path.app(appName).root}/deposit`,
-      depositOfUser: (userAddress: string) => `${Path.app(appName).deposit}/${userAddress}`,
-      billingConfig: `${Path.app(appName).root}/billingConfig`,
-      service: (serviceName: string) => `${Path.app(appName).root}/service/${serviceName}`,
+      root: () => `/apps/${appName}`,
+      balance: () => `${Path.app(appName).root()}/balance`,
+      balanceOfUser: (userAddress: string) => `${Path.app(appName).balance()}/${userAddress}/balance`,
+      historyOfUser: (userAddress: string) => `${Path.app(appName).balance()}/${userAddress}/history`,
+      deposit: () => `${Path.app(appName).root()}/deposit`,
+      depositOfUser: (userAddress: string) => `${Path.app(appName).deposit()}/${userAddress}`,
+      billingConfig: () => `${Path.app(appName).root()}/billingConfig`,
+      service: (serviceName: string) => `${Path.app(appName).root()}/service/${serviceName}`,
       userOfService: (serviceName: string, userAddress: string) => 
         `${Path.app(appName).service(serviceName)}/${userAddress}`,
       request: (serviceName: string, userAddress: string, requestKey: string) => 
