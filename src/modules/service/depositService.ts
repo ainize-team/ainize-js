@@ -26,11 +26,7 @@ export default class DepositService extends ServiceBase {
     return this.wallet.sendTxWithAddress(txBody, userAddress);
   }
 
-  async handleDeposit(req: Request) {
-    const transferKey = req.body.valuePath[4];
-    const transferValue = req.body.value;
-    const appName = req.body.baluePath[1];
-    const requesterAddress = req.body.auth.addr;
+  async handleDeposit(appName: string, transferKey: string ,transferValue: number, requesterAddress: string) {
     await this.changeBalance(appName, requesterAddress, "INC", transferValue);
     await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.DEPOSIT, transferValue, transferKey);
   }

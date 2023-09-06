@@ -1,3 +1,5 @@
+import e = require("express");
+
 export type setDefaultFlag = {
   triggerFuncton: boolean,
   billingConfig: boolean,
@@ -24,7 +26,7 @@ export type setRuleParam = {
 
 export type billingConfig = {
   depositAddress: string,
-  tokenPerCost: number,
+  costPerToken: number,
   minCost?: number,
   maxCost?: number,
   responseTimeout?: number,
@@ -33,4 +35,9 @@ export type billingConfig = {
 export enum HISTORY_TYPE {
   DEPOSIT = "DEPOSIT",
   USAGE = "USAGE",
+}
+
+export enum RESPONSE_STATUS {
+  SUCCESS = "SUCCESS",
+  FAIL = "FAIL",
 }

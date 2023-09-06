@@ -110,7 +110,7 @@ export default class App extends ModuleBase {
     if (setDefaultFlag.billingConfig) {
       const defaultConfig: billingConfig = {
         depositAddress: this.ain.wallet.defaultAccount!.address,
-        tokenPerCost: 0,
+        costPerToken: 0,
       }
       const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
       setBillingConfigOps.push(configOp);
@@ -176,6 +176,10 @@ export default class App extends ModuleBase {
     return await this.sendTransaction(txBody);
   }
 
+  async getCreditBalance(appName: string, userAddress: string) {
+    const balancePath = Path.app(appName).balanceOfUser(userAddress);
+    return await this.ain.db.ref(balancePath).getValue();
+  }
   private buildSetBillingConfigOp(appName: string, config: billingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
