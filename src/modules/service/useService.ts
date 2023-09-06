@@ -12,13 +12,13 @@ export default class UseService extends ServiceBase{
     }
     const requestOp = buildSetOperation("SET_VALUE", requestPath, requestData);
     const txBody = this.buildTxBody(requestOp);
-    this.sendTransaction(txBody);
+    await this.sendTransaction(txBody);
     return requestKey;
   }
 
-  async calculateCostAndCheckBalance(appName: string, value: string, requesterAddress?: string,) {
+  async calculateCostAndCheckBalance(appName: string, value: string, requesterAddress?: string) {
     requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAccount();
-    const billingConfig = (await this.app.getBillingConfig(appName));
+    const billingConfig = await this.app.getBillingConfig(appName);
     //TODO(woojae): calculate cost more accurately
     const token = value.split(' ').length;
     let amount = token * billingConfig.costPerToken;
@@ -44,9 +44,9 @@ export default class UseService extends ServiceBase{
     const responseOp = buildSetOperation("SET_VALUE", responsePath, responseValue);
     const txbody = this.buildTxBody(responseOp);
     await this.sendTransaction(txbody);
-    if(status === RESPONSE_STATUS.SUCCESS){
+    if(status === RESPONSE_STATUS.SUCCESS) {
       await this.changeBalance(appName, requesterAddress, 'DEC', amount);
-      await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.USAGE, amount , requestKey );
+      await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.USAGE, amount , requestKey);
     }
   }
 }

@@ -17,7 +17,7 @@ export default class Service extends ModuleBase {
   }
 
   async writeRequest(appName: string, serviceName: string, prompt: string, userAddress?: string) {
-    await this.useService.calculateCostAndCheckBalance(appName, prompt, userAddress );
+    await this.useService.calculateCostAndCheckBalance(appName, prompt, userAddress);
     return await this.useService.writeRequest(appName, serviceName, prompt, userAddress);
   }
 }
