@@ -26,17 +26,17 @@ export default class Wallet extends ModuleBase{
   }
 
   getAinBalance(address?: string) {
-    if(!address) {
+    if (!address) {
       address = this.getDefaultAccount();
     }
     return this.ain.wallet.getBalance(address);
   }
 
   async sendTxWithAddress(txBody: any, signerAddress?: string) {
-    if(!signerAddress) {
+    if (!signerAddress) {
       signerAddress = this.getDefaultAccount();
     }
-    if(this.ain.wallet.isAdded(signerAddress)) {
+    if (this.ain.wallet.isAdded(signerAddress)) {
       throw new Error ("You need to add account");
     }
     txBody.address = signerAddress;

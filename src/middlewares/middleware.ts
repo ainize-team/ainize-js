@@ -8,7 +8,7 @@ export default class Middleware {
   }
 
   triggerDuplicateFilter = (req: Request, res: Response, next: NextFunction) => {
-    if(req.body.fid === undefined){
+    if (req.body.fid === undefined){
       next();
     }
     const txHash = req.body.transaction.hash;

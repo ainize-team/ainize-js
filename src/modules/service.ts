@@ -15,4 +15,9 @@ export default class Service extends ModuleBase {
   async deposit(appName: string, amount: number, userAddress?: string) {
     return await this.depositService.requestDeposit(appName, amount, userAddress);
   }
+
+  async writeRequest(appName: string, serviceName: string, prompt: string, userAddress?: string) {
+    await this.useService.calculateCostAndCheckBalance(appName, prompt, userAddress);
+    return await this.useService.writeRequest(appName, serviceName, prompt, userAddress);
+  }
 }
