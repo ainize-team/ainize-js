@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import Ainize from "../ainize";
 import NodeCache = require("node-cache");
 
 export default class Middleware {
   cache: NodeCache;
-  constructor(ainize: Ainize) {
-    this.cache = ainize.cache;
+  constructor(cache: NodeCache,) {
+    this.cache = cache;
   }
 
   triggerDuplicateFilter = (req: Request, res: Response, next: NextFunction) => {
