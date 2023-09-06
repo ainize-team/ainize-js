@@ -20,7 +20,6 @@ export default class Ainize {
   admin: Admin;
 
   constructor(chainId: 1|0, privateKey?: string ) {
-    const Ain = require("@ainblockchain/ain-js").default
     const blockChainEndpoint = getBlockChainEndpoint(chainId);
     this.ain = new Ain(blockChainEndpoint, chainId);
     this.app = new App(this);
