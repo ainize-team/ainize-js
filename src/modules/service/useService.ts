@@ -19,17 +19,17 @@ export default class UseService extends ServiceBase{
   async calculateCostAndCheckBalance(appName: string, value: string, requesterAddress?: string) {
     requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAccount();
     const billingConfig = await this.app.getBillingConfig(appName);
-    //TODO(woojae): calculate cost more accurately
+    // TODO(woojae): calculate cost more accurately
     const token = value.split(' ').length;
     let amount = token * billingConfig.costPerToken;
-    if(billingConfig.minCost && amount < billingConfig.minCost) {
+    if (billingConfig.minCost && amount < billingConfig.minCost) {
       amount = billingConfig.minCost;
-    }else if(billingConfig.maxCost && amount > billingConfig.maxCost) {
+    }else if (billingConfig.maxCost && amount > billingConfig.maxCost) {
       amount = billingConfig.maxCost;
     }
     const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
     const balance = await this.app.getCreditBalance(appName, requesterAddress);
-    if(balance < amount) {
+    if (balance < amount) {
       throw new Error("not enough balance");
     }
     return amount;
@@ -44,9 +44,9 @@ export default class UseService extends ServiceBase{
     const responseOp = buildSetOperation("SET_VALUE", responsePath, responseValue);
     const txbody = this.buildTxBody(responseOp);
     await this.sendTransaction(txbody);
-    if(status === RESPONSE_STATUS.SUCCESS) {
+    if (status === RESPONSE_STATUS.SUCCESS) {
       await this.changeBalance(appName, requesterAddress, 'DEC', amount);
-      await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.USAGE, amount , requestKey);
+      await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.USAGE, amount, requestKey);
     }
   }
 }
