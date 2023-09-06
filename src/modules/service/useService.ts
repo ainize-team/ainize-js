@@ -1,3 +1,4 @@
+import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../../constants";
 import { HISTORY_TYPE, RESPONSE_STATUS } from "../../types/type";
 import { buildSetOperation } from "../../utils/builder";
@@ -41,12 +42,16 @@ export default class UseService extends ServiceBase{
       status,
       data: responseData,
     }
+    const ops:SetOperation[] = [];
     const responseOp = buildSetOperation("SET_VALUE", responsePath, responseValue);
-    const txbody = this.buildTxBody(responseOp);
-    await this.sendTransaction(txbody);
+    ops.push(responseOp);
     if (status === RESPONSE_STATUS.SUCCESS) {
-      await this.changeBalance(appName, requesterAddress, 'DEC', amount);
-      await this.writeHistory(appName, requesterAddress, HISTORY_TYPE.USAGE, amount, requestKey);
+      const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, 'DEC', amount);
+      const writeHistoryOp = await this.getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.USAGE, amount, requestKey);
+      ops.push(changeBalanceOp);
+      ops.push(writeHistoryOp);
     }
+    const txBody = this.buildTxBody(ops);
+    return await this.sendTransaction(txBody);
   }
 }
