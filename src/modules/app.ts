@@ -82,6 +82,12 @@ const defaultAppFunctions = (appName: string) => {
 }
 
 export default class App extends ModuleBase {
+  /**
+   * Create App for your AI Service on AI Network.
+   * @param {string} appName - The name of app you will create.
+   * @param {setDefaultFlag} setDefaultFlag - Set true which you wan to set config as default.
+   * @returns result of transaction.
+   */
   async create(appName: string, setDefaultFlag?: setDefaultFlag) {
     if (!setDefaultFlag)
       setDefaultFlag = { triggerFuncton: true, billingConfig: true };
