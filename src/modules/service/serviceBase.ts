@@ -22,7 +22,7 @@ export default class ServiceBase extends ModuleBase {
   // ADMIN: need defaultAccount
   protected async changeBalance(appName: string, requesterAddress: string, type: string, value: number) {
     const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
-    if(type === "INC") {
+    if (type === "INC") {
       const result = await this.ain.db.ref(balancePath).incrementValue({
         value,
         gas_price: 500,

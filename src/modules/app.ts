@@ -93,7 +93,7 @@ export default class App extends ModuleBase {
     const defaultRules = defaultAppRules(appName);
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
-      const ruleOp = buildSetOperation("SET_RULE" , ref, value);
+      const ruleOp = buildSetOperation("SET_RULE", ref, value);
       setRuleOps.push(ruleOp);
     }
 
