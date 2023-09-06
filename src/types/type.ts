@@ -1,5 +1,3 @@
-import e = require("express");
-
 export type setDefaultFlag = {
   triggerFuncton: boolean,
   billingConfig: boolean,
