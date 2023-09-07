@@ -22,7 +22,7 @@ export default class UseService extends ServiceBase{
     const billingConfig = await this.app.getBillingConfig(appName);
     // TODO(woojae): calculate cost more accurately
     const token = value.split(' ').length;
-    let amount = token * billingConfig.costPerToken;
+    let amount = token * billingConfig.tokenPerCost;
     if (billingConfig.minCost && amount < billingConfig.minCost) {
       amount = billingConfig.minCost;
     }else if (billingConfig.maxCost && amount > billingConfig.maxCost) {

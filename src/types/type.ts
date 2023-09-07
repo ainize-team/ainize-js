@@ -24,7 +24,7 @@ export type setRuleParam = {
 
 export type billingConfig = {
   depositAddress: string,
-  costPerToken: number,
+  tokenPerCost: number,
   minCost?: number,
   maxCost?: number,
   responseTimeout?: number,
