@@ -6,7 +6,7 @@ import ModuleBase from "./moduleBase";
 
 // FIXME(yoojin): move to constant.
 const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
-  const rootRef = Path.app(appName).root;
+  const rootRef = Path.app(appName).root();
   return {
     root: {
       ref: rootRef,
@@ -81,8 +81,20 @@ const defaultAppFunctions = (appName: string) => {
   }
 }
 
+// FIXME(yoojin): move to types.
+// NOTE(yoojin): temporary type. service url may be changed to array?
+interface TriggerFunctionUrlMap {
+  [type: string]: string
+}
+
 export default class App extends ModuleBase {
-  async create(appName: string, setDefaultFlag?: setDefaultFlag) {
+  /**
+   * Create App for your AI Service on AI Network.
+   * @param {string} appName - The name of app you will create.
+   * @param {setDefaultFlag} setDefaultFlag - Set true which you wan to set config as default.
+   * @returns result of transaction.
+   */
+  async create(appName: string, function_urls: TriggerFunctionUrlMap, setDefaultFlag?: setDefaultFlag) {
     if (!setDefaultFlag)
       setDefaultFlag = { triggerFuncton: true, billingConfig: true };
     const setRuleOps: SetOperation[] = [];
@@ -99,8 +111,8 @@ export default class App extends ModuleBase {
 
     if (setDefaultFlag.triggerFuncton) {
       const defaultFunctions = defaultAppFunctions(appName);
-      for (const func of Object.values(defaultFunctions)) {
-        const { ref, function_id, function_type, function_url } = func(appName);
+      for (const [type, func] of Object.entries(defaultFunctions)) {
+        const { ref, function_id, function_type, function_url } = func(function_urls[type]);
         const value = this.buildSetFunctionValue({function_id, function_type, function_url});
         const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
         setFunctionOps.push(funcOp);
@@ -132,7 +144,7 @@ export default class App extends ModuleBase {
   }
 
   async getBillingConfig(appName: string): Promise<billingConfig> {
-    return await this.ain.db.ref().getValue(Path.app(appName).billingConfig);
+    return await this.ain.db.ref().getValue(Path.app(appName).billingConfig());
   }
 
   async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
