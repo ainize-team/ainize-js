@@ -10,8 +10,8 @@ export default class Wallet extends ModuleBase{
     }
   }
   /**
-   * Get defult AI network blockchain account information set in ainize.
-   * @returns default account's address.
+   * Get defult AI Network blockchain account information set in ainize.
+   * @returns Default account's address.
    */
   getDefaultAccount() {
     if (!this.ain.wallet.defaultAccount) {
@@ -21,9 +21,9 @@ export default class Wallet extends ModuleBase{
   }
 
   /**
-   * set default AI network account in ainize. this account is used for AI Network transaction.
-   * @param {string} privateKey - private Key of AI network account you want to set default.
-   * @returns address of setted default AI network account.
+   * Set default AI Network account in ainize. This account is used for AI Network transaction.
+   * @param {string} privateKey - Private Key of AI Network account you want to set default.
+   * @returns Address of setted default AI Network account.
    */
   setDefaultAccount(privateKey: string) {
     this.ain.wallet.addAndSetDefaultAccount(privateKey);
@@ -31,18 +31,18 @@ export default class Wallet extends ModuleBase{
   }
 
   /**
-   * add AI network account at ainize. once you add account, you can use it for AI Network transaction with address.
-   * @param {string} privateKey - privateK Key of AI network account you want to add.
-   * @returns address of added AI network account.
+   * Add AI Network account at ainize. Once you add account, you can use it for AI Network transaction with address.
+   * @param {string} privateKey - PrivateK Key of AI Network account you want to add.
+   * @returns Address of added AI Network account.
    */
   addAccount(privateKey: string) {
     return this.ain.wallet.add(privateKey);
   }
 
   /**
-   *get AIN balance of your account. if you don't set address, it will return default account's balance.
-   * @param {string=} address - address of account you want to get balance.
-   * @returns balance of your account.
+   *Get AIN balance of your account. If you don't set address, it will return default account's balance.
+   * @param {string=} address - Address of account you want to get balance.
+   * @returns Balance of your account.
    */
   getAinBalance(address?: string) {
     if (!address) {
@@ -52,10 +52,10 @@ export default class Wallet extends ModuleBase{
   }
 
   /**
-   * send transaction to AI Network. if you don't set address, it will use default account's address.
-   * @param {TransactionInput} txBody - transaction body you want to send.
-   * @param {string=} signerAddress - address of account you want to use for sign transaction. you should set default account if you don't provide address.
-   * @returns result of transaction.
+   * Send transaction to AI Network. If you don't set address, it will use default account's address.
+   * @param {TransactionInput} txBody - Transaction body you want to send.
+   * @param {string=} signerAddress - Address of account you want to use for sign transaction. You should set default account if you don't provide address.
+   * @returns Result of transaction.
    */
   async sendTxWithAddress(txBody: TransactionInput, signerAddress?: string) {
     if (!signerAddress) {

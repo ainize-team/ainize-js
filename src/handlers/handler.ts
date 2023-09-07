@@ -7,8 +7,8 @@ export default class Handler extends ModuleBase {
   subscribeTable:any = {};
 
     /**
-   * connect to ai network event node. you should connect before subscibe. it will auto reconnect when disconnected. 
-   * @returns nothing.
+   * Connect to ai Network event node. you should connect before subscibe. It will auto reconnect when disconnected. 
+   * @returns Nothing.
    */
   async connect() {
     await this.ain.em.connect({
@@ -24,13 +24,13 @@ export default class Handler extends ModuleBase {
   }
 
   /**
-   * subscribe to specific service reponse. you can handle reponse with callback function.
-   * you should connect before subscibe. 
-   * @param {string} userAddress - address of account you request with. 
-   * @param {string} appName - app name you want to subscribe.
-   * @param {string} serviceName - service name you want to subscribe.
-   * @param {Function(valueChangedEvent: any)} callback - a callback function to handle response. it will be called when response is written.
-   * @returns subscribeId. 
+   * Subscribe to specific service reponse. You can handle reponse with callback function.
+   * You should connect before subscibe. 
+   * @param {string} userAddress - Address of account you request with. 
+   * @param {string} appName - App name you want to subscribe.
+   * @param {string} serviceName - Service name you want to subscribe.
+   * @param {Function(valueChangedEvent: any)} callback - A callback function to handle response. It will be called when response is written.
+   * @returns SubscribeId. 
    */
   async subscribe(userAddress:string, appName: string, serviceName: string, callback: (valueChangedEvent: any) => any) {
     if (this.checkSubscribeTableExists(userAddress, appName, serviceName)){
@@ -62,20 +62,20 @@ export default class Handler extends ModuleBase {
   }
 
   /**
-   * get subscribe list of userAddress. if you don't set userAddress, it will return all subscribe list.
-   * @param {string=} userAddress - address of account you want to get subscribe list.
-   * @returns result of transaction.
+   * Get subscribe list of userAddress. If you don't set userAddress, it will return all subscribe list.
+   * @param {string=} userAddress - Address of account you want to get subscribe list.
+   * @returns Result of transaction.
    */
   getSubscribeList(userAddress?: string) {
     if (!userAddress) return this.subscribeTable;
     return this.subscribeTable[userAddress];
   }
   /**
-   * unsubscribe to specific service reponse. 
-   * @param {string} userAddress - address of account you want to unsubscribe.
-   * @param {string} appName - app name you want to unsubscribe.
-   * @param {string} serviceName - service name you want to unsubscribe.
-   * @returns true if successfuly unsubscribed.
+   * Unsubscribe to specific service reponse. 
+   * @param {string} userAddress - Address of account you want to unsubscribe.
+   * @param {string} appName - App name you want to unsubscribe.
+   * @param {string} serviceName - Service name you want to unsubscribe.
+   * @returns True if successfuly unsubscribed.
    */
   unsubscribe(userAddress:string, appName: string, serviceName: string) {
     if (!this.checkSubscribeTableExists(userAddress, appName, serviceName)) {

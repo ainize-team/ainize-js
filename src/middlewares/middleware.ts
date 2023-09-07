@@ -8,12 +8,12 @@ export default class Middleware {
   }
 
   /**
-   * middleware for AI network trigger call. it will filter duplicated request triggered by same transaction.
-   * it will pass request which is not from AI network trigger.
-   * @param {Request} request - request data 
-   * @param {Res} amount - response data
-   * @param {NextFunction} next - next function
-   * @returns null if if request is duplicated.
+   * Middleware for AI Network trigger call. It will filter duplicated request triggered by same transaction.
+   * It will pass request which is not from AI Network trigger.
+   * @param {Request} request - Request data 
+   * @param {Res} amount - Response data
+   * @param {NextFunction} next - Next function
+   * @returns Null if if request is duplicated.
    */
   triggerDuplicateFilter = (req: Request, res: Response, next: NextFunction) => {
     if (req.body.fid === undefined){
