@@ -91,10 +91,12 @@ export default class App extends ModuleBase {
   /**
    * Create App for your AI Service on AI Network.
    * @param {string} appName - The name of app you will create.
+   * @param {TriggerFunctionUrlMap} functioniUrls - The urls of trigger function you set.
    * @param {setDefaultFlag} setDefaultFlag - Set true which you wan to set config as default.
-   * @returns result of transaction.
+   * @returns Result of transaction.
    */
-  async create(appName: string, function_urls: TriggerFunctionUrlMap, setDefaultFlag?: setDefaultFlag) {
+  // FIXME(yoojin): need to fix getting function urls.
+  async create(appName: string, functionUrls: TriggerFunctionUrlMap, setDefaultFlag?: setDefaultFlag) {
     if (!setDefaultFlag)
       setDefaultFlag = { triggerFuncton: true, billingConfig: true };
     const setRuleOps: SetOperation[] = [];
@@ -112,7 +114,7 @@ export default class App extends ModuleBase {
     if (setDefaultFlag.triggerFuncton) {
       const defaultFunctions = defaultAppFunctions(appName);
       for (const [type, func] of Object.entries(defaultFunctions)) {
-        const { ref, function_id, function_type, function_url } = func(function_urls[type]);
+        const { ref, function_id, function_type, function_url } = func(functionUrls[type]);
         const value = this.buildSetFunctionValue({function_id, function_type, function_url});
         const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
         setFunctionOps.push(funcOp);
@@ -137,16 +139,34 @@ export default class App extends ModuleBase {
     return await this.sendTransaction(txBody);
   }
 
+
+  /**
+   * Set billing config to app.
+   * @param {string} appName 
+   * @param {billingConfig} config - The configuration of your app's billing.
+   * @returns Result of transaction.
+   */
   async setBillingConfig(appName: string, config: billingConfig) {
     const setConfigOp = this.buildSetBillingConfigOp(appName, config);
     const txBody = this.buildTxBody(setConfigOp);
     return await this.sendTransaction(txBody);
   }
 
+  /**
+   * Get billing config of app
+   * @param {string} appName 
+   * @returns {Promise<billingConfig>} 
+   */
   async getBillingConfig(appName: string): Promise<billingConfig> {
     return await this.ain.db.ref().getValue(Path.app(appName).billingConfig());
   }
 
+  /**
+   * Set trigger function to app.
+   * @param {string} appName 
+   * @param {setTriggerFunctionParam[]} functions 
+   * @returns Result of transaction.
+   */
   async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
     const setFunctionOps: SetOperation[] = [];
     for (const func of Object.values(functions)) {
@@ -164,6 +184,12 @@ export default class App extends ModuleBase {
     return await this.sendTransaction(txBody);
   }
 
+  /**
+   * Set rules to app.
+   * @param {string} appName 
+   * @param {setRuleParam} rules
+   * @returns Result of transaction. 
+   */
   async setRules(appName: string, rules: setRuleParam[]) {
     const setRuleOps: SetOperation[] = [];
     for (const rule of Object.values(rules)) {
@@ -176,12 +202,24 @@ export default class App extends ModuleBase {
     return await this.sendTransaction(txBody);
   }
 
+  /**
+   * Add admin on app.
+   * @param {string} appName 
+   * @param {string} userAddress
+   * @returns Result of transaction.
+   */
   async addAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress);
     const txBody = this.buildTxBody(op);
     return await this.sendTransaction(txBody);
   }
 
+  /**
+   * Remove admin on app.
+   * @param {string} appName 
+   * @param {string} userAddress 
+   * @returns Result of transaction.
+   */
   async deleteAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress, true);
     const txBody = this.buildTxBody(op);
