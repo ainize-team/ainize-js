@@ -28,9 +28,9 @@ export default class DepositService extends ServiceBase {
 
   async handleDeposit(appName: string, transferKey: string, transferValue: number, requesterAddress: string) {
     const ops: SetOperation[] = [];
-    const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, "INC", transferValue);
-    ops.push(changeBalanceOp);
+    const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, "INC_VALUE", transferValue);
     const writeHistoryOp = await this.getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.DEPOSIT, transferValue, transferKey);
+    ops.push(changeBalanceOp);
     ops.push(writeHistoryOp);
     const txBody = this.buildTxBody(ops);
     return await this.wallet.sendTxWithAddress(txBody);
