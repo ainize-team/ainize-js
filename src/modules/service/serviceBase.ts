@@ -21,18 +21,29 @@ export default class ServiceBase extends ModuleBase {
   }
   
   // ADMIN: need defaultAccount
-  protected async getChangeBalanceOp(appName: string, requesterAddress: string, type: string, value: number) {
+  protected async getChangeBalanceOp(
+    appName: string, 
+    requesterAddress: string, 
+    type: "INC_VALUE" | "DEC_VALUE", 
+    value: number
+  ) {
     const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
-    const changeValueOp:SetOperation = {
-      type: type === "INC" ? "INC_VALUE" : "DEC_VALUE",
+    const changeValueOp: SetOperation = {
+      type,
       ref: balancePath,
-      value: type,
+      value,
     }
     return changeValueOp;
   }
   
   // ADMIN: need defaultAccount
-  protected async getWriteHistoryOp(appName: string, requesterAddress: string, type: string, amount: number, key: string) {
+  protected async getWriteHistoryOp(
+    appName: string, 
+    requesterAddress: string, 
+    type: HISTORY_TYPE, 
+    amount: number, 
+    key: string
+  ) {
     const historyPath = `${Path.app(appName).historyOfUser(requesterAddress)}/${Date.now()}`;
     const value = {
       type,
