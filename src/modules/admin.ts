@@ -52,7 +52,7 @@ export default class Admin extends ModuleBase {
     const appName = req.body.valuePath[1];
     const serviceName = req.body.valuePath[3];
     const requesterAddress = req.body.auth.addr;
-    const requestKey = req.body.valuePath[6];
+    const requestKey = req.body.valuePath[5];
     return await this.useService.writeResponse(status , appName, serviceName, requesterAddress, requestKey, responseData, amount);
   }
 }
