@@ -46,7 +46,7 @@ export default class UseService extends ServiceBase{
     const responseOp = buildSetOperation("SET_VALUE", responsePath, responseValue);
     ops.push(responseOp);
     if (status === RESPONSE_STATUS.SUCCESS) {
-      const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, 'DEC', amount);
+      const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, 'DEC_VALUE', amount);
       const writeHistoryOp = await this.getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.USAGE, amount, requestKey);
       ops.push(changeBalanceOp);
       ops.push(writeHistoryOp);
