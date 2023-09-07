@@ -1,6 +1,6 @@
 {
   "name": "@ainize-team/ainize-sdk",
-  "version": "1.1.0",
+  "version": "0.0.1-beta.3",
   "main": "dist/ainize.js",
   "types": "dist/ainize.d.ts",
   "scripts": {
