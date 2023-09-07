@@ -61,7 +61,7 @@ export default class Wallet extends ModuleBase{
     if (!signerAddress) {
       signerAddress = this.getDefaultAccount();
     }
-    if (this.ain.wallet.isAdded(signerAddress)) {
+    if (!this.ain.wallet.isAdded(signerAddress)) {
       throw new Error ("You need to add account");
     }
     txBody.address = signerAddress;
