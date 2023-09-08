@@ -26,7 +26,7 @@ export default class UseService extends ServiceBase{
     let amount = token * billingConfig.costPerToken;
     if (billingConfig.minCost && amount < billingConfig.minCost) {
       amount = billingConfig.minCost;
-    }else if (billingConfig.maxCost && amount > billingConfig.maxCost) {
+    } else if (billingConfig.maxCost && amount > billingConfig.maxCost) {
       amount = billingConfig.maxCost;
     }
     const balance = await this.app.getCreditBalance(appName, requesterAddress);
