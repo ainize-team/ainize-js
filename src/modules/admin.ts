@@ -55,4 +55,21 @@ export default class Admin extends ModuleBase {
     const requestKey = req.body.valuePath[5];
     return await this.useService.writeResponse(status , appName, serviceName, requesterAddress, requestKey, responseData, amount);
   }
+    /**
+   * Get data from service request. You should use it only with service trigger.
+   * @param {Request} request - Request data from request trigger. If req data is not from trigger function, it will throw error.
+   * @returns Object with appName, serviceName, requesterAddress, requestKey, responseData.
+   */
+  getDataFromServiceRequest(req: Request) {
+    if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[5] || !req.body.value.prompt) {
+      throw new Error("Not from service request");
+    }
+    return {
+      appName: req.body.valuePath[1],
+      serviceName: req.body.valuePath[3],
+      requesterAddress: req.body.auth.addr,
+      requestKey: req.body.valuePath[5],
+      responseData: req.body.value.prompt,
+    }
+  }
 }
