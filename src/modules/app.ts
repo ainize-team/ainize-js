@@ -100,7 +100,7 @@ export default class App extends ModuleBase {
   // FIXME(yoojin): need to fix getting function urls.
   async create(appName: string, functionUrls: TriggerFunctionUrlMap, setDefaultFlag?: setDefaultFlag) {
     if (!setDefaultFlag)
-      setDefaultFlag = { triggerFuncton: true, billingConfig: true };
+      setDefaultFlag = { triggerFuncton: true };
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
     const setBillingConfigOps: SetOperation[] = [] ;
@@ -123,18 +123,17 @@ export default class App extends ModuleBase {
       }
     }
 
-    if (setDefaultFlag.billingConfig) {
-      const defaultConfig: billingConfig = {
-        depositAddress: this.ain.wallet.defaultAccount!.address,
-        service: {
-          default: {
-            costPerToken: 0,
-          }
+    const defaultConfig: billingConfig = {
+      depositAddress: this.ain.wallet.defaultAccount!.address,
+      service: {
+        default: {
+          costPerToken: 0,
+          minCost: 0,
         }
       }
-      const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
-      setBillingConfigOps.push(configOp);
     }
+    const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
+    setBillingConfigOps.push(configOp);
 
     const txBody = this.buildTxBody([
       createAppOp, 
