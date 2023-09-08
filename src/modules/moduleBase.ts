@@ -1,7 +1,7 @@
 import Ain from "@ainblockchain/ain-js";
 import { SetOperation, TransactionBody } from "@ainblockchain/ain-js/lib/types";
 import Ainize from "../ainize";
-import { txResult } from "../types/type";
+import { opResult, txResult } from "../types/type";
 
 export default class ModuleBase {
   protected ain: Ain;
@@ -25,24 +25,26 @@ export default class ModuleBase {
     return await this.ain.sendTransaction(txBody);
   }
 
-  private isFailedTxResult(result: txResult) {
-    if (!result) return true;
+  private getFailedOpResultList(result: txResult): opResult[] {
     if (result.result_list) {
-      return Object.values(result.result_list).some(
+      return Object.values(result.result_list).filter(
         (result: { code: number }) => result.code !== 0
       );
     }
-    return result.code !== 0;
+    return [];
   }
 
   private handleTxResultWrapper(operation: Function) {
     return async (args: any) => {
       const res = await operation(args);
       const { tx_hash, result } = res;
-      if (this.isFailedTxResult(result)) {
+      const failedOpResult = this.getFailedOpResultList(result);
+      if (failedOpResult.length > 0) {
         // TODO(yoojin): need to add throw error message tx by tx.
+        const errorString = failedOpResult.map((value) => `\n code: ${value.code} - ${value.message}`);
+        console.log('failedOpResult :>> ', failedOpResult);
         throw new Error(
-          `Failed to send transaction (${tx_hash}).\n`
+          `Failed to send transaction (${tx_hash}).` + errorString
         );
       }
       return tx_hash;
