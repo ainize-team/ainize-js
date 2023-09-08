@@ -164,7 +164,6 @@ export default class App extends ModuleBase {
   async getBillingConfig(appName: string): Promise<billingConfig> {
     return await this.ain.db.ref().getValue(Path.app(appName).billingConfig());
   }
-  
 
   /**
    * Set trigger function to app.
