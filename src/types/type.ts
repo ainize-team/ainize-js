@@ -21,15 +21,17 @@ export type setRuleParam = {
   ref: string
 } & writeRuleConfig;
 
-export type billingConfig = {
-  depositAddress: string,
+export type serviceBillingConfig = {
+    costPerToken: number;
+    minCost: number;
+    maxCost?: number;
+    responseTimeout?: number;
+}
+
+export type appBillingConfig = {
+  depositAddress: string;
   service: {
-    [serviceName: string]: {
-      costPerToken: number,
-      minCost: number,
-      maxCost?: number,
-      responseTimeout?: number,
-    }
+    [serviceName: string]: serviceBillingConfig;
   }
 };
 
