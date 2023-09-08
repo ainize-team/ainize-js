@@ -1,6 +1,5 @@
 export type setDefaultFlag = {
   triggerFuncton: boolean,
-  billingConfig: boolean,
 };
 
 // NOTE(yoojin): pls suggest good name.
