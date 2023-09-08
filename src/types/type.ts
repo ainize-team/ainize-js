@@ -35,15 +35,18 @@ export enum HISTORY_TYPE {
   USAGE = "USAGE",
 }
 
+export type opResult = {
+  code: number,
+  bandwidth_gas_amount: number;
+  message?: string
+}
+
 export type txResult = {
   gas_amount_total: object;
   gas_cost_total: number;
   code?: number;
   result_list?: {
-    [index: string]: {
-      code: number;
-      bandwidth_gas_amount: number;
-    };
+    [index: string]: opResult;
   };
 };
 
