@@ -59,6 +59,22 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
         }
       },
     },
+    billingConfig: {
+      ref: Path.app(appName).billingConfig(),
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress)",
+        }
+      }
+    },
+    billingConfigOfService: {
+      ref: Path.app(appName).billingConfigOfService("$serviceName"),
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth,addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.minCost)",
+        }
+      }
+    }
   }
 }
 
