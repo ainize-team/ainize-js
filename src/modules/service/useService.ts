@@ -7,6 +7,7 @@ import ServiceBase from "./serviceBase";
 export default class UseService extends ServiceBase{
   async writeRequest(appName: string, serviceName: string, value: string, requesterAddress?: string) {
     const requestKey = Date.now();
+    requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAccount();
     const requestPath = Path.app(appName).request(serviceName, requesterAddress, requestKey);
     const requestData = {
       prompt: value,
@@ -25,10 +26,9 @@ export default class UseService extends ServiceBase{
     let amount = token * billingConfig.costPerToken;
     if (billingConfig.minCost && amount < billingConfig.minCost) {
       amount = billingConfig.minCost;
-    }else if (billingConfig.maxCost && amount > billingConfig.maxCost) {
+    } else if (billingConfig.maxCost && amount > billingConfig.maxCost) {
       amount = billingConfig.maxCost;
     }
-    const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
     const balance = await this.app.getCreditBalance(appName, requesterAddress);
     if (balance < amount) {
       throw new Error("not enough balance");
