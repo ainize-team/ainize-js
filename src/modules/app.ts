@@ -63,7 +63,8 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       ref: Path.app(appName).billingConfig(),
       value: {
         ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress)",
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && " +
+          "util.isString(newData.depositAddress) && util.isDict(newData.service) && util.isDict(newData.service.default)",
         }
       }
     },
