@@ -31,12 +31,13 @@ export default class Admin extends ModuleBase {
    * Check cost of request and check if account can pay. You should use this function before send or handle request.
    * If you don't set address, it will use default account's address.
    * @param {string} appName - App name you want to request service to.
+   * @param {string} serviceName - Service name you want to request to.
    * @param {string} prompt - Data you want to request to service .
    * @param {string=} userAddress - Address of account you want to check balance. You should set default account if you don't provide address.
    * @returns Result cost of service. It throws error when user can't pay.
    */
-  async checkCostAndBalance(appName: string, prompt: string, userAddress?: string) {
-    return await this.useService.calculateCostAndCheckBalance(appName, prompt, userAddress);
+  async checkCostAndBalance(appName: string, serviceName: string, prompt: string, userAddress?: string) {
+    return await this.useService.calculateCostAndCheckBalance(appName, serviceName, prompt, userAddress);
   }
   
   /**
@@ -54,5 +55,22 @@ export default class Admin extends ModuleBase {
     const requesterAddress = req.body.auth.addr;
     const requestKey = req.body.valuePath[5];
     return await this.useService.writeResponse(status , appName, serviceName, requesterAddress, requestKey, responseData, amount);
+  }
+    /**
+   * Get data from service request. You should use it only with service trigger.
+   * @param {Request} request - Request data from request trigger. If req data is not from trigger function, it will throw error.
+   * @returns Object with appName, serviceName, requesterAddress, requestKey, responseData.
+   */
+  getDataFromServiceRequest(req: Request) {
+    if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[5] || !req.body.value.prompt) {
+      throw new Error("Not from service request");
+    }
+    return {
+      appName: req.body.valuePath[1],
+      serviceName: req.body.valuePath[3],
+      requesterAddress: req.body.auth.addr,
+      requestKey: req.body.valuePath[5],
+      responseData: req.body.value.prompt,
+    }
   }
 }

@@ -45,7 +45,9 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       value: {
         ".rule": {
           write: 
-            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && (getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`) !== null && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))" 
+            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
+            "((getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
+            "getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`)" 
         }
       }
     },
@@ -98,7 +100,7 @@ export default class App extends ModuleBase {
   // FIXME(yoojin): need to fix getting function urls.
   async create(appName: string, functionUrls: TriggerFunctionUrlMap, setDefaultFlag?: setDefaultFlag) {
     if (!setDefaultFlag)
-      setDefaultFlag = { triggerFuncton: true, billingConfig: true };
+      setDefaultFlag = { triggerFuncton: true };
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
     const setBillingConfigOps: SetOperation[] = [] ;
@@ -121,14 +123,17 @@ export default class App extends ModuleBase {
       }
     }
 
-    if (setDefaultFlag.billingConfig) {
-      const defaultConfig: billingConfig = {
-        depositAddress: this.ain.wallet.defaultAccount!.address,
-        costPerToken: 0,
+    const defaultConfig: billingConfig = {
+      depositAddress: this.ain.wallet.defaultAccount!.address,
+      service: {
+        default: {
+          costPerToken: 0,
+          minCost: 0,
+        }
       }
-      const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
-      setBillingConfigOps.push(configOp);
     }
+    const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
+    setBillingConfigOps.push(configOp);
 
     const txBody = this.buildTxBody([
       createAppOp, 
@@ -138,7 +143,6 @@ export default class App extends ModuleBase {
     ]);
     return await this.sendTransaction(txBody);
   }
-
 
   /**
    * Set billing config to app.
