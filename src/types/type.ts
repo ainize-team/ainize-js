@@ -26,7 +26,7 @@ export type billingConfig = {
   service: {
     [serviceName: string]: {
       costPerToken: number,
-      minCost?: number,
+      minCost: number,
       maxCost?: number,
       responseTimeout?: number,
     }
