@@ -40,7 +40,6 @@ export default class ModuleBase {
       const { tx_hash, result } = res;
       const failedOpResult = this.getFailedOpResultList(result);
       if (failedOpResult.length > 0) {
-        // TODO(yoojin): need to add throw error message tx by tx.
         const errorString = failedOpResult.map((value) => `\n code: ${value.code} - ${value.message}`);
         console.log('failedOpResult :>> ', failedOpResult);
         throw new Error(
