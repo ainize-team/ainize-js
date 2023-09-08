@@ -45,7 +45,9 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       value: {
         ".rule": {
           write: 
-            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/` + $serviceName + `/minCost`)" 
+            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
+            "((getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
+            "((getValue(`/apps/" + `${appName}` + "/billingConfig/default/minCost`) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`))" 
         }
       }
     },
