@@ -46,8 +46,8 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
         ".rule": {
           write: 
             "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
-            "((getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
-            "((getValue(`/apps/" + `${appName}` + "/billingConfig/default/minCost`) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`))" 
+            "((getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
+            "getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`)" 
         }
       }
     },
@@ -143,7 +143,6 @@ export default class App extends ModuleBase {
     ]);
     return await this.sendTransaction(txBody);
   }
-
 
   /**
    * Set billing config to app.
