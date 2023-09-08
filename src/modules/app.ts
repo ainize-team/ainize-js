@@ -45,7 +45,7 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
       value: {
         ".rule": {
           write: 
-            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`)" 
+            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/` + $serviceName + `/minCost`)" 
         }
       }
     },
@@ -124,7 +124,11 @@ export default class App extends ModuleBase {
     if (setDefaultFlag.billingConfig) {
       const defaultConfig: billingConfig = {
         depositAddress: this.ain.wallet.defaultAccount!.address,
-        costPerToken: 0,
+        service: {
+          default: {
+            costPerToken: 0,
+          }
+        }
       }
       const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
       setBillingConfigOps.push(configOp);
@@ -160,6 +164,7 @@ export default class App extends ModuleBase {
   async getBillingConfig(appName: string): Promise<billingConfig> {
     return await this.ain.db.ref().getValue(Path.app(appName).billingConfig());
   }
+  
 
   /**
    * Set trigger function to app.

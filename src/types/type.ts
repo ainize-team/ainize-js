@@ -24,10 +24,14 @@ export type setRuleParam = {
 
 export type billingConfig = {
   depositAddress: string,
-  costPerToken: number,
-  minCost?: number,
-  maxCost?: number,
-  responseTimeout?: number,
+  service: {
+    [serviceName: string]: {
+      costPerToken: number,
+      minCost?: number,
+      maxCost?: number,
+      responseTimeout?: number,
+    }
+  }
 };
 
 export enum HISTORY_TYPE {

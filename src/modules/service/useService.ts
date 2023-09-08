@@ -17,18 +17,21 @@ export default class UseService extends ServiceBase{
     return requestKey;
   }
 
-  async calculateCostAndCheckBalance(appName: string, value: string, requesterAddress?: string) {
+  async calculateCostAndCheckBalance(appName: string, serviceName: string, value: string, requesterAddress?: string) {
     requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAccount();
     const billingConfig = await this.app.getBillingConfig(appName);
     // TODO(woojae): calculate cost more accurately
-    const token = value.split(' ').length;
-    let amount = token * billingConfig.costPerToken;
-    if (billingConfig.minCost && amount < billingConfig.minCost) {
-      amount = billingConfig.minCost;
-    }else if (billingConfig.maxCost && amount > billingConfig.maxCost) {
-      amount = billingConfig.maxCost;
+    let serviceBillingConfig = billingConfig.service.default;
+    if(billingConfig.service[serviceName]) {
+      serviceBillingConfig = billingConfig.service[serviceName];
     }
-    const balancePath = Path.app(appName).balanceOfUser(requesterAddress);
+    const token = value.split(' ').length;
+    let amount = token * serviceBillingConfig.costPerToken;
+    if (serviceBillingConfig.minCost && amount < serviceBillingConfig.minCost) {
+      amount = serviceBillingConfig.minCost;
+    }else if (serviceBillingConfig.maxCost && amount > serviceBillingConfig.maxCost) {
+      amount = serviceBillingConfig.maxCost;
+    }
     const balance = await this.app.getCreditBalance(appName, requesterAddress);
     if (balance < amount) {
       throw new Error("not enough balance");
