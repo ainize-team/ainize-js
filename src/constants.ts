@@ -12,7 +12,7 @@ export const Path = {
       deposit: () => `${Path.app(appName).root()}/deposit`,
       depositOfUser: (userAddress: string) => `${Path.app(appName).deposit()}/${userAddress}`,
       billingConfig: () => `${Path.app(appName).root()}/billingConfig`,
-      serviceOfbillingConfig: (serviceName: string) => `${Path.app(appName).billingConfig()}/service/${serviceName}`,
+      billingConfigOfService: (serviceName: string) => `${Path.app(appName).billingConfig()}/service/${serviceName}`,
       service: (serviceName: string) => `${Path.app(appName).root()}/service/${serviceName}`,
       userOfService: (serviceName: string, userAddress: string) => 
         `${Path.app(appName).service(serviceName)}/${userAddress}`,

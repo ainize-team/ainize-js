@@ -7,6 +7,7 @@ import ServiceBase from "./serviceBase";
 export default class UseService extends ServiceBase{
   async writeRequest(appName: string, serviceName: string, value: string, requesterAddress?: string) {
     const requestKey = Date.now();
+    requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAccount();
     const requestPath = Path.app(appName).request(serviceName, requesterAddress, requestKey);
     const requestData = {
       prompt: value,
