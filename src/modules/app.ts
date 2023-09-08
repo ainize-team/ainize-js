@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { billingConfig, setDefaultFlag, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { appBillingConfig, setDefaultFlag, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
@@ -59,6 +59,23 @@ const defaultAppRules = (appName: string): { [type: string]: { ref: string, valu
         }
       },
     },
+    billingConfig: {
+      ref: Path.app(appName).billingConfig(),
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && " +
+          "util.isString(newData.depositAddress) && util.isDict(newData.service) && util.isDict(newData.service.default)",
+        }
+      }
+    },
+    billingConfigOfService: {
+      ref: Path.app(appName).billingConfigOfService("$serviceName"),
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth,addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.minCost)",
+        }
+      }
+    }
   }
 }
 
@@ -123,7 +140,7 @@ export default class App extends ModuleBase {
       }
     }
 
-    const defaultConfig: billingConfig = {
+    const defaultConfig: appBillingConfig = {
       depositAddress: this.ain.wallet.defaultAccount!.address,
       service: {
         default: {
@@ -147,10 +164,10 @@ export default class App extends ModuleBase {
   /**
    * Set billing config to app.
    * @param {string} appName 
-   * @param {billingConfig} config - The configuration of your app's billing.
+   * @param {appBillingConfig} config - The configuration of your app's billing.
    * @returns Result of transaction.
    */
-  async setBillingConfig(appName: string, config: billingConfig) {
+  async setBillingConfig(appName: string, config: appBillingConfig) {
     const setConfigOp = this.buildSetBillingConfigOp(appName, config);
     const txBody = this.buildTxBody(setConfigOp);
     return await this.sendTransaction(txBody);
@@ -159,9 +176,9 @@ export default class App extends ModuleBase {
   /**
    * Get billing config of app
    * @param {string} appName 
-   * @returns {Promise<billingConfig>} 
+   * @returns {Promise<appBillingConfig>} 
    */
-  async getBillingConfig(appName: string): Promise<billingConfig> {
+  async getBillingConfig(appName: string): Promise<appBillingConfig> {
     return await this.ain.db.ref().getValue(Path.app(appName).billingConfig());
   }
 
@@ -234,7 +251,7 @@ export default class App extends ModuleBase {
     const balancePath = Path.app(appName).balanceOfUser(userAddress);
     return await this.ain.db.ref(balancePath).getValue();
   }
-  private buildSetBillingConfigOp(appName: string, config: billingConfig) {
+  private buildSetBillingConfigOp(appName: string, config: appBillingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
   }
