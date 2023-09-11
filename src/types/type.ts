@@ -4,12 +4,6 @@ export type triggerFunctionConfig = {
   function_id: string;
 };
 
-export type TriggerFunctionUrlMap = {
-  deposit: string;
-  service: string;
-  [type: string]: string;
-}
-
 export type setTriggerFunctionParm = {
   ref: string;
 } & triggerFunctionConfig;

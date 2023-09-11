@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig, TriggerFunctionUrlMap } from "../types/type";
+import { appBillingConfig, defaultTriggerFunctionParam, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
@@ -13,7 +13,7 @@ export default class App extends ModuleBase {
    * @returns Result of transaction.
    */
   // FIXME(yoojin): need to fix getting function urls.
-  async create(appName: string, functionUrls: TriggerFunctionUrlMap) {
+  async create(appName: string, serviceUrl: string) {
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
     const setBillingConfigOps: SetOperation[] = [] ;
@@ -26,14 +26,11 @@ export default class App extends ModuleBase {
       setRuleOps.push(ruleOp);
     }
 
-    const defaultFunctions = this.defaultAppFunctions(appName);
-    for (const [type, func] of Object.entries(defaultFunctions)) {
-      const { ref, function_id, function_type, function_url } = func(functionUrls[type]);
-      const value = this.buildSetFunctionValue({function_id, function_type, function_url});
-      const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
-      setFunctionOps.push(funcOp);
-    }
-
+    const { ref, function_id, function_type, function_url } = this.depositTriggerFunction(appName, serviceUrl);
+    const value = this.buildSetFunctionValue({ function_id, function_type, function_url });
+    const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
+    setFunctionOps.push(funcOp);
+  
     const defaultConfig: appBillingConfig = {
       depositAddress: this.ain.wallet.defaultAccount!.address,
       service: {
@@ -257,24 +254,12 @@ export default class App extends ModuleBase {
     }
   }
 
-  private defaultAppFunctions = (appName: string) => {
+  private depositTriggerFunction = (appName: string, serviceUrl: string) => {
     return {
-      deposit: (url: string) => {
-        return {
-          ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-          function_type: "REST",
-          function_id: "deposit-trigger",
-          function_url: url,
-        }
-      },
-      service: (url: string) => {
-        return {
-          ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
-          function_type: "REST",
-          function_id: "service-trigger",
-          function_url: url,
-        }
-      }
+      ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
+      function_type: "REST",
+      function_id: "deposit-trigger",
+      function_url: `${serviceUrl}/deposit`,
     }
   }
 }
