@@ -1,103 +1,12 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { appBillingConfig, setDefaultFlag, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
-const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
-  const rootRef = Path.app(appName).root();
-  return {
-    root: {
-      ref: rootRef,
-      value: {
-        ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
-        }
-      }
-    },
-    deposit: {
-      ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-      value: {
-        ".rule": {
-          write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
-        }
-      }
-    },
-    balance: {
-      ref: Path.app(appName).balanceOfUser("$userAddress"),
-      value: {
-        ".rule": {
-          write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData)"
-        }
-      }
-    },
-    balanceHistory: {
-      ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
-      value: {
-        ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
-        }
-      }
-    },
-    request: {
-      ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
-      value: {
-        ".rule": {
-          write: 
-            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
-            "((getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
-            "getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`)" 
-        }
-      }
-    },
-    response: {
-      ref: Path.app(appName).response("$serviceName", "userAddress", "$requestKey"),
-      value: {
-        ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
-        }
-      },
-    },
-    billingConfig: {
-      ref: Path.app(appName).billingConfig(),
-      value: {
-        ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && " +
-          "util.isString(newData.depositAddress) && util.isDict(newData.service) && util.isDict(newData.service.default)",
-        }
-      }
-    },
-    billingConfigOfService: {
-      ref: Path.app(appName).billingConfigOfService("$serviceName"),
-      value: {
-        ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth,addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.minCost)",
-        }
-      }
-    }
-  }
-}
 
-const defaultAppFunctions = (appName: string) => {
-  return {
-    deposit: (url: string) => {
-      return {
-        ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-        function_type: "REST",
-        function_id: "deposit-trigger",
-        function_url: url,
-      }
-    },
-    service: (url: string) => {
-      return {
-        ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
-        function_type: "REST",
-        function_id: "service-trigger",
-        function_url: url,
-      }
-    }
-  }
-}
+
+
 
 // FIXME(yoojin): move to types.
 // NOTE(yoojin): temporary type. service url may be changed to array?
@@ -120,14 +29,14 @@ export default class App extends ModuleBase {
     const setBillingConfigOps: SetOperation[] = [] ;
 
     const createAppOp = this.buildCreateAppOp(appName);
-    const defaultRules = defaultAppRules(appName);
+    const defaultRules = this.defaultAppRules(appName);
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
       const ruleOp = buildSetOperation("SET_RULE", ref, value);
       setRuleOps.push(ruleOp);
     }
 
-    const defaultFunctions = defaultAppFunctions(appName);
+    const defaultFunctions = this.defaultAppFunctions(appName);
     for (const [type, func] of Object.entries(defaultFunctions)) {
       const { ref, function_id, function_type, function_url } = func(functionUrls[type]);
       const value = this.buildSetFunctionValue({function_id, function_type, function_url});
@@ -282,5 +191,100 @@ export default class App extends ModuleBase {
     const path = `/manage_app/${appName}/config/admin/${userAddress}`;
     const value = !isRemoveOp ? null : true;
     return buildSetOperation("SET_VALUE", path, value);
+  }
+
+  private defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
+    const rootRef = Path.app(appName).root();
+    return {
+      root: {
+        ref: rootRef,
+        value: {
+          ".rule": {
+            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
+          }
+        }
+      },
+      deposit: {
+        ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
+        value: {
+          ".rule": {
+            write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
+          }
+        }
+      },
+      balance: {
+        ref: Path.app(appName).balanceOfUser("$userAddress"),
+        value: {
+          ".rule": {
+            write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData)"
+          }
+        }
+      },
+      balanceHistory: {
+        ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
+        value: {
+          ".rule": {
+            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
+          }
+        }
+      },
+      request: {
+        ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
+        value: {
+          ".rule": {
+            write: 
+              "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
+              "((getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
+              "getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`)" 
+          }
+        }
+      },
+      response: {
+        ref: Path.app(appName).response("$serviceName", "userAddress", "$requestKey"),
+        value: {
+          ".rule": {
+            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
+          }
+        },
+      },
+      billingConfig: {
+        ref: Path.app(appName).billingConfig(),
+        value: {
+          ".rule": {
+            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && " +
+            "util.isString(newData.depositAddress) && util.isDict(newData.service) && util.isDict(newData.service.default)",
+          }
+        }
+      },
+      billingConfigOfService: {
+        ref: Path.app(appName).billingConfigOfService("$serviceName"),
+        value: {
+          ".rule": {
+            write: "util.isAppAdmin(`" + `${appName}` + "`, auth,addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.minCost)",
+          }
+        }
+      }
+    }
+  }
+
+  private defaultAppFunctions = (appName: string) => {
+    return {
+      deposit: (url: string) => {
+        return {
+          ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
+          function_type: "REST",
+          function_id: "deposit-trigger",
+          function_url: url,
+        }
+      },
+      service: (url: string) => {
+        return {
+          ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
+          function_type: "REST",
+          function_id: "service-trigger",
+          function_url: url,
+        }
+      }
+    }
   }
 }
