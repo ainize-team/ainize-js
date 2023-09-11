@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { appBillingConfig, defaultTriggerFunctionParam, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
@@ -26,9 +26,9 @@ export default class App extends ModuleBase {
       setRuleOps.push(ruleOp);
     }
 
-    const { ref, function_id, function_type, function_url } = this.depositTriggerFunction(appName, serviceUrl);
-    const value = this.buildSetFunctionValue({ function_id, function_type, function_url });
-    const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
+    const depositParam = this.depositTriggerFunctionConfig(appName, serviceUrl);
+    const value = this.buildSetFunctionValue(depositParam);
+    const funcOp = buildSetOperation("SET_FUNCTION", depositParam.ref, value);
     setFunctionOps.push(funcOp);
   
     const defaultConfig: appBillingConfig = {
@@ -81,10 +81,9 @@ export default class App extends ModuleBase {
    */
   async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
     const setFunctionOps: SetOperation[] = [];
-    for (const func of Object.values(functions)) {
-      const { ref } = func;
-      const value = this.buildSetFunctionValue(func);
-      const op = buildSetOperation("SET_FUNCTION", ref, value);
+    for (const param of Object.values(functions)) {
+      const value = this.buildSetFunctionValue(param);
+      const op = buildSetOperation("SET_FUNCTION", param.ref, value);
       setFunctionOps.push(op);
     }
     if (setFunctionOps.length <= 0) {
@@ -254,7 +253,7 @@ export default class App extends ModuleBase {
     }
   }
 
-  private depositTriggerFunction = (appName: string, serviceUrl: string) => {
+  private depositTriggerFunctionConfig = (appName: string, serviceUrl: string): setTriggerFunctionParm => {
     return {
       ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       function_type: "REST",
