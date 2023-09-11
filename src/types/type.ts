@@ -1,8 +1,3 @@
-export type setDefaultFlag = {
-  triggerFuncton: boolean,
-};
-
-// NOTE(yoojin): pls suggest good name.
 export type triggerFunctionConfig = {
   function_type: string,
   function_url: string,

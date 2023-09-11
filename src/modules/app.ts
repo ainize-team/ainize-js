@@ -4,7 +4,6 @@ import { appBillingConfig, setDefaultFlag, setRuleParam, setTriggerFunctionParm,
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
-// FIXME(yoojin): move to constant.
 const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
   const rootRef = Path.app(appName).root();
   return {
@@ -115,9 +114,7 @@ export default class App extends ModuleBase {
    * @returns Result of transaction.
    */
   // FIXME(yoojin): need to fix getting function urls.
-  async create(appName: string, functionUrls: TriggerFunctionUrlMap, setDefaultFlag?: setDefaultFlag) {
-    if (!setDefaultFlag)
-      setDefaultFlag = { triggerFuncton: true };
+  async create(appName: string, functionUrls: TriggerFunctionUrlMap) {
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
     const setBillingConfigOps: SetOperation[] = [] ;
@@ -130,14 +127,12 @@ export default class App extends ModuleBase {
       setRuleOps.push(ruleOp);
     }
 
-    if (setDefaultFlag.triggerFuncton) {
-      const defaultFunctions = defaultAppFunctions(appName);
-      for (const [type, func] of Object.entries(defaultFunctions)) {
-        const { ref, function_id, function_type, function_url } = func(functionUrls[type]);
-        const value = this.buildSetFunctionValue({function_id, function_type, function_url});
-        const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
-        setFunctionOps.push(funcOp);
-      }
+    const defaultFunctions = defaultAppFunctions(appName);
+    for (const [type, func] of Object.entries(defaultFunctions)) {
+      const { ref, function_id, function_type, function_url } = func(functionUrls[type]);
+      const value = this.buildSetFunctionValue({function_id, function_type, function_url});
+      const funcOp = buildSetOperation("SET_FUNCTION", ref, value);
+      setFunctionOps.push(funcOp);
     }
 
     const defaultConfig: appBillingConfig = {
