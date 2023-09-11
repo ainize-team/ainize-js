@@ -34,8 +34,8 @@ ainize.app.addAdmin(<APP_NAME>, <ADDRESS>);
 ainize.app.deleteAdmin(<APP_NAME>, <ADDRESS>);
 ```
 
-APP_NAME: The app name to be registered on AI Network.
-SERVICE_URL: The URL for sending API requests to your AI Service.
+- APP_NAME: The app name to be registered on AI Network.
+- SERVICE_URL: The URL for sending API requests to your AI Service.
 
 ### Service
 You can use AI Service.
