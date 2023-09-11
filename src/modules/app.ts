@@ -141,6 +141,7 @@ export default class App extends ModuleBase {
     const balancePath = Path.app(appName).balanceOfUser(userAddress);
     return await this.ain.db.ref(balancePath).getValue();
   }
+  
   private buildSetBillingConfigOp(appName: string, config: appBillingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
