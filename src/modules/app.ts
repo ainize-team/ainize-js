@@ -1,18 +1,8 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig, TriggerFunctionUrlMap } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
-
-
-
-
-
-// FIXME(yoojin): move to types.
-// NOTE(yoojin): temporary type. service url may be changed to array?
-interface TriggerFunctionUrlMap {
-  [type: string]: string
-}
 
 export default class App extends ModuleBase {
   /**

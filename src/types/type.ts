@@ -1,19 +1,25 @@
 export type triggerFunctionConfig = {
-  function_type: string,
-  function_url: string,
-  function_id: string,
+  function_type: string;
+  function_url: string;
+  function_id: string;
 };
 
+export type TriggerFunctionUrlMap = {
+  deposit: string;
+  service: string;
+  [type: string]: string;
+}
+
 export type setTriggerFunctionParm = {
-  ref: string
+  ref: string;
 } & triggerFunctionConfig;
 
 export type writeRuleConfig = {
-  write: string,
+  write: string;
 };
 
 export type setRuleParam = {
-  ref: string
+  ref: string;
 } & writeRuleConfig;
 
 export type serviceBillingConfig = {
@@ -36,9 +42,9 @@ export enum HISTORY_TYPE {
 }
 
 export type opResult = {
-  code: number,
+  code: number;
   bandwidth_gas_amount: number;
-  message?: string
+  message?: string;
 }
 
 export type txResult = {
