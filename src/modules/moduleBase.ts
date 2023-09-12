@@ -21,6 +21,10 @@ export default class ModuleBase {
     }
   }
 
+  protected getDefaultAccount() {
+    return this.ain.wallet.defaultAccount;
+  }
+
   private async _sendTransaction(txBody: TransactionBody) {
     return await this.ain.sendTransaction(txBody);
   }
