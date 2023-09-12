@@ -24,7 +24,7 @@ export default class ModuleBase {
   protected getDefaultAccount() {
     const defaultAccount = this.ain.wallet.defaultAccount;
     if (!defaultAccount) 
-      throw new Error("You need to initialize ainize with private key.");
+      throw new Error("You need to set default account.");
     return defaultAccount;
   }
 
