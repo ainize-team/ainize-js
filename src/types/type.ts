@@ -56,7 +56,7 @@ export enum RESPONSE_STATUS {
 }
 
 export type request = {
-  prompt: string,
+  requestData: string,
   requesterAddress: string,
   requestKey: string,
   serviceName: string,
@@ -67,7 +67,7 @@ export type response = {
   responseData: string,
   amount: number,
   status: RESPONSE_STATUS,
-  prompt: string,
+  requestData: string,
   requesterAddress: string,
   requestKey: string,
   appName: string,

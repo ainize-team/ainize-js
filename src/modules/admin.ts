@@ -73,7 +73,7 @@ export default class Admin extends ModuleBase {
       serviceName: req.body.valuePath[3],
       requesterAddress: req.body.auth.addr,
       requestKey: req.body.valuePath[5],
-      prompt: req.body.value.prompt,
+      requestData: req.body.value.prompt,
     }
     return requestData;
   }
