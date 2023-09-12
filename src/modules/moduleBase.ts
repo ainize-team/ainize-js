@@ -22,7 +22,10 @@ export default class ModuleBase {
   }
 
   protected getDefaultAccount() {
-    return this.ain.wallet.defaultAccount;
+    const defaultAccount = this.ain.wallet.defaultAccount;
+    if (!defaultAccount) 
+      throw new Error("You need to initialize ainize with private key.");
+    return defaultAccount;
   }
 
   private async _sendTransaction(txBody: TransactionBody) {
