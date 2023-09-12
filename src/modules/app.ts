@@ -30,9 +30,9 @@ export default class App extends ModuleBase {
     const value = this.buildSetFunctionValue(depositParam);
     const funcOp = buildSetOperation("SET_FUNCTION", depositParam.ref, value);
     setFunctionOps.push(funcOp);
-  
+    const depositAddress = this.getDefaultAccount().address;
     const defaultConfig: appBillingConfig = {
-      depositAddress: this.ain.wallet.defaultAccount!.address,
+      depositAddress,
       service: {
         default: {
           costPerToken: 0,
@@ -149,11 +149,7 @@ export default class App extends ModuleBase {
 
   private buildCreateAppOp(appName: string): SetOperation {
     const path = `/manage_app/${appName}/create/${Date.now()}`;
-    const adminAccount = this.ain.wallet.defaultAccount!;
-    if (!adminAccount || !adminAccount.address) {
-      // FIXME(yoojin): change Error to Custom error when it added.
-      throw new Error("You need to enter your private key when initialize sdk.");
-    }
+    const adminAccount = this.getDefaultAccount();
     const value = {
       admin: {
         [adminAccount.address]: true,

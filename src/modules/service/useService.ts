@@ -7,7 +7,7 @@ import ServiceBase from "./serviceBase";
 export default class UseService extends ServiceBase{
   async writeRequest(appName: string, serviceName: string, value: string, requesterAddress?: string) {
     const requestKey = Date.now();
-    requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAccount();
+    requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAddress();
     const requestPath = Path.app(appName).request(serviceName, requesterAddress, requestKey);
     const requestData = {
       prompt: value,
@@ -19,7 +19,7 @@ export default class UseService extends ServiceBase{
   }
 
   async calculateCostAndCheckBalance(appName: string, serviceName: string, value: string, requesterAddress?: string) {
-    requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAccount();
+    requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAddress();
     const billingConfig = await this.app.getBillingConfig(appName);
     // TODO(woojae): calculate cost more accurately
     let serviceBillingConfig = billingConfig.service.default;

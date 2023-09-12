@@ -13,11 +13,8 @@ export default class Wallet extends ModuleBase{
    * Get defult AI Network blockchain account information set in ainize.
    * @returns Default account's address.
    */
-  getDefaultAccount() {
-    if (!this.ain.wallet.defaultAccount) {
-      throw new Error("You need to set default account.");
-    }
-    return this.ain.wallet.defaultAccount.address;
+  getDefaultAddress() {
+    return this.getDefaultAccount().address;
   }
 
   /**
@@ -27,7 +24,7 @@ export default class Wallet extends ModuleBase{
    */
   setDefaultAccount(privateKey: string) {
     this.ain.wallet.addAndSetDefaultAccount(privateKey);
-    return this.getDefaultAccount();
+    return this.getDefaultAddress();
   }
 
   /**
@@ -46,7 +43,7 @@ export default class Wallet extends ModuleBase{
    */
   getAinBalance(address?: string) {
     if (!address) {
-      address = this.getDefaultAccount();
+      address = this.getDefaultAddress();
     }
     return this.ain.wallet.getBalance(address);
   }
@@ -59,7 +56,7 @@ export default class Wallet extends ModuleBase{
    */
   async sendTxWithAddress(txBody: TransactionInput, signerAddress?: string) {
     if (!signerAddress) {
-      signerAddress = this.getDefaultAccount();
+      signerAddress = this.getDefaultAddress();
     }
     if (!this.ain.wallet.isAdded(signerAddress)) {
       throw new Error ("You need to add account");

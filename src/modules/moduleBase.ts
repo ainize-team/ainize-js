@@ -21,6 +21,13 @@ export default class ModuleBase {
     }
   }
 
+  protected getDefaultAccount() {
+    const defaultAccount = this.ain.wallet.defaultAccount;
+    if (!defaultAccount) 
+      throw new Error("You need to set default account.");
+    return defaultAccount;
+  }
+
   private async _sendTransaction(txBody: TransactionBody) {
     return await this.ain.sendTransaction(txBody);
   }
