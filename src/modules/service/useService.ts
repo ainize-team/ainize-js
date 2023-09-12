@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../../constants";
-import { HISTORY_TYPE, RESPONSE_STATUS } from "../../types/type";
+import { HISTORY_TYPE, RESPONSE_STATUS, response } from "../../types/type";
 import { buildSetOperation } from "../../utils/builder";
 import ServiceBase from "./serviceBase";
 
@@ -40,7 +40,8 @@ export default class UseService extends ServiceBase{
     return amount;
   }
 
-  async writeResponse(status: RESPONSE_STATUS, appName: string, serviceName: string, requesterAddress: string, requestKey: string, responseData: string, amount: number) {
+  async writeResponse(response: response) {
+    const { responseData, status, requesterAddress, requestKey, appName, serviceName, amount } = response;
     const responsePath = Path.app(appName).response(serviceName, requesterAddress, requestKey);
     const responseValue = {
       status,
