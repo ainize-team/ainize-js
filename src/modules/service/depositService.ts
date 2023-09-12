@@ -7,7 +7,7 @@ import { HISTORY_TYPE } from "../../types/type";
 export default class DepositService extends ServiceBase {
   async requestDeposit(appName: string, amount: number, userAddress?: string) {
     const transferKey = Date.now();
-    userAddress = userAddress ? userAddress : this.wallet.getDefaultAccount();
+    userAddress = userAddress ? userAddress : this.wallet.getDefaultAddress();
     const depositAddress = await this.getDepositAddress(appName);
 
     const op_list: SetOperation[]  = [
