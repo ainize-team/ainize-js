@@ -55,7 +55,7 @@ export enum RESPONSE_STATUS {
   FAIL = "FAIL",
 }
 
-export type requestData = {
+export type request = {
   prompt: string,
   requesterAddress: string,
   requestKey: string,

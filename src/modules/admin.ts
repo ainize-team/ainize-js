@@ -3,7 +3,7 @@ import { Request } from "express";
 import ModuleBase from "./moduleBase";
 import DepositService from "./service/depositService";
 import UseService from "./service/useService";
-import { RESPONSE_STATUS, requestData, response } from "../types/type";
+import { RESPONSE_STATUS, request, response } from "../types/type";
 
 export default class Admin extends ModuleBase {
   private depositService: DepositService;
@@ -68,7 +68,7 @@ export default class Admin extends ModuleBase {
     if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[5] || !req.body.value.prompt) {
       throw new Error("Not from service request");
     }
-    const requestData: requestData = {
+    const requestData: request = {
       appName: req.body.valuePath[1],
       serviceName: req.body.valuePath[3],
       requesterAddress: req.body.auth.addr,
