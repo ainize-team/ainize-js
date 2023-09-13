@@ -178,8 +178,7 @@ export default class App extends ModuleBase {
       let cost = token * serviceBillingConfig.costPerToken;
       if (serviceBillingConfig.minCost && cost < serviceBillingConfig.minCost) {
         cost = serviceBillingConfig.minCost;
-      }
-      if (serviceBillingConfig.maxCost && cost > serviceBillingConfig.maxCost) {
+      } else if (serviceBillingConfig.maxCost && cost > serviceBillingConfig.maxCost) {
         cost = serviceBillingConfig.maxCost;
       }
       const balance = await this.getCreditBalance(appName, requesterAddress);
