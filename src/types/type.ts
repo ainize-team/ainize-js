@@ -63,13 +63,8 @@ export type request = {
   appName: string,
 };
 
-export type response = {
+export type response = request & {
   responseData: string,
-  amount: number,
+  cost: number,
   status: RESPONSE_STATUS,
-  requestData: string,
-  requesterAddress: string,
-  requestKey: string,
-  appName: string,
-  serviceName: string,
 }

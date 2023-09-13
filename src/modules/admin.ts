@@ -44,17 +44,17 @@ export default class Admin extends ModuleBase {
    * Write response. Then change balance of requester and write history of user balance if response status is success. 
    * You should match this function with service trigger.
    * @param {Request} request - Request data from request trigger. If req data is not from trigger function, it will throw error.
-   * @param {number} amount - Cost of service. Calculate it with checkCostAndBalance function.
+   * @param {number} cost - Cost of service. Calculate it with checkCostAndBalance function.
    * @param {string} responseData - Data you want to response to requester.
    * @param {RESPONSE_STATUS} status - Status of response. If status is success, it will change balance of requester and write history of user balance.
    * @returns Result of transaction.
    */
-  async writeResponse(req:Request, amount: number, responseData: string, status: RESPONSE_STATUS ) {
+  async writeResponse(req:Request, cost: number, responseData: string, status: RESPONSE_STATUS ) {
     const requestData = this.getDataFromServiceRequest(req);
     const response: response = {
-      status: status,
-      amount: amount,
-      responseData: responseData,
+      status,
+      cost,
+      responseData,
       ...requestData,
     }
     return await this.useService.writeResponse(response);
