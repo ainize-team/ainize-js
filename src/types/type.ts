@@ -17,10 +17,10 @@ export type setRuleParam = {
 } & writeRuleConfig;
 
 export type serviceBillingConfig = {
-    costPerToken: number;
-    minCost: number;
-    maxCost?: number;
-    responseTimeout?: number;
+  costPerToken: number;
+  minCost: number;
+  maxCost?: number;
+  responseTimeout?: number;
 }
 
 export type appBillingConfig = {
@@ -53,4 +53,18 @@ export type txResult = {
 export enum RESPONSE_STATUS {
   SUCCESS = "SUCCESS",
   FAIL = "FAIL",
+}
+
+export type request = {
+  requestData: string,
+  requesterAddress: string,
+  requestKey: string,
+  serviceName: string,
+  appName: string,
+};
+
+export type response = request & {
+  responseData: string,
+  cost: number,
+  status: RESPONSE_STATUS,
 }

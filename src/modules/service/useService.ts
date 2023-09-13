@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../../constants";
-import { HISTORY_TYPE, RESPONSE_STATUS } from "../../types/type";
+import { HISTORY_TYPE, RESPONSE_STATUS, response } from "../../types/type";
 import { buildSetOperation } from "../../utils/builder";
 import ServiceBase from "./serviceBase";
 
@@ -27,20 +27,21 @@ export default class UseService extends ServiceBase{
       serviceBillingConfig = billingConfig.service[serviceName];
     }
     const token = value.split(' ').length;
-    let amount = token * serviceBillingConfig.costPerToken;
-    if (serviceBillingConfig.minCost && amount < serviceBillingConfig.minCost) {
-      amount = serviceBillingConfig.minCost;
-    } else if (serviceBillingConfig.maxCost && amount > serviceBillingConfig.maxCost) {
-      amount = serviceBillingConfig.maxCost;
+    let cost = token * serviceBillingConfig.costPerToken;
+    if (serviceBillingConfig.minCost && cost < serviceBillingConfig.minCost) {
+      cost = serviceBillingConfig.minCost;
+    } else if (serviceBillingConfig.maxCost && cost > serviceBillingConfig.maxCost) {
+      cost = serviceBillingConfig.maxCost;
     }
     const balance = await this.app.getCreditBalance(appName, requesterAddress);
-    if (balance < amount) {
+    if (balance < cost) {
       throw new Error("not enough balance");
     }
-    return amount;
+    return cost;
   }
 
-  async writeResponse(status: RESPONSE_STATUS, appName: string, serviceName: string, requesterAddress: string, requestKey: string, responseData: string, amount: number) {
+  async writeResponse(response: response) {
+    const { responseData, status, requesterAddress, requestKey, appName, serviceName, cost } = response;
     const responsePath = Path.app(appName).response(serviceName, requesterAddress, requestKey);
     const responseValue = {
       status,
@@ -50,8 +51,8 @@ export default class UseService extends ServiceBase{
     const responseOp = buildSetOperation("SET_VALUE", responsePath, responseValue);
     ops.push(responseOp);
     if (status === RESPONSE_STATUS.SUCCESS) {
-      const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, 'DEC_VALUE', amount);
-      const writeHistoryOp = await this.getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.USAGE, amount, requestKey);
+      const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, 'DEC_VALUE', cost);
+      const writeHistoryOp = await this.getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.USAGE, cost, requestKey);
       ops.push(changeBalanceOp);
       ops.push(writeHistoryOp);
     }

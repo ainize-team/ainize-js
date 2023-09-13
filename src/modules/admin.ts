@@ -3,7 +3,7 @@ import { Request } from "express";
 import ModuleBase from "./moduleBase";
 import DepositService from "./service/depositService";
 import UseService from "./service/useService";
-import { RESPONSE_STATUS } from "../types/type";
+import { RESPONSE_STATUS, request, response } from "../types/type";
 
 export default class Admin extends ModuleBase {
   private depositService: DepositService;
@@ -44,33 +44,37 @@ export default class Admin extends ModuleBase {
    * Write response. Then change balance of requester and write history of user balance if response status is success. 
    * You should match this function with service trigger.
    * @param {Request} request - Request data from request trigger. If req data is not from trigger function, it will throw error.
-   * @param {number} amount - Cost of service. Calculate it with checkCostAndBalance function.
+   * @param {number} cost - Cost of service. Calculate it with checkCostAndBalance function.
    * @param {string} responseData - Data you want to response to requester.
    * @param {RESPONSE_STATUS} status - Status of response. If status is success, it will change balance of requester and write history of user balance.
    * @returns Result of transaction.
    */
-  async writeResponse(req:Request, amount: number, responseData: string, status: RESPONSE_STATUS ) {
-    const appName = req.body.valuePath[1];
-    const serviceName = req.body.valuePath[3];
-    const requesterAddress = req.body.auth.addr;
-    const requestKey = req.body.valuePath[5];
-    return await this.useService.writeResponse(status , appName, serviceName, requesterAddress, requestKey, responseData, amount);
+  async writeResponse(req:Request, cost: number, responseData: string, status: RESPONSE_STATUS ) {
+    const requestData = this.getDataFromServiceRequest(req);
+    const response: response = {
+      status,
+      cost,
+      responseData,
+      ...requestData,
+    }
+    return await this.useService.writeResponse(response);
   }
     /**
    * Get data from service request. You should use it only with service trigger.
    * @param {Request} request - Request data from request trigger. If req data is not from trigger function, it will throw error.
-   * @returns Object with appName, serviceName, requesterAddress, requestKey, responseData.
+   * @returns RequestData type.
    */
   getDataFromServiceRequest(req: Request) {
     if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[5] || !req.body.value.prompt) {
       throw new Error("Not from service request");
     }
-    return {
+    const requestData: request = {
       appName: req.body.valuePath[1],
       serviceName: req.body.valuePath[3],
       requesterAddress: req.body.auth.addr,
       requestKey: req.body.valuePath[5],
-      responseData: req.body.value.prompt,
+      requestData: req.body.value.prompt,
     }
+    return requestData;
   }
 }
