@@ -161,11 +161,18 @@ export default class App extends ModuleBase {
    */
     async checkCostAndBalance(appName: string, serviceName: string, value: string, requesterAddress?: string) {
       requesterAddress = requesterAddress ? requesterAddress : this.getDefaultAccount().address;
-      const billingConfig = await this.getBillingConfig(appName);
-      // TODO(woojae): calculate cost more accurately
-      let serviceBillingConfig = billingConfig.service.default;
-      if(billingConfig.service[serviceName]) {
-        serviceBillingConfig = billingConfig.service[serviceName];
+      const billingConfig = (await this.getBillingConfig(appName)).service;
+      const serviceBillingConfig = billingConfig.default;
+      if(billingConfig[serviceName]) {
+        if(billingConfig[serviceName].costPerToken) {
+          serviceBillingConfig.costPerToken = billingConfig[serviceName].costPerToken;
+        }
+        if(billingConfig[serviceName].minCost) {
+          serviceBillingConfig.minCost = billingConfig[serviceName].minCost;
+        }
+        if(billingConfig[serviceName].maxCost) {
+          serviceBillingConfig.maxCost = billingConfig[serviceName].maxCost;
+        }
       }
       const token = value.split(' ').length;
       let cost = token * serviceBillingConfig.costPerToken;
