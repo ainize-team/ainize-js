@@ -62,6 +62,6 @@ export default class Wallet extends ModuleBase{
       throw new Error ("You need to add account");
     }
     txBody.address = signerAddress;
-    return await this.ain.sendTransaction(txBody);
+    return await this.sendTransaction(txBody);
   }
 }

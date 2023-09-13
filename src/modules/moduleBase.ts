@@ -32,25 +32,22 @@ export default class ModuleBase {
     return await this.ain.sendTransaction(txBody);
   }
 
-  private getFailedOpResultList(result: txResult): opResult[] {
+  private hasFailedOpResultList(result: txResult): boolean {
     if (result.result_list) {
-      return Object.values(result.result_list).filter(
+      return Object.values(result.result_list).some(
         (result: { code: number }) => result.code !== 0
       );
     }
-    return [];
+    return result.code !== 0;
   }
 
   private handleTxResultWrapper(operation: Function) {
     return async (args: any) => {
       const res = await operation(args);
       const { tx_hash, result } = res;
-      const failedOpResult = this.getFailedOpResultList(result);
-      if (failedOpResult.length > 0) {
-        const errorString = failedOpResult.map((value) => `\n code: ${value.code} - ${value.message}`);
-        console.log('failedOpResult :>> ', failedOpResult);
+      if (this.hasFailedOpResultList(result)) {
         throw new Error(
-          `Failed to send transaction (${tx_hash}).` + errorString
+          `Failed to send transaction (${tx_hash}).\n Tx Result: ${JSON.stringify(result)}`
         );
       }
       return tx_hash;
