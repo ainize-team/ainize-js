@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { appBillingConfig, serviceBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
@@ -40,7 +40,7 @@ export default class App extends ModuleBase {
         }
       }
     }
-    const configOp = this.buildSetBillingConfigOp(appName, defaultConfig);
+    const configOp = this.buildSetAppBillingConfigOp(appName, defaultConfig);
     setBillingConfigOps.push(configOp);
 
     const txBody = this.buildTxBody([
@@ -58,8 +58,21 @@ export default class App extends ModuleBase {
    * @param {appBillingConfig} config - The configuration of your app's billing.
    * @returns Result of transaction.
    */
-  async setBillingConfig(appName: string, config: appBillingConfig) {
-    const setConfigOp = this.buildSetBillingConfigOp(appName, config);
+  async setAppBillingConfig(appName: string, config: appBillingConfig) {
+    const setConfigOp = this.buildSetAppBillingConfigOp(appName, config);
+    const txBody = this.buildTxBody(setConfigOp);
+    return await this.sendTransaction(txBody);
+  }
+
+  /**
+   * Set billing config to a specific service.
+   * @param {string} appName 
+   * @param {string} serviceName 
+   * @param {serviceBillingConfig} config
+   * @returns Result of transaction.
+   */
+  async setServiceBillingConfig(appName: string, serviceName: string, config: serviceBillingConfig) {
+    const setConfigOp = this.buildSetServiceBillingConfigOp(appName, serviceName, config);
     const txBody = this.buildTxBody(setConfigOp);
     return await this.sendTransaction(txBody);
   }
@@ -142,8 +155,13 @@ export default class App extends ModuleBase {
     return await this.ain.db.ref(balancePath).getValue();
   }
   
-  private buildSetBillingConfigOp(appName: string, config: appBillingConfig) {
+  private buildSetAppBillingConfigOp(appName: string, config: appBillingConfig) {
     const path = Path.app(appName).billingConfig();
+    return buildSetOperation("SET_VALUE", path, config);
+  }
+
+  private buildSetServiceBillingConfigOp(appName: string,serviceName: string, config: serviceBillingConfig) {
+    const path = Path.app(appName).billingConfigOfService(serviceName);
     return buildSetOperation("SET_VALUE", path, config);
   }
 
