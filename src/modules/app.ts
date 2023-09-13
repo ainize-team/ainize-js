@@ -283,19 +283,11 @@ export default class App extends ModuleBase {
         ref: Path.app(appName).billingConfig(),
         value: {
           ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && " +
-            "util.isString(newData.depositAddress) && util.isDict(newData.service) && util.isDict(newData.service.default)",
+            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress) && " + 
+            "util.isDict(newData.service) && util.isDict(newData.service.default) && util.isNumber(newData.service.default.costPerToken) && util.isNumber(newData.service.default.minCost)",
           }
         }
       },
-      billingConfigOfService: {
-        ref: Path.app(appName).billingConfigOfService("$serviceName"),
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth,addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.minCost)",
-          }
-        }
-      }
     }
   }
 
