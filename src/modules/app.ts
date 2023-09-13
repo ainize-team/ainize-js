@@ -160,7 +160,7 @@ export default class App extends ModuleBase {
     return buildSetOperation("SET_VALUE", path, config);
   }
 
-  private buildSetServiceBillingConfigOp(appName: string,serviceName: string, config: serviceBillingConfig) {
+  private buildSetServiceBillingConfigOp(appName: string, serviceName: string, config: serviceBillingConfig) {
     const path = Path.app(appName).billingConfigOfService(serviceName);
     return buildSetOperation("SET_VALUE", path, config);
   }
