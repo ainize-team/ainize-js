@@ -92,7 +92,7 @@ export default class App extends ModuleBase {
    * @param {setTriggerFunctionParam[]} functions 
    * @returns Result of transaction.
    */
-  async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
+  async setTriggerFunctions(appName: string, functions: any[]) {
     const setFunctionOps: SetOperation[] = [];
     for (const param of Object.values(functions)) {
       const value = this.buildSetFunctionValue(param);
@@ -266,7 +266,7 @@ export default class App extends ModuleBase {
           ".rule": {
             write: 
               "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
-              "((getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`) !== null) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
+              "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
               "getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`)" 
           }
         }
