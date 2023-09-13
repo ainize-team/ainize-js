@@ -44,9 +44,9 @@ export default class App extends ModuleBase {
     setBillingConfigOps.push(configOp);
 
     const txBody = this.buildTxBody([
-      createAppOp, 
+      // createAppOp, 
       ...setRuleOps, 
-      ...setFunctionOps,
+      // ...setFunctionOps,
       ...setBillingConfigOps,
     ]);
     return await this.sendTransaction(txBody);
@@ -285,7 +285,7 @@ export default class App extends ModuleBase {
           ".rule": {
             write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress) && " + 
             "util.isDict(newData.service) && util.isDict(newData.service.default) && util.isNumber(newData.service.default.costPerToken) && util.isNumber(newData.service.default.minCost) && " + 
-            "util.isNull(newData.service.default.maxCost) || (util.isNumber(newData.service.default.maxCost) && newData.service.default.maxCost >= newData.service.default.minCost)",
+            "util.isEmpty(newData.service.default.maxCost) || (util.isNumber(newData.service.default.maxCost) && newData.service.default.maxCost >= newData.service.default.minCost)",
           }
         }
       },
