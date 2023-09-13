@@ -163,7 +163,6 @@ export default class App extends ModuleBase {
       requesterAddress = requesterAddress ? requesterAddress : this.getDefaultAccount().address;
       const billingConfig = (await this.getBillingConfig(appName)).service;
       const serviceBillingConfig = billingConfig.default;
-      // TODO(woojae): calculate cost more accurately
       if(billingConfig[serviceName]) {
         if(billingConfig[serviceName].costPerToken) {
           serviceBillingConfig.costPerToken = billingConfig[serviceName].costPerToken;
@@ -179,7 +178,8 @@ export default class App extends ModuleBase {
       let cost = token * serviceBillingConfig.costPerToken;
       if (serviceBillingConfig.minCost && cost < serviceBillingConfig.minCost) {
         cost = serviceBillingConfig.minCost;
-      } else if (serviceBillingConfig.maxCost && cost > serviceBillingConfig.maxCost) {
+      }
+      if (serviceBillingConfig.maxCost && cost > serviceBillingConfig.maxCost) {
         cost = serviceBillingConfig.maxCost;
       }
       const balance = await this.getCreditBalance(appName, requesterAddress);
