@@ -2,14 +2,17 @@ import ModuleBase from "./moduleBase";
 import DepositService from "./service/depositService";
 import UseService from "./service/useService";
 import Ainize from "../ainize";
+import App from "./app";
 
 export default class Service extends ModuleBase {
   private depositService: DepositService;
   private useService: UseService;
+  private app: App;
   constructor(ainize: Ainize, depositService: DepositService, useService: UseService) {
     super(ainize);
     this.depositService = depositService;
     this.useService = useService;
+    this.app = ainize.app;
   }
 
   /**
@@ -33,7 +36,7 @@ export default class Service extends ModuleBase {
    * @returns RequestKey. You can use it to get response by handler.
    */
   async writeRequest(appName: string, serviceName: string, prompt: string, userAddress?: string) {
-    await this.useService.calculateCostAndCheckBalance(appName, serviceName, prompt, userAddress);
+    await this.app.checkCostAndBalance(appName, serviceName, prompt, userAddress);
     return await this.useService.writeRequest(appName, serviceName, prompt, userAddress);
   }
 }
