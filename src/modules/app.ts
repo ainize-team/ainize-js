@@ -44,9 +44,9 @@ export default class App extends ModuleBase {
     setBillingConfigOps.push(configOp);
 
     const txBody = this.buildTxBody([
-      // createAppOp, 
+      createAppOp, 
       ...setRuleOps, 
-      // ...setFunctionOps,
+      ...setFunctionOps,
       ...setBillingConfigOps,
     ]);
     return await this.sendTransaction(txBody);
