@@ -1,0 +1,12 @@
+name: 'Test'
+description: 'Test ainize-sdk using local blockchain'
+inputs:
+  environment:
+    description: 'Environment to test'
+    required: true
+    default: 'prod'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.environment }}

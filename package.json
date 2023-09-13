@@ -5,8 +5,11 @@
   "types": "dist/ainize.d.ts",
   "scripts": {
     "build": "rm -rf ./dist && tsc",
-    "dev": "rm -rf ./dist && tsc",
-    "test": "NODE_ENV=dev jest --passWithNoTests",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test_snapshot": "jest --updateSnapshot",
+    "test_ainize": "jest ainize.test.ts",
+    "test_ainize_snapshot": "jest ainize.test.ts --updateSnapshot",
     "docs": "yarn build && typedoc --out docs"
   },
   "engines": {

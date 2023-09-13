@@ -1,30 +1,40 @@
 name: Test Pipeline for Merged PR
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ master, develop ]
     types: [ closed ]
 concurrency: 
       group: ${{ github.event.pull_request.number }}
       cancel-in-progress: true
 jobs:
-  run_test:
-    if: ${{ github.event.pull_request.merged == true }}
+  dump_github_context:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [ 16 ]
-    name: Run Test on Node ${{ matrix.node }}
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+  run_test_on_develop_branch:
+    if: ${{ github.base_ref == 'develop' && github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - name: Run test
+        uses: ./
+        id: test-pipeline
         with:
-          node-version: ${{ matrix.node }}
-      - run: yarn install --immutable --immutable-cache --check-cache
-      - run: yarn test
+          environment: 'dev'
+  run_test_on_master_branch:
+    if: ${{ github.base_ref == 'master' && github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run test
+        uses: ./
+        id: test-pipeline
   publish:
-    needs: [ run_test ]
-    if: ${{ startsWith(github.head_ref, 'release/') && (github.base_ref == 'main') && (github.event.pull_request.merged == true) }}
+    needs: run_test_on_master_branch
+    if: ${{ startsWith(github.head_ref, 'release/') && (github.base_ref == 'master') && (github.event.pull_request.merged == true) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -34,11 +44,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: yarn
-      - name: Test Success
-        run: yarn test
       - name: Publish package
         run: |
-          yarn
           yarn build
           yarn publish --access public
           echo "NEW_VERSION=$(npm pkg get version | tr -d '"')" >> $GITHUB_ENV
@@ -46,7 +53,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Push tag
         run: |
-          git tag ${{ env.NEW_VERSION }}
+          git tag v${{ env.NEW_VERSION }}
           git push --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -55,20 +62,20 @@ jobs:
         with:
           payload: |
             {
-              "text": "Ainize-SDK ${{ env.NEW_VERSION }} is published",
+              "text": "Ain-js ${{ env.NEW_VERSION }} is published",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "Ainize-SDK Release"
+                    "text": "Ain-js Release"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Version ${{ env.NEW_VERSION }} is published"
+                    "text": "Version ${{ env.NEW_VERSION }} is published on <https://www.npmjs.com/package/@ainblockchain/ain-js|npmjs.com>"
                   }
                 }
               ]
