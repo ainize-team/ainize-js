@@ -92,7 +92,7 @@ export default class App extends ModuleBase {
    * @param {setTriggerFunctionParam[]} functions 
    * @returns Result of transaction.
    */
-  async setTriggerFunctions(appName: string, functions: any[]) {
+  async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
     const setFunctionOps: SetOperation[] = [];
     for (const param of Object.values(functions)) {
       const value = this.buildSetFunctionValue(param);
