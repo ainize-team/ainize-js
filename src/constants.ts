@@ -27,5 +27,4 @@ export const Path = {
 }
 
 export const SECOND = 1000;
-export const HANDLER_TIMEOUT = 30 * SECOND;
 export const HANDLER_HEARBEAT_INTERVAL = 15 * SECOND;

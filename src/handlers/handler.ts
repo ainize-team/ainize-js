@@ -1,10 +1,15 @@
 const _ = require("lodash");
-import { HANDLER_HEARBEAT_INTERVAL, HANDLER_TIMEOUT, Path } from "../constants";
-import ModuleBase from "../modules/moduleBase";
+import Ain from "@ainblockchain/ain-js";
+import { HANDLER_HEARBEAT_INTERVAL, Path } from "../constants";
+import Ainize from "../ainize";
 
-export default class Handler extends ModuleBase {
+export default class Handler {
   isConnected: boolean = false;
   subscribeTable:any = {};
+  ain: Ain;
+  constructor(ainize: Ainize) {
+    this.ain = ainize.ain;
+  }
 
     /**
    * Connect to ai Network event node. you should connect before subscibe. It will auto reconnect when disconnected. 
@@ -12,9 +17,8 @@ export default class Handler extends ModuleBase {
    */
   async connect() {
     await this.ain.em.connect({
-      handshakeTimeout: HANDLER_TIMEOUT, // Timeout in milliseconds for the web socket handshake request.  
       heartbeatIntervalMs: HANDLER_HEARBEAT_INTERVAL,
-    }, this.disconnectedCallback);
+    }, this.disconnectedCallback.bind(this));
     this.isConnected = true;
   };
 
