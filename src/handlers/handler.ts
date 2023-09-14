@@ -16,15 +16,13 @@ export default class Handler {
    * @returns Nothing.
    */
   async connect() {
-    await this.ain.em.connect({
-      heartbeatIntervalMs: HANDLER_HEARBEAT_INTERVAL,
-    }, this.disconnectedCallback.bind(this));
+    await this.ain.em.connect({}, this.disconnectedCallback.bind(this));
     this.isConnected = true;
   };
 
-  private disconnectedCallback() {
+  private async disconnectedCallback() {
     this.isConnected = false;
-    this.connect();
+    await this.connect();
   }
 
   /**
