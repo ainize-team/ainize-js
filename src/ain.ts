@@ -7,7 +7,7 @@ export default class AinModule {
   private ain?: Ain;
   private static instance: AinModule;
 
-  getInstance() {
+  static getInstance() {
     if (!AinModule.instance) {
       AinModule.instance = new AinModule();
     }
