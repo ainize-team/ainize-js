@@ -16,18 +16,13 @@ export type setRuleParam = {
   ref: string;
 } & writeRuleConfig;
 
-export type serviceBillingConfig = {
+
+export type appBillingConfig = {
+  depositAddress: string;
   costPerToken: number;
   minCost: number;
   maxCost?: number;
   responseTimeout?: number;
-}
-
-export type appBillingConfig = {
-  depositAddress: string;
-  service: {
-    [serviceName: string]: serviceBillingConfig;
-  }
 };
 
 export enum HISTORY_TYPE {
@@ -59,7 +54,6 @@ export type request = {
   requestData: string,
   requesterAddress: string,
   requestKey: string,
-  serviceName: string,
   appName: string,
 };
 

@@ -57,7 +57,6 @@ export default class Admin extends ModuleBase {
     }
     const requestData: request = {
       appName: req.body.valuePath[1],
-      serviceName: req.body.valuePath[3],
       requesterAddress: req.body.auth.addr,
       requestKey: req.body.valuePath[5],
       requestData: req.body.value.prompt,
