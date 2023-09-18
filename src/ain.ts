@@ -25,12 +25,17 @@ export default class AinModule {
     return true;
   }
 
+  isDefaultAccountExist(): boolean {
+    if (this.getDefaultAccount())
+      return false;
+    return true;
+  }
+
   setDefaultAccount(privateKey: string) {
-    this.checkAinInitiated()
+    this.checkAinInitiated();
     this.ain!.wallet.addAndSetDefaultAccount(privateKey);
   }
 
-  // FIXME(yoojin): check ain error.
   getDefaultAccount() {
     this.checkAinInitiated();
     return this.ain!.wallet.defaultAccount;
