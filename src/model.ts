@@ -6,7 +6,7 @@ export default class Model {
 
   constructor(modelName: string) {
     this.modelName = modelName;
-    this.modelController = new ModelController();
+    this.modelController = ModelController.getInstance();
   }
   //TODO(woojae): login not Required
   async isRunning() {
