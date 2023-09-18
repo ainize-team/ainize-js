@@ -20,25 +20,24 @@ export default class AinModule {
   }
 
   checkAinInitiated(): boolean {
-    return this.ain ? true : false;
+    if (!this.ain) 
+      throw new Error('Set initAin(chainId) First.');
+    return true;
   }
 
   setDefaultAccount(privateKey: string) {
-    if (!this.checkAinInitiated())
-      throw new Error('Set initAin(chainId) First.');
+    this.checkAinInitiated()
     this.ain!.wallet.addAndSetDefaultAccount(privateKey);
   }
 
   // FIXME(yoojin): check ain error.
   getDefaultAccount() {
-    if (!this.checkAinInitiated()) 
-      throw new Error('Set initAin(chainId) First.');
+    this.checkAinInitiated();
     return this.ain!.wallet.defaultAccount;
   }
 
   async sendTransaction(data: TransactionBody) {
-    if (!this.checkAinInitiated())
-      throw new Error('Set initAin(chainId) First.');
+    this.checkAinInitiated()
     return await this.ain!.sendTransaction(data);
   }
 }
