@@ -23,10 +23,17 @@ export default class AinModule {
     return this.ain ? true : false;
   }
 
-  setDefaultAddress(privateKey: string) {
-    if(!this.checkAinInitiated())
+  setDefaultAccount(privateKey: string) {
+    if (!this.checkAinInitiated())
       throw new Error('Set initAin(chainId) First.');
     this.ain!.wallet.addAndSetDefaultAccount(privateKey);
+  }
+
+  // FIXME(yoojin): check ain error.
+  getDefaultAccount() {
+    if (!this.checkAinInitiated()) 
+      throw new Error('Set initAin(chainId) First.');
+    return this.ain!.wallet.defaultAccount;
   }
 
   async sendTransaction(data: TransactionBody) {
