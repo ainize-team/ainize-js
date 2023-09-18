@@ -9,6 +9,7 @@ import DepositService from "./modules/service/depositService";
 import UseService from "./modules/service/useService";
 import Service from "./modules/service";
 import Admin from "./modules/admin";
+import Model from "./model";
 export default class Ainize {
   private cache: NodeCache;
   ain: Ain;
@@ -33,6 +34,9 @@ export default class Ainize {
     this.admin = new Admin(this, depositService, useService);
   }
 
+  model(modelName: string) {
+    return new Model(modelName);
+  }
   test() {
     console.log("test");
   }
