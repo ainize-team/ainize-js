@@ -1,8 +1,10 @@
 export default class ModelController {
   private static instance: ModelController | undefined;
-  constructor() {
-    if(ModelController.instance) return ModelController.instance;
-    ModelController.instance = this;
+  static getInstance() {
+    if(!ModelController.instance){
+      ModelController.instance = new ModelController();
+    }
+    return ModelController.instance;
   }
 
   //TODO(woojae): implement this
