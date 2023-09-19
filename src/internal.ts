@@ -1,7 +1,7 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Request } from "express";
 import { getChangeBalanceOp, getResponseOp, getWriteHistoryOp } from "./utils/operator";
-import { HISTORY_TYPE, RESPONSE_STATUS, request, response } from "./types/type";
+import { HISTORY_TYPE, RESPONSE_STATUS, deposit, request, response } from "./types/type";
 import { buildTxBody } from "./utils/builder";
 import AinModule from "./ain";
 
@@ -50,7 +50,7 @@ export default class internal {
     if(!req.body.valuePath[1] || !req.body.valuePath[4] || !req.body.value) {
       throw new Error("Not from deposit request");
     }
-    const depositData = {
+    const depositData: deposit = {
       transferKey: req.body.valuePath[4],
       transferValue: req.body.value,
       appName: req.body.valuePath[1],
