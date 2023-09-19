@@ -21,8 +21,8 @@ export default class AinModule {
 
   isDefaultAccountExist(): boolean {
     if (this.getDefaultAccount())
-      return false;
-    return true;
+      return true;
+    return false;
   }
 
   setDefaultAccount(privateKey: string) {
@@ -52,7 +52,7 @@ export default class AinModule {
   }
 
   getAddress() {
-    this.checkAinInitiated();
+    this.isDefaultAccountExist();
     return this.ain!.wallet.defaultAccount!.address;
   }
 }
