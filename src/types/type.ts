@@ -81,3 +81,8 @@ export type createAppConfig = {
   billingConfig: appBillingConfig,
   serviceUrl: string,
 }
+
+export enum ContainerStatus {
+  RUNNING = "RUNNING",
+  STOP = "STOP",
+}

@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path, defaultAppRules } from "../constants";
-import { appBillingConfig, createAppConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { ContainerStatus, appBillingConfig, createAppConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
 import AinModule from '../ain';
 
@@ -42,11 +42,14 @@ export default class AppController {
     const configOp = this.buildSetAppBillingConfigOp(appName, billingConfig);
     setBillingConfigOps.push(configOp);
 
+    const statusOp = this.buildSetContainerStatusOp(appName, ContainerStatus.RUNNING);
+
     const txBody = buildTxBody([
       createAppOp, 
       ...setRuleOps, 
       ...setFunctionOps,
       ...setBillingConfigOps,
+      statusOp,
     ]);
     return await this.ain.sendTransaction(txBody);
   }
@@ -112,6 +115,12 @@ export default class AppController {
     return await this.ain.sendTransaction(txBody);
   }
 
+  async setContainerStatus(appName: string, status: ContainerStatus) {
+    const op = this.buildSetContainerStatusOp(appName, status);
+    const txBody = buildTxBody(op);
+    return await this.ain.sendTransaction(txBody);
+  }
+
   /**
    * Add admin on app.
    * @param {string} appName 
@@ -136,7 +145,7 @@ export default class AppController {
     return await this.ain.sendTransaction(txBody);
   }
 
-    /**
+  /**
    * Check cost of request and check if account can pay. You should use this function before send or handle request.
    * If you don't set address, it will use default account's address.
    * @param {string} appName - App name you want to request service to.
@@ -166,6 +175,11 @@ export default class AppController {
     return await this.ain.getValue(balancePath);
   }
   
+  private buildSetContainerStatusOp(appName: string, status: ContainerStatus) {
+    const path = Path.app(appName).status();
+    return buildSetOperation("SET_VALUE", path, status);
+  }
+
   private buildSetAppBillingConfigOp(appName: string, config: appBillingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
