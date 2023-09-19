@@ -1,10 +1,20 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
-import { Path } from "../constants";
+import { Path, defaultAppRules } from "../constants";
 import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
-import ModuleBase from "./moduleBase";
+import AinModule from '../ain';
 
-export default class App extends ModuleBase {
+export default class AppController {
+  private static instance: AppController;
+  private ain: AinModule = AinModule.getInstance();
+
+  static getInstance() {
+    if (!AppController.instance) {
+      AppController.instance = new AppController();
+    }
+    return AppController.instance;
+  }
+  
   /**
    * Create App for your AI Service on AI Network.
    * @param {string} appName - The name of app you will create.
@@ -12,14 +22,13 @@ export default class App extends ModuleBase {
    * @param {setDefaultFlag} setDefaultFlag - Set true which you wan to set config as default.
    * @returns Result of transaction.
    */
-  // FIXME(yoojin): need to fix getting function urls.
-  async create(appName: string, serviceUrl: string) {
+  async createApp(appName: string, serviceUrl: string) {
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
     const setBillingConfigOps: SetOperation[] = [] ;
 
     const createAppOp = this.buildCreateAppOp(appName);
-    const defaultRules = this.defaultAppRules(appName);
+    const defaultRules = defaultAppRules(appName);
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
       const ruleOp = buildSetOperation("SET_RULE", ref, value);
@@ -30,7 +39,7 @@ export default class App extends ModuleBase {
     const value = this.buildSetFunctionValue(depositParam);
     const funcOp = buildSetOperation("SET_FUNCTION", depositParam.ref, value);
     setFunctionOps.push(funcOp);
-    const depositAddress = this.getDefaultAccount().address;
+    const depositAddress = this.ain.getDefaultAccount()!.address;
     const defaultConfig: appBillingConfig = {
       depositAddress,
       costPerToken: 0,
@@ -45,7 +54,7 @@ export default class App extends ModuleBase {
       ...setFunctionOps,
       ...setBillingConfigOps,
     ]);
-    return await this.sendTransaction(txBody);
+    return await this.ain.sendTransaction(txBody);
   }
 
   /**
@@ -57,7 +66,7 @@ export default class App extends ModuleBase {
   async setAppBillingConfig(appName: string, config: appBillingConfig) {
     const setConfigOp = this.buildSetAppBillingConfigOp(appName, config);
     const txBody = buildTxBody(setConfigOp);
-    return await this.sendTransaction(txBody);
+    return await this.ain.sendTransaction(txBody);
   }
 
   /**
@@ -66,7 +75,7 @@ export default class App extends ModuleBase {
    * @returns {Promise<appBillingConfig>} 
    */
   async getBillingConfig(appName: string): Promise<appBillingConfig> {
-    return await this.ain.db.ref().getValue(Path.app(appName).billingConfig());
+    return await this.ain.getValue(Path.app(appName).billingConfig());
   }
 
   /**
@@ -87,8 +96,8 @@ export default class App extends ModuleBase {
       // FIXME(yoojin): error message.
       throw new Error ("Please input setTriggerFunctionParams.");
     }
-    const txBody = this.buildTxBody(setFunctionOps);
-    return await this.sendTransaction(txBody);
+    const txBody = buildTxBody(setFunctionOps);
+    return await this.ain.sendTransaction(txBody);
   }
 
   /**
@@ -105,8 +114,8 @@ export default class App extends ModuleBase {
       const op = buildSetOperation("SET_RULE", ref, value);
       setRuleOps.push(op);
     }
-    const txBody = this.buildTxBody(setRuleOps);
-    return await this.sendTransaction(txBody);
+    const txBody = buildTxBody(setRuleOps);
+    return await this.ain.sendTransaction(txBody);
   }
 
   /**
@@ -117,8 +126,8 @@ export default class App extends ModuleBase {
    */
   async addAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress);
-    const txBody = this.buildTxBody(op);
-    return await this.sendTransaction(txBody);
+    const txBody = buildTxBody(op);
+    return await this.ain.sendTransaction(txBody);
   }
 
   /**
@@ -129,8 +138,8 @@ export default class App extends ModuleBase {
    */
   async deleteAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress, true);
-    const txBody = this.buildTxBody(op);
-    return await this.sendTransaction(txBody);
+    const txBody = buildTxBody(op);
+    return await this.ain.sendTransaction(txBody);
   }
 
     /**
@@ -141,8 +150,8 @@ export default class App extends ModuleBase {
    * @param {string=} userAddress - Address of account you want to check balance. You should set default account if you don't provide address.
    * @returns Result cost of service. It throws error when user can't pay.
    */
-    async checkCostAndBalance(appName: string, value: string, requesterAddress?: string) {
-      requesterAddress = requesterAddress ? requesterAddress : this.getDefaultAccount().address;
+    async checkCostAndBalance(appName: string, value: string) {
+      const requesterAddress = this.ain.getAddress();
       const billingConfig = (await this.getBillingConfig(appName));
       const token = value.split(' ').length;
       let cost = token * billingConfig.costPerToken;
@@ -160,16 +169,17 @@ export default class App extends ModuleBase {
 
   async getCreditBalance(appName: string, userAddress: string) {
     const balancePath = Path.app(appName).balanceOfUser(userAddress);
-    return await this.ain.db.ref(balancePath).getValue();
+    return await this.ain.getValue(balancePath);
   }
   
   private buildSetAppBillingConfigOp(appName: string, config: appBillingConfig) {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
   }
+
   private buildCreateAppOp(appName: string): SetOperation {
     const path = `/manage_app/${appName}/create/${Date.now()}`;
-    const adminAccount = this.getDefaultAccount();
+    const adminAccount = this.ain.getDefaultAccount()!;
     const value = {
       admin: {
         [adminAccount.address]: true,
@@ -194,72 +204,6 @@ export default class App extends ModuleBase {
     const path = `/manage_app/${appName}/config/admin/${userAddress}`;
     const value = !isRemoveOp ? null : true;
     return buildSetOperation("SET_VALUE", path, value);
-  }
-
-  private defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
-    const rootRef = Path.app(appName).root();
-    return {
-      root: {
-        ref: rootRef,
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
-          }
-        }
-      },
-      deposit: {
-        ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-        value: {
-          ".rule": {
-            write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
-          }
-        }
-      },
-      balance: {
-        ref: Path.app(appName).balanceOfUser("$userAddress"),
-        value: {
-          ".rule": {
-            write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData)"
-          }
-        }
-      },
-      balanceHistory: {
-        ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
-          }
-        }
-      },
-      request: {
-        ref: Path.app(appName).request("$userAddress", "$requestKey"),
-        value: {
-          ".rule": {
-            write: 
-              "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
-              "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))"
-          }
-        }
-      },
-      response: {
-        ref: Path.app(appName).response("userAddress", "$requestKey"),
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
-          }
-        },
-      },
-      billingConfig: {
-        ref: Path.app(appName).billingConfig(),
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress) && " + 
-            "util.isDict(newData.service) && util.isDict(newData.service.default) && util.isNumber(newData.service.default.costPerToken) && util.isNumber(newData.service.default.minCost) && " + 
-            "util.isEmpty(newData.service.default.maxCost) || (util.isNumber(newData.service.default.maxCost) && newData.service.default.maxCost >= newData.service.default.minCost)",
-          }
-        }
-      },
-    }
   }
 
   private depositTriggerFunctionConfig = (appName: string, serviceUrl: string): setTriggerFunctionParm => {
