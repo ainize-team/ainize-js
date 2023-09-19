@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path, defaultAppRules } from "../constants";
-import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { appBillingConfig, createAppConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
 import AinModule from '../ain';
 
@@ -22,7 +22,7 @@ export default class AppController {
    * @param {setDefaultFlag} setDefaultFlag - Set true which you wan to set config as default.
    * @returns Result of transaction.
    */
-  async createApp(appName: string, serviceUrl: string) {
+  async createApp({ appName, serviceUrl, billingConfig }: createAppConfig) {
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
     const setBillingConfigOps: SetOperation[] = [] ;
@@ -39,13 +39,7 @@ export default class AppController {
     const value = this.buildSetFunctionValue(depositParam);
     const funcOp = buildSetOperation("SET_FUNCTION", depositParam.ref, value);
     setFunctionOps.push(funcOp);
-    const depositAddress = this.ain.getDefaultAccount()!.address;
-    const defaultConfig: appBillingConfig = {
-      depositAddress,
-      costPerToken: 0,
-      minCost: 0,
-    }
-    const configOp = this.buildSetAppBillingConfigOp(appName, defaultConfig);
+    const configOp = this.buildSetAppBillingConfigOp(appName, billingConfig);
     setBillingConfigOps.push(configOp);
 
     const txBody = buildTxBody([

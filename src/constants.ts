@@ -1,3 +1,5 @@
+import { appBillingConfig } from "./types/type"
+
 export const getBlockChainEndpoint = (chainId:number) =>{
   return chainId === 1 ? "https://mainnet-event.ainetwork.ai" : "https://testnet-event.ainetwork.ai"
 }
@@ -89,6 +91,11 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       }
     },
   }
+}
+
+export const DEFAULT_BILLING_CONFIG: Omit<appBillingConfig, "depositAddress"> = {
+  costPerToken: 0,
+  minCost: 0,
 }
 
 export const SECOND = 1000;
