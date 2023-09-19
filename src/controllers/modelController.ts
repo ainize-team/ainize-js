@@ -74,7 +74,7 @@ export default class ModelController {
   //TODO(woojae): connect with handler
   async use(modelName: string, requestData: string) {
     this.isLoggedIn();
-    new Promise(async (resolve, reject) => {
+    const result = await new Promise(async (resolve, reject) => {
       const requestKey = Date.now();
       const requesterAddress = this.ain.getAddress();
       await this.handler.subscribe(requesterAddress, requestKey.toString(), modelName, resolve);
@@ -84,6 +84,7 @@ export default class ModelController {
       await this.ain.sendTransaction(txBody);
       return requestKey;
     });
+    return result;
   }
 
   //TODO(woojae): implement this
