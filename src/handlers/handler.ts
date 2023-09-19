@@ -7,19 +7,21 @@ import EventManager from "@ainblockchain/ain-js/lib/event-manager";
 
 export default class Handler {
   private static instance: Handler | undefined;
-  ain = AinModule.getInstance();
-  em: EventManager | undefined;
+  em = AinModule.getInstance().getEventManager();
   static getInstance() {
     if(!Handler.instance){
       Handler.instance = new Handler();
-      Handler.instance.em = Handler.instance.ain.getEventManager();
     }
     return Handler.instance;
   }
 
   checkEventManager() {
-    if (!this.em) 
-      throw new Error('set eventManager First.');
+    if (!this.em) {
+      if(!AinModule.getInstance().getEventManager()){
+        throw new Error('you should init ain first');
+      }
+      this.em = AinModule.getInstance().getEventManager();
+    }
     return true;
   }
 
