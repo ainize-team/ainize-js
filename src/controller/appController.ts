@@ -1,5 +1,5 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
-import { Path } from "../constants";
+import { Path, defaultAppRules } from "../constants";
 import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
 import AinModule from '../ain';
@@ -27,7 +27,7 @@ export default class AppController {
     const setBillingConfigOps: SetOperation[] = [] ;
 
     const createAppOp = this.buildCreateAppOp(appName);
-    const defaultRules = this.defaultAppRules(appName);
+    const defaultRules = defaultAppRules(appName);
     for (const rule of Object.values(defaultRules)) {
       const { ref, value } = rule;
       const ruleOp = buildSetOperation("SET_RULE", ref, value);
@@ -202,72 +202,6 @@ export default class AppController {
     const path = `/manage_app/${appName}/config/admin/${userAddress}`;
     const value = !isRemoveOp ? null : true;
     return buildSetOperation("SET_VALUE", path, value);
-  }
-
-  private defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
-    const rootRef = Path.app(appName).root();
-    return {
-      root: {
-        ref: rootRef,
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
-          }
-        }
-      },
-      deposit: {
-        ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-        value: {
-          ".rule": {
-            write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
-          }
-        }
-      },
-      balance: {
-        ref: Path.app(appName).balanceOfUser("$userAddress"),
-        value: {
-          ".rule": {
-            write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData)"
-          }
-        }
-      },
-      balanceHistory: {
-        ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
-          }
-        }
-      },
-      request: {
-        ref: Path.app(appName).request("$userAddress", "$requestKey"),
-        value: {
-          ".rule": {
-            write: 
-              "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
-              "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))"
-          }
-        }
-      },
-      response: {
-        ref: Path.app(appName).response("userAddress", "$requestKey"),
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
-          }
-        },
-      },
-      billingConfig: {
-        ref: Path.app(appName).billingConfig(),
-        value: {
-          ".rule": {
-            write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress) && " + 
-            "util.isDict(newData.service) && util.isDict(newData.service.default) && util.isNumber(newData.service.default.costPerToken) && util.isNumber(newData.service.default.minCost) && " + 
-            "util.isEmpty(newData.service.default.maxCost) || (util.isNumber(newData.service.default.maxCost) && newData.service.default.maxCost >= newData.service.default.minCost)",
-          }
-        }
-      },
-    }
   }
 
   private depositTriggerFunctionConfig = (appName: string, serviceUrl: string): setTriggerFunctionParm => {

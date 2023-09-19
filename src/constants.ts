@@ -25,5 +25,71 @@ export const Path = {
     `/transfer/${from}/${to}/${transferKey}/value`,
 }
 
+export const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
+  const rootRef = Path.app(appName).root();
+  return {
+    root: {
+      ref: rootRef,
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
+        }
+      }
+    },
+    deposit: {
+      ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
+      value: {
+        ".rule": {
+          write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
+        }
+      }
+    },
+    balance: {
+      ref: Path.app(appName).balanceOfUser("$userAddress"),
+      value: {
+        ".rule": {
+          write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData) && newData > 0",
+        }
+      }
+    },
+    balanceHistory: {
+      ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
+        }
+      }
+    },
+    request: {
+      ref: Path.app(appName).request("$userAddress", "$requestKey"),
+      value: {
+        ".rule": {
+          write: 
+            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
+            "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))"
+        }
+      }
+    },
+    response: {
+      ref: Path.app(appName).response("userAddress", "$requestKey"),
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
+        }
+      },
+    },
+    billingConfig: {
+      ref: Path.app(appName).billingConfig(),
+      value: {
+        ".rule": {
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress) && " + 
+          "util.isDict(newData.service) && util.isDict(newData.service.default) && util.isNumber(newData.service.default.costPerToken) && util.isNumber(newData.service.default.minCost) && " + 
+          "util.isEmpty(newData.service.default.maxCost) || (util.isNumber(newData.service.default.maxCost) && newData.service.default.maxCost >= newData.service.default.minCost)",
+        }
+      }
+    },
+  }
+}
+
 export const SECOND = 1000;
 export const HANDLER_HEARBEAT_INTERVAL = 15 * SECOND;
