@@ -22,12 +22,19 @@ export default class ModelController {
 
   //TODO(woojae): implement this
   async getInformation(modelName: string) {
-    return await true;
+    return await 'information of model';
   }
 
-  //TODO(woojae): implement this
   async calculateCost(modelName: string, requestData: string) {
-    return await 0.3;
+    const billingConfig = await this.ain.getValue(Path.app(modelName).billingConfig());
+    const token = requestData.split(' ').length;
+    let cost = token * billingConfig.costPerToken;
+    if (billingConfig.minCost && cost < billingConfig.minCost) {
+      cost = billingConfig.minCost;
+    } else if (billingConfig.maxCost && cost > billingConfig.maxCost) {
+      cost = billingConfig.maxCost;
+    }
+    return cost;
   }
 
   async chargeCredit(modelName: string, amount: number) {
@@ -49,14 +56,18 @@ export default class ModelController {
     return await true;
   }
 
-  //TODO(woojae): implement this
   async getCreditBalance(modelName: string) {
-    return await 0.3;
+    this.isLoggedIn();
+    const userAddress =  this.ain.getDefaultAccount()!.address;
+    const balancePath = Path.app(modelName).balanceOfUser(userAddress);
+    return await this.ain.getValue(balancePath);
   }
 
-  //TODO(woojae): implement this
   async getCreditHistory(modelName: string) {
-    return await true;
+    this.isLoggedIn();
+    const userAddress =  this.ain.getDefaultAccount()!.address;
+    const creditHistoryPath = Path.app(modelName).historyOfUser(userAddress);
+    return await this.ain.getValue(creditHistoryPath);
   }
 
   //TODO(woojae): connect with handler
