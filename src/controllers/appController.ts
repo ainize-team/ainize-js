@@ -150,8 +150,8 @@ export default class AppController {
    * @param {string=} userAddress - Address of account you want to check balance. You should set default account if you don't provide address.
    * @returns Result cost of service. It throws error when user can't pay.
    */
-    async checkCostAndBalance(appName: string, value: string, requesterAddress?: string) {
-      requesterAddress = requesterAddress ? requesterAddress : this.ain.getDefaultAccount()!.address;
+    async checkCostAndBalance(appName: string, value: string) {
+      const requesterAddress = this.ain.getAddress();
       const billingConfig = (await this.getBillingConfig(appName));
       const token = value.split(' ').length;
       let cost = token * billingConfig.costPerToken;
