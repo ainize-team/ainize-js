@@ -237,8 +237,7 @@ export default class App extends ModuleBase {
           ".rule": {
             write: 
               "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
-              "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`)) || " +
-              "getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`)" 
+              "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))"
           }
         }
       },
