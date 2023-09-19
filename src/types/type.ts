@@ -73,7 +73,7 @@ export type deposit = {
 export type deployConfig = {
   modelName: string,
   billingConfig?: appBillingConfig,
-  serviceUrl?: string,
+  serviceUrl?: string, // NOTE(yoojin): for test.
 }
 
 export type createAppConfig = {
