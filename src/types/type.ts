@@ -62,3 +62,10 @@ export type response = request & {
   cost: number,
   status: RESPONSE_STATUS,
 }
+
+export type deposit = {
+  transferKey: string,
+  transferValue: number,
+  appName: string,
+  requesterAddress: string,
+}

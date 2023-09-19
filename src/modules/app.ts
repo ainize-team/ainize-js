@@ -1,7 +1,7 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
 import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
-import { buildSetOperation } from "../utils/builder";
+import { buildSetOperation, buildTxBody } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
 export default class App extends ModuleBase {
@@ -39,7 +39,7 @@ export default class App extends ModuleBase {
     const configOp = this.buildSetAppBillingConfigOp(appName, defaultConfig);
     setBillingConfigOps.push(configOp);
 
-    const txBody = this.buildTxBody([
+    const txBody = buildTxBody([
       createAppOp, 
       ...setRuleOps, 
       ...setFunctionOps,
@@ -56,7 +56,7 @@ export default class App extends ModuleBase {
    */
   async setAppBillingConfig(appName: string, config: appBillingConfig) {
     const setConfigOp = this.buildSetAppBillingConfigOp(appName, config);
-    const txBody = this.buildTxBody(setConfigOp);
+    const txBody = buildTxBody(setConfigOp);
     return await this.sendTransaction(txBody);
   }
 
