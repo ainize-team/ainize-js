@@ -3,7 +3,7 @@ import * as NodeCache from "node-cache";
 import Middleware from "./middlewares/middleware";
 import { getBlockChainEndpoint } from "./constants";
 import Handler from "./handlers/handler";
-import AppController from "./controller/appController";
+import AppController from "./controllers/appController";
 import Model from "./model";
 export default class Ainize {
   private cache: NodeCache;
