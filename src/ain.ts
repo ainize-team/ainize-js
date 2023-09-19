@@ -50,4 +50,9 @@ export default class AinModule {
       throw new Error('Set initAin(chainId) First.');
     return true;
   }
+
+  getAddress() {
+    this.checkAinInitiated();
+    return this.ain!.wallet.defaultAccount!.address;
+  }
 }

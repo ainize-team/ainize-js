@@ -1,7 +1,7 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import AinModule from "../ain";
 import { Path } from "../constants";
-import { getRequestDepositOp, getTransferOp } from "../utils/util";
+import { getRequestDepositOp, getTransferOp } from "../utils/operator";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
 
 export default class ModelController {
@@ -40,9 +40,9 @@ export default class ModelController {
   async chargeCredit(modelName: string, amount: number) {
     this.isLoggedIn();
     const transferKey = Date.now();
-    const userAddress =  this.ain.getDefaultAccount()!.address;
+    const userAddress = this.ain.getAddress(); 
     const depositAddress = await this.getDepositAddress(modelName);
-    const op_list: SetOperation[]  = [
+    const op_list: SetOperation[] = [
       getTransferOp(userAddress, depositAddress, transferKey.toString(), amount),
       getRequestDepositOp(modelName, userAddress, transferKey.toString(), amount)
     ] 
@@ -58,14 +58,14 @@ export default class ModelController {
 
   async getCreditBalance(modelName: string) {
     this.isLoggedIn();
-    const userAddress =  this.ain.getDefaultAccount()!.address;
+    const userAddress = this.ain.getAddress();
     const balancePath = Path.app(modelName).balanceOfUser(userAddress);
     return await this.ain.getValue(balancePath);
   }
 
   async getCreditHistory(modelName: string) {
     this.isLoggedIn();
-    const userAddress =  this.ain.getDefaultAccount()!.address;
+    const userAddress = this.ain.getAddress();
     const creditHistoryPath = Path.app(modelName).historyOfUser(userAddress);
     return await this.ain.getValue(creditHistoryPath);
   }
@@ -74,7 +74,7 @@ export default class ModelController {
   async use(modelName: string, requestData: string) {
     this.isLoggedIn();
     const requestKey = Date.now();
-    const requesterAddress =  this.ain.getDefaultAccount()!.address;
+    const requesterAddress = this.ain.getAddress();
     const requestPath = Path.app(modelName).request(requesterAddress, requestKey);
     const requestOp = buildSetOperation("SET_VALUE", requestPath, {prompt: requestData});
     const txBody = buildTxBody(requestOp);
@@ -101,12 +101,12 @@ export default class ModelController {
   }
   
   private async getDepositAddress(appName: string) {
-    return await this.ain.getValue(Path.app(appName).billingConfig().defaultAddress);
+    return (await this.ain.getValue(Path.app(appName).billingConfig())).defaultAddress;
   }
 
   private isLoggedIn() {
     if(!this.ain.getDefaultAccount())
-      throw new Error('Set defaultAccount First.');
+      throw new Error('You should login First.');
     return true;
   }
 }

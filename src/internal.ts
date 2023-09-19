@@ -1,21 +1,14 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Request } from "express";
-import { getChangeBalanceOp, getResponseOp, getWriteHistoryOp } from "./utils/util";
+import { getChangeBalanceOp, getResponseOp, getWriteHistoryOp } from "./utils/operator";
 import { HISTORY_TYPE, RESPONSE_STATUS, request, response } from "./types/type";
 import { buildTxBody } from "./utils/builder";
 import AinModule from "./ain";
-import { Path } from "./constants";
 
 export default class internal {
-  private ain: AinModule;
-  constructor() {
-    this.ain = AinModule.getInstance();
-  }
+  private ain = AinModule.getInstance();
   async handleDeposit(req: Request) {
-    const transferKey = req.body.valuePath[4];
-    const transferValue = req.body.value;
-    const appName = req.body.valuePath[1];
-    const requesterAddress = req.body.auth.addr;
+    const { requesterAddress, appName, transferKey, transferValue } = this.getDataFromDepositRequest(req);
     const ops: SetOperation[] = [];
     const changeBalanceOp = await getChangeBalanceOp(appName, requesterAddress, "INC_VALUE", transferValue);
     const writeHistoryOp = await getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.DEPOSIT, transferValue, transferKey);
@@ -52,4 +45,17 @@ export default class internal {
     }
     return requestData;
   }
-};
+
+  private getDataFromDepositRequest(req: Request) {
+    if(!req.body.valuePath[1] || !req.body.valuePath[4] || !req.body.value) {
+      throw new Error("Not from deposit request");
+    }
+    const depositData = {
+      transferKey: req.body.valuePath[4],
+      transferValue: req.body.value,
+      appName: req.body.valuePath[1],
+      requesterAddress: req.body.auth.addr,
+    }
+    return depositData;
+  }
+}
