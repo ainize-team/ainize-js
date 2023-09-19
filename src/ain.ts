@@ -21,8 +21,8 @@ export default class AinModule {
 
   isDefaultAccountExist(): boolean {
     if (this.getDefaultAccount())
-      return false;
-    return true;
+      return true;
+    return false;
   }
 
   setDefaultAccount(privateKey: string) {
@@ -49,5 +49,10 @@ export default class AinModule {
     if (!this.ain) 
       throw new Error('Set initAin(chainId) First.');
     return true;
+  }
+
+  getAddress() {
+    this.isDefaultAccountExist();
+    return this.ain!.wallet.defaultAccount!.address;
   }
 }

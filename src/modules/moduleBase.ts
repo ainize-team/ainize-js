@@ -8,18 +8,6 @@ export default class ModuleBase {
   constructor(ainize: Ainize) {
     this.ain = ainize.ain;
   }
-  
-  protected buildTxBody(operation: SetOperation | SetOperation[], timestamp? : number): TransactionBody {
-    return {
-      operation: Array.isArray(operation) ? {
-        type: "SET",
-        op_list: operation
-      } : operation,
-      gas_price: 500,
-      timestamp: timestamp? timestamp : Date.now(),
-      nonce: -1,
-    }
-  }
 
   protected getDefaultAccount() {
     const defaultAccount = this.ain.wallet.defaultAccount;
