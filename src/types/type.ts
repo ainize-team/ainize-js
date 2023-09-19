@@ -69,3 +69,20 @@ export type deposit = {
   appName: string,
   requesterAddress: string,
 }
+
+export type deployConfig = {
+  modelName: string,
+  billingConfig?: appBillingConfig,
+  serviceUrl?: string, // NOTE(yoojin): for test.
+}
+
+export type createAppConfig = {
+  appName: string,
+  billingConfig: appBillingConfig,
+  serviceUrl: string,
+}
+
+export enum ContainerStatus {
+  RUNNING = "RUNNING",
+  STOP = "STOP",
+}
