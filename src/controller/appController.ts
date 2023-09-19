@@ -14,6 +14,7 @@ export default class AppController {
     }
     return AppController.instance;
   }
+  
   /**
    * Create App for your AI Service on AI Network.
    * @param {string} appName - The name of app you will create.
@@ -175,6 +176,7 @@ export default class AppController {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
   }
+
   private buildCreateAppOp(appName: string): SetOperation {
     const path = `/manage_app/${appName}/create/${Date.now()}`;
     const adminAccount = this.ain.getDefaultAccount()!;
