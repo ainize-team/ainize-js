@@ -1,7 +1,7 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
 import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
-import { buildSetOperation } from "../utils/builder";
+import { buildSetOperation, buildTxBody } from "../utils/builder";
 import AinModule from '../ain';
 
 export default class AppController {
@@ -47,7 +47,7 @@ export default class AppController {
     const configOp = this.buildSetAppBillingConfigOp(appName, defaultConfig);
     setBillingConfigOps.push(configOp);
 
-    const txBody = this.buildTxBody([
+    const txBody = buildTxBody([
       createAppOp, 
       ...setRuleOps, 
       ...setFunctionOps,
@@ -64,7 +64,7 @@ export default class AppController {
    */
   async setAppBillingConfig(appName: string, config: appBillingConfig) {
     const setConfigOp = this.buildSetAppBillingConfigOp(appName, config);
-    const txBody = this.buildTxBody(setConfigOp);
+    const txBody = buildTxBody(setConfigOp);
     return await this.ain.sendTransaction(txBody);
   }
 
@@ -95,7 +95,7 @@ export default class AppController {
       // FIXME(yoojin): error message.
       throw new Error ("Please input setTriggerFunctionParams.");
     }
-    const txBody = this.buildTxBody(setFunctionOps);
+    const txBody = buildTxBody(setFunctionOps);
     return await this.ain.sendTransaction(txBody);
   }
 
@@ -113,7 +113,7 @@ export default class AppController {
       const op = buildSetOperation("SET_RULE", ref, value);
       setRuleOps.push(op);
     }
-    const txBody = this.buildTxBody(setRuleOps);
+    const txBody = buildTxBody(setRuleOps);
     return await this.ain.sendTransaction(txBody);
   }
 
@@ -125,7 +125,7 @@ export default class AppController {
    */
   async addAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress);
-    const txBody = this.buildTxBody(op);
+    const txBody = buildTxBody(op);
     return await this.ain.sendTransaction(txBody);
   }
 
@@ -137,7 +137,7 @@ export default class AppController {
    */
   async deleteAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress, true);
-    const txBody = this.buildTxBody(op);
+    const txBody = buildTxBody(op);
     return await this.ain.sendTransaction(txBody);
   }
 
