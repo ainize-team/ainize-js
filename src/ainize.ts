@@ -11,7 +11,6 @@ export default class Ainize {
   private cache: NodeCache;
   ain: Ain;
   middleware: Middleware;
-  handler: Handler;
   appController: AppController = AppController.getInstance();
 
   constructor(chainId: 1 | 0) {
@@ -19,7 +18,6 @@ export default class Ainize {
     this.ain = new Ain(blockChainEndpoint, chainId);
     this.cache = new NodeCache();
     this.middleware = new Middleware(this.cache);
-    this.handler = new Handler(this);
   }
   
   // FIXME(yoojin): add config type and change param type.

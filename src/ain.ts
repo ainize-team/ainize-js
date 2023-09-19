@@ -55,4 +55,9 @@ export default class AinModule {
     this.isDefaultAccountExist();
     return this.ain!.wallet.defaultAccount!.address;
   }
+
+  getEventManager() {
+    this.checkAinInitiated();
+    return this.ain!.em;
+  }
 }
