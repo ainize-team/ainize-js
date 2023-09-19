@@ -19,12 +19,6 @@ export default class AinModule {
     this.ain = new Ain(blockchainEndpoint, chainId);
   }
 
-  checkAinInitiated(): boolean {
-    if (!this.ain) 
-      throw new Error('Set initAin(chainId) First.');
-    return true;
-  }
-
   isDefaultAccountExist(): boolean {
     if (this.getDefaultAccount())
       return false;
@@ -41,8 +35,19 @@ export default class AinModule {
     return this.ain!.wallet.defaultAccount;
   }
 
+  async getValue(path: string) {
+    this.checkAinInitiated();
+    return await this.ain!.db.ref(path).getValue();
+  }
+
   async sendTransaction(data: TransactionBody) {
-    this.checkAinInitiated()
+    this.checkAinInitiated();
     return await this.ain!.sendTransaction(data);
+  }
+
+  private checkAinInitiated(): boolean {
+    if (!this.ain) 
+      throw new Error('Set initAin(chainId) First.');
+    return true;
   }
 }
