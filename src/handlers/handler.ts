@@ -30,18 +30,17 @@ export default class Handler {
    * You should connect before subscibe. 
    * @param {string} userAddress - Address of account you request with. 
    * @param {string} appName - App name you want to subscribe.
-   * @param {string} serviceName - Service name you want to subscribe.
    * @param {Function(valueChangedEvent: any)} callback - A callback function to handle response. It will be called when response is written.
    * @returns SubscribeId. 
    */
-  async subscribe(userAddress:string, appName: string, serviceName: string, callback: (valueChangedEvent: any) => any) {
-    if (this.checkSubscribeTableExists(userAddress, appName, serviceName)){
+  async subscribe(userAddress:string, appName: string, callback: (valueChangedEvent: any) => any) {
+    if (this.checkSubscribeTableExists(userAddress, appName)){
       throw new Error("Already subscribed");
     }
     const subscribeId = await this.ain.em.subscribe(
       "VALUE_CHANGED",
       {
-        path: Path.app(appName).response(serviceName, userAddress, "$requestKey"),
+        path: Path.app(appName).response(userAddress, "$requestKey"),
         event_source: "USER",
       },
       (valueChangedEvent) => {
@@ -51,16 +50,16 @@ export default class Handler {
         throw new Error(err.message);
       },
     );
-    this.addToSubscribeTable(userAddress, appName, serviceName, subscribeId);
+    this.addToSubscribeTable(userAddress, appName, subscribeId);
     return subscribeId;
   }
   
-  private checkSubscribeTableExists(userAddress:string, appName:string, serviceName: string) {
-    return _.has(this.subscribeTable, [userAddress, appName, serviceName]);
+  private checkSubscribeTableExists(userAddress:string, appName:string,) {
+    return _.has(this.subscribeTable, [userAddress, appName]);
   }
 
-  private addToSubscribeTable(userAddress:string, appName: string, serviceName: string, filterId: string) {
-    _.set(this.subscribeTable, [userAddress, appName], {serviceName:filterId});
+  private addToSubscribeTable(userAddress:string, appName: string, filterId: string) {
+    _.set(this.subscribeTable, [userAddress], {appName:filterId});
   }
 
   /**
@@ -76,20 +75,19 @@ export default class Handler {
    * Unsubscribe to specific service reponse. 
    * @param {string} userAddress - Address of account you want to unsubscribe.
    * @param {string} appName - App name you want to unsubscribe.
-   * @param {string} serviceName - Service name you want to unsubscribe.
    * @returns True if successfuly unsubscribed.
    */
-  unsubscribe(userAddress:string, appName: string, serviceName: string) {
-    if (!this.checkSubscribeTableExists(userAddress, appName, serviceName)) {
+  unsubscribe(userAddress:string, appName: string) {
+    if (!this.checkSubscribeTableExists(userAddress, appName)) {
       throw new Error("Not subscribed");
     }
     this.ain.em.unsubscribe(
-      this.subscribeTable[userAddress][appName][serviceName],
+      this.subscribeTable[userAddress][appName],
       (err)=>{
         if (err) {
           throw new Error(err.message);
       } else {
-        this.subscribeTable[userAddress][appName][serviceName] = null;
+        this.subscribeTable[userAddress][appName] = null;
           return true;
       }
     });

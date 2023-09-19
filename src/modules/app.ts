@@ -1,6 +1,6 @@
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import { Path } from "../constants";
-import { appBillingConfig, serviceBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
+import { appBillingConfig, setRuleParam, setTriggerFunctionParm, triggerFunctionConfig } from "../types/type";
 import { buildSetOperation } from "../utils/builder";
 import ModuleBase from "./moduleBase";
 
@@ -33,12 +33,8 @@ export default class App extends ModuleBase {
     const depositAddress = this.getDefaultAccount().address;
     const defaultConfig: appBillingConfig = {
       depositAddress,
-      service: {
-        default: {
-          costPerToken: 0,
-          minCost: 0,
-        }
-      }
+      costPerToken: 0,
+      minCost: 0,
     }
     const configOp = this.buildSetAppBillingConfigOp(appName, defaultConfig);
     setBillingConfigOps.push(configOp);
@@ -60,19 +56,6 @@ export default class App extends ModuleBase {
    */
   async setAppBillingConfig(appName: string, config: appBillingConfig) {
     const setConfigOp = this.buildSetAppBillingConfigOp(appName, config);
-    const txBody = this.buildTxBody(setConfigOp);
-    return await this.sendTransaction(txBody);
-  }
-
-  /**
-   * Set billing config to a specific service.
-   * @param {string} appName 
-   * @param {string} serviceName 
-   * @param {serviceBillingConfig} config
-   * @returns Result of transaction.
-   */
-  async setServiceBillingConfig(appName: string, serviceName: string, config: serviceBillingConfig) {
-    const setConfigOp = this.buildSetServiceBillingConfigOp(appName, serviceName, config);
     const txBody = this.buildTxBody(setConfigOp);
     return await this.sendTransaction(txBody);
   }
@@ -154,32 +137,19 @@ export default class App extends ModuleBase {
    * Check cost of request and check if account can pay. You should use this function before send or handle request.
    * If you don't set address, it will use default account's address.
    * @param {string} appName - App name you want to request service to.
-   * @param {string} serviceName - Service name you want to request to.
    * @param {string} prompt - Data you want to request to service .
    * @param {string=} userAddress - Address of account you want to check balance. You should set default account if you don't provide address.
    * @returns Result cost of service. It throws error when user can't pay.
    */
-    async checkCostAndBalance(appName: string, serviceName: string, value: string, requesterAddress?: string) {
+    async checkCostAndBalance(appName: string, value: string, requesterAddress?: string) {
       requesterAddress = requesterAddress ? requesterAddress : this.getDefaultAccount().address;
-      const billingConfig = (await this.getBillingConfig(appName)).service;
-      const serviceBillingConfig = billingConfig.default;
-      if(billingConfig[serviceName]) {
-        if(billingConfig[serviceName].costPerToken) {
-          serviceBillingConfig.costPerToken = billingConfig[serviceName].costPerToken;
-        }
-        if(billingConfig[serviceName].minCost) {
-          serviceBillingConfig.minCost = billingConfig[serviceName].minCost;
-        }
-        if(billingConfig[serviceName].maxCost) {
-          serviceBillingConfig.maxCost = billingConfig[serviceName].maxCost;
-        }
-      }
+      const billingConfig = (await this.getBillingConfig(appName));
       const token = value.split(' ').length;
-      let cost = token * serviceBillingConfig.costPerToken;
-      if (serviceBillingConfig.minCost && cost < serviceBillingConfig.minCost) {
-        cost = serviceBillingConfig.minCost;
-      } else if (serviceBillingConfig.maxCost && cost > serviceBillingConfig.maxCost) {
-        cost = serviceBillingConfig.maxCost;
+      let cost = token * billingConfig.costPerToken;
+      if (billingConfig.minCost && cost < billingConfig.minCost) {
+        cost = billingConfig.minCost;
+      } else if (billingConfig.maxCost && cost > billingConfig.maxCost) {
+        cost = billingConfig.maxCost;
       }
       const balance = await this.getCreditBalance(appName, requesterAddress);
       if (balance < cost) {
@@ -197,12 +167,6 @@ export default class App extends ModuleBase {
     const path = Path.app(appName).billingConfig();
     return buildSetOperation("SET_VALUE", path, config);
   }
-
-  private buildSetServiceBillingConfigOp(appName: string, serviceName: string, config: serviceBillingConfig) {
-    const path = Path.app(appName).billingConfigOfService(serviceName);
-    return buildSetOperation("SET_VALUE", path, config);
-  }
-
   private buildCreateAppOp(appName: string): SetOperation {
     const path = `/manage_app/${appName}/create/${Date.now()}`;
     const adminAccount = this.getDefaultAccount();
@@ -268,18 +232,17 @@ export default class App extends ModuleBase {
         }
       },
       request: {
-        ref: Path.app(appName).request("$serviceName", "$userAddress", "$requestKey"),
+        ref: Path.app(appName).request("$userAddress", "$requestKey"),
         value: {
           ".rule": {
             write: 
               "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
-              "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/` + $serviceName + `/minCost`)) || " +
-              "getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) >= getValue(`/apps/" + `${appName}` + "/billingConfig/service/default/minCost`)" 
+              "(!util.isEmpty(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))) && (getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))"
           }
         }
       },
       response: {
-        ref: Path.app(appName).response("$serviceName", "userAddress", "$requestKey"),
+        ref: Path.app(appName).response("userAddress", "$requestKey"),
         value: {
           ".rule": {
             write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"

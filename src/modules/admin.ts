@@ -52,14 +52,13 @@ export default class Admin extends ModuleBase {
    * @returns RequestData type.
    */
   getDataFromServiceRequest(req: Request) {
-    if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[5] || !req.body.value.prompt) {
+    if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[4] || !req.body.value.prompt) {
       throw new Error("Not from service request");
     }
     const requestData: request = {
       appName: req.body.valuePath[1],
-      serviceName: req.body.valuePath[3],
       requesterAddress: req.body.auth.addr,
-      requestKey: req.body.valuePath[5],
+      requestKey: req.body.valuePath[4],
       requestData: req.body.value.prompt,
     }
     return requestData;

@@ -5,10 +5,10 @@ import { buildSetOperation } from "../../utils/builder";
 import ServiceBase from "./serviceBase";
 
 export default class UseService extends ServiceBase{
-  async writeRequest(appName: string, serviceName: string, value: string, requesterAddress?: string) {
+  async writeRequest(appName: string, value: string, requesterAddress?: string) {
     const requestKey = Date.now();
     requesterAddress = requesterAddress ? requesterAddress : this.wallet.getDefaultAddress();
-    const requestPath = Path.app(appName).request(serviceName, requesterAddress, requestKey);
+    const requestPath = Path.app(appName).request(requesterAddress, requestKey);
     const requestData = {
       prompt: value,
     }
@@ -19,8 +19,8 @@ export default class UseService extends ServiceBase{
   }
 
   async writeResponse(response: response) {
-    const { responseData, status, requesterAddress, requestKey, appName, serviceName, cost } = response;
-    const responsePath = Path.app(appName).response(serviceName, requesterAddress, requestKey);
+    const { responseData, status, requesterAddress, requestKey, appName, cost } = response;
+    const responsePath = Path.app(appName).response(requesterAddress, requestKey);
     const responseValue = {
       status,
       data: responseData,
