@@ -3,14 +3,15 @@ import AinModule from "../ain";
 import { Path } from "../constants";
 import { getRequestDepositOp, getTransferOp } from "../utils/operator";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
+import Handler from "../handlers/handler";
 
 export default class ModelController {
   private static instance: ModelController | undefined;
   private ain = AinModule.getInstance();
+  private handler = Handler.getInstance();
   static getInstance() {
     if(!ModelController.instance){
       ModelController.instance = new ModelController();
-
     }
     return ModelController.instance;
   }
@@ -73,13 +74,16 @@ export default class ModelController {
   //TODO(woojae): connect with handler
   async use(modelName: string, requestData: string) {
     this.isLoggedIn();
-    const requestKey = Date.now();
-    const requesterAddress = this.ain.getAddress();
-    const requestPath = Path.app(modelName).request(requesterAddress, requestKey);
-    const requestOp = buildSetOperation("SET_VALUE", requestPath, {prompt: requestData});
-    const txBody = buildTxBody(requestOp);
-    await this.ain.sendTransaction(txBody);
-    return requestKey;
+    new Promise(async (resolve, reject) => {
+      const requestKey = Date.now();
+      const requesterAddress = this.ain.getAddress();
+      await this.handler.subscribe(requesterAddress, requestKey.toString(), modelName, resolve);
+      const requestPath = Path.app(modelName).request(requesterAddress, requestKey);
+      const requestOp = buildSetOperation("SET_VALUE", requestPath, {prompt: requestData});
+      const txBody = buildTxBody(requestOp);
+      await this.ain.sendTransaction(txBody);
+      return requestKey;
+    });
   }
 
   //TODO(woojae): implement this

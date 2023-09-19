@@ -1,94 +1,65 @@
 const _ = require("lodash");
 import Ain from "@ainblockchain/ain-js";
-import { HANDLER_HEARBEAT_INTERVAL, Path } from "../constants";
 import Ainize from "../ainize";
+import { Path } from "../constants";
+import AinModule from "../ain";
+import EventManager from "@ainblockchain/ain-js/lib/event-manager";
 
 export default class Handler {
-  isConnected: boolean = false;
-  subscribeTable:any = {};
-  ain: Ain;
-  constructor(ainize: Ainize) {
-    this.ain = ainize.ain;
+  private static instance: Handler | undefined;
+  ain = AinModule.getInstance();
+  em: EventManager | undefined;
+  static getInstance() {
+    if(!Handler.instance){
+      Handler.instance = new Handler();
+      Handler.instance.em = Handler.instance.ain.getEventManager();
+    }
+    return Handler.instance;
   }
 
-    /**
-   * Connect to ai Network event node. you should connect before subscibe. It will auto reconnect when disconnected. 
-   * @returns Nothing.
-   */
+  checkEventManager() {
+    if (!this.em) 
+      throw new Error('set eventManager First.');
+    return true;
+  }
+
   async connect() {
-    await this.ain.em.connect({}, this.disconnectedCallback.bind(this));
-    this.isConnected = true;
+    this.checkEventManager();
+    await this.em!.connect({},this.disconnectedCb);
+    console.log('connected');
   };
 
-  private async disconnectedCallback() {
-    this.isConnected = false;
+  private async disconnectedCb() {
+    console.log('disconnected. reconnecting...');
     await this.connect();
   }
 
-  /**
-   * Subscribe to specific service reponse. You can handle reponse with callback function.
-   * You should connect before subscibe. 
-   * @param {string} userAddress - Address of account you request with. 
-   * @param {string} appName - App name you want to subscribe.
-   * @param {Function(valueChangedEvent: any)} callback - A callback function to handle response. It will be called when response is written.
-   * @returns SubscribeId. 
-   */
-  async subscribe(userAddress:string, appName: string, callback: (valueChangedEvent: any) => any) {
-    if (this.checkSubscribeTableExists(userAddress, appName)){
-      throw new Error("Already subscribed");
-    }
-    const subscribeId = await this.ain.em.subscribe(
+  async subscribe(requester:string, recordId:string, appName: string, resolve: any) {
+    this.checkEventManager();
+    const responsePath = Path.app(appName).response(requester, recordId);
+    const subscribeId = await this.em!.subscribe(
       "VALUE_CHANGED",
       {
-        path: Path.app(appName).response(userAddress, "$requestKey"),
+        path: responsePath,
         event_source: "USER",
       },
-      (valueChangedEvent) => {
-        callback(valueChangedEvent);
+      (valueChangedEvent: any) => {
+        this.unsubscribe(subscribeId);
+        resolve(valueChangedEvent.values.after.data);
       },
       (err) => {
         throw new Error(err.message);
       },
     );
-    this.addToSubscribeTable(userAddress, appName, subscribeId);
-    return subscribeId;
-  }
-  
-  private checkSubscribeTableExists(userAddress:string, appName:string,) {
-    return _.has(this.subscribeTable, [userAddress, appName]);
   }
 
-  private addToSubscribeTable(userAddress:string, appName: string, filterId: string) {
-    _.set(this.subscribeTable, [userAddress], {appName:filterId});
-  }
-
-  /**
-   * Get subscribe list of userAddress. If you don't set userAddress, it will return all subscribe list.
-   * @param {string=} userAddress - Address of account you want to get subscribe list.
-   * @returns Result of transaction.
-   */
-  getSubscribeList(userAddress?: string) {
-    if (!userAddress) return this.subscribeTable;
-    return this.subscribeTable[userAddress];
-  }
-  /**
-   * Unsubscribe to specific service reponse. 
-   * @param {string} userAddress - Address of account you want to unsubscribe.
-   * @param {string} appName - App name you want to unsubscribe.
-   * @returns True if successfuly unsubscribed.
-   */
-  unsubscribe(userAddress:string, appName: string) {
-    if (!this.checkSubscribeTableExists(userAddress, appName)) {
-      throw new Error("Not subscribed");
-    }
-    this.ain.em.unsubscribe(
-      this.subscribeTable[userAddress][appName],
+  async unsubscribe(filterId: string) {
+    this.checkEventManager();
+    await this.em!.unsubscribe(
+      filterId,
       (err)=>{
         if (err) {
           throw new Error(err.message);
-      } else {
-        this.subscribeTable[userAddress][appName] = null;
-          return true;
       }
     });
   }
