@@ -3,6 +3,7 @@ import { Request } from "express";
 import { SetOperation } from "@ainblockchain/ain-js/lib/types";
 import ServiceBase from "./serviceBase";
 import { HISTORY_TYPE } from "../../types/type";
+import { getChangeBalanceOp, getWriteHistoryOp } from "../../utils/util";
 
 export default class DepositService extends ServiceBase {
   async requestDeposit(appName: string, amount: number, userAddress?: string) {
@@ -28,8 +29,8 @@ export default class DepositService extends ServiceBase {
 
   async handleDeposit(appName: string, transferKey: string, transferValue: number, requesterAddress: string) {
     const ops: SetOperation[] = [];
-    const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, "INC_VALUE", transferValue);
-    const writeHistoryOp = await this.getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.DEPOSIT, transferValue, transferKey);
+    const changeBalanceOp = await getChangeBalanceOp(appName, requesterAddress, "INC_VALUE", transferValue);
+    const writeHistoryOp = await getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.DEPOSIT, transferValue, transferKey);
     ops.push(changeBalanceOp);
     ops.push(writeHistoryOp);
     const txBody = this.buildTxBody(ops);

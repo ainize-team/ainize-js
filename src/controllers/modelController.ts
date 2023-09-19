@@ -64,4 +64,5 @@ export default class ModelController {
   async changeModelInfo(modelName: string, config: any) {
     return await true;
   }
+
 }

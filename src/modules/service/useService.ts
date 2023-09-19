@@ -3,6 +3,7 @@ import { Path } from "../../constants";
 import { HISTORY_TYPE, RESPONSE_STATUS, response } from "../../types/type";
 import { buildSetOperation } from "../../utils/builder";
 import ServiceBase from "./serviceBase";
+import { getChangeBalanceOp, getWriteHistoryOp } from "../../utils/util";
 
 export default class UseService extends ServiceBase{
   async writeRequest(appName: string, value: string, requesterAddress?: string) {
@@ -29,8 +30,8 @@ export default class UseService extends ServiceBase{
     const responseOp = buildSetOperation("SET_VALUE", responsePath, responseValue);
     ops.push(responseOp);
     if (status === RESPONSE_STATUS.SUCCESS) {
-      const changeBalanceOp = await this.getChangeBalanceOp(appName, requesterAddress, 'DEC_VALUE', cost);
-      const writeHistoryOp = await this.getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.USAGE, cost, requestKey);
+      const changeBalanceOp = await getChangeBalanceOp(appName, requesterAddress, 'DEC_VALUE', cost);
+      const writeHistoryOp = await getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.USAGE, cost, requestKey);
       ops.push(changeBalanceOp);
       ops.push(writeHistoryOp);
     }
