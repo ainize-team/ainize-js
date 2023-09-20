@@ -1,4 +1,3 @@
-import Ain from "@ainblockchain/ain-js";
 import * as NodeCache from "node-cache";
 import Middleware from "./middlewares/middleware";
 import { DEFAULT_BILLING_CONFIG, getBlockChainEndpoint } from "./constants";
@@ -9,40 +8,52 @@ import { deployConfig } from "./types/type";
 import AinModule from "./ain";
 export default class Ainize {
   private cache: NodeCache;
-  ain: Ain;
+  ain: AinModule = AinModule.getInstance();
   middleware: Middleware;
   handler: Handler;
   appController: AppController = AppController.getInstance();
 
   constructor(chainId: 1 | 0) {
-    const blockChainEndpoint = getBlockChainEndpoint(chainId);
-    this.ain = new Ain(blockChainEndpoint, chainId);
+    this.ain.initAin(chainId);
     this.cache = new NodeCache();
     this.middleware = new Middleware(this.cache);
     this.handler = new Handler(this);
   }
   
+  login(privateKey: string) {
+    this.ain.setDefaultAccount(privateKey);
+  }
+
+  logout() {
+    this.ain.removeDefaultAccount();
+  }
+
   // FIXME(yoojin): add config type and change param type.
-  deploy({modelName, billingConfig, serviceUrl}: deployConfig) {
+  async deploy({modelName, billingConfig, serviceUrl}: deployConfig): Promise<Model> {
     // TODO(yoojin, woojae): Deploy container, advanced.
-    const deployer = AinModule.getInstance().getAddress();
+    const deployer = this.ain.getAddress();
     if (!billingConfig) {
       billingConfig = {
         ...DEFAULT_BILLING_CONFIG,
         depositAddress: deployer,
-      }
+      };
     }
     // NOTE(yoojin): For test. We make fixed url on service.
     if (!serviceUrl) {
       serviceUrl = `https://${modelName}.ainetwork.xyz`;
     }
     
-    this.appController.createApp({ appName: modelName, serviceUrl, billingConfig })
-  }
-
-  model(modelName: string) {
+    await this.appController.createApp({ appName: modelName, serviceUrl, billingConfig });
     return new Model(modelName);
   }
+
+  model(modelName: string): Model {
+    return new Model(modelName);
+  }
+
+  createAinAccount () {
+    return this.ain.createAccount();
+  }  
 
   test() {
     console.log("test");
