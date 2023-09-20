@@ -1,6 +1,7 @@
 import Ain from "@ainblockchain/ain-js";
 import { getBlockChainEndpoint } from "./constants";
 import { TransactionBody } from "@ainblockchain/ain-util";
+import { txResult } from "./types/type";
 
 // NOTE(yoojin): Plz suggest a good name.
 export default class AinModule {
@@ -63,7 +64,7 @@ export default class AinModule {
     return await this.ain!.db.ref(path).getValue();
   }
 
-  async sendTransaction(data: TransactionBody) {
+  private async _sendTransaction(data: TransactionBody) {
     this.checkAinInitiated();
     return await this.ain!.sendTransaction(data);
   }
@@ -78,4 +79,28 @@ export default class AinModule {
     this.checkAinInitiated();
     return this.ain!.em;
   }
+
+  private hasFailedOpResultList(result: txResult): boolean {
+    if (result.result_list) {
+      return Object.values(result.result_list).some(
+        (result: { code: number }) => result.code !== 0
+      );
+    }
+    return result.code !== 0;
+  }
+
+  private handleTxResultWrapper(operation: Function) {
+    return async (args: any) => {
+      const res = await operation(args);
+      const { tx_hash, result } = res;
+      if (this.hasFailedOpResultList(result)) {
+        throw new Error(
+          `Failed to send transaction (${tx_hash}).\n Tx Result: ${JSON.stringify(result)}`
+        );
+      }
+      return tx_hash;
+    }
+  }
+
+  sendTransaction = this.handleTxResultWrapper(this._sendTransaction.bind(this));
 }
