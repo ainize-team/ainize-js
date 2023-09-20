@@ -28,7 +28,9 @@ export default class AinModule {
   createAccount() {
     this.checkAinInitiated();
     const newAccount = this.ain!.wallet.create(1)[0];
-    return newAccount;
+    const wallet = this.ain!.wallet.accounts[newAccount];
+    this.ain!.wallet.remove(newAccount);
+    return wallet;
   }
 
   setDefaultAccount(privateKey: string) {
