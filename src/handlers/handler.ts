@@ -35,8 +35,10 @@ export default class Handler {
   }
 
   private async disconnectedCb() {
-    console.log('disconnected. reconnecting...');
-    await this.connect();
+    if(!AinModule.getInstance().isDefaultAccountExist()) {
+      console.log('disconnected. reconnecting...');
+      await this.connect();
+    }
   }
 
   async subscribe(requester:string, recordId:string, appName: string, resolve: any) {

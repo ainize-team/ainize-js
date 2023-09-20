@@ -34,8 +34,8 @@ export default class Ainize {
   }
 
   async logout() {
-    await this.handler.disconnect();
     this.ain.removeDefaultAccount();
+    await this.handler.disconnect();
     console.log('logout success!');
   }
 
