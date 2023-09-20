@@ -25,6 +25,12 @@ export default class AinModule {
     return false;
   }
 
+  createAccount() {
+    this.checkAinInitiated();
+    const newAccount = this.ain!.wallet.create(1)[0];
+    return newAccount;
+  }
+
   setDefaultAccount(privateKey: string) {
     this.checkAinInitiated();
     this.ain!.wallet.addAndSetDefaultAccount(privateKey);
@@ -33,6 +39,21 @@ export default class AinModule {
   getDefaultAccount() {
     this.checkAinInitiated();
     return this.ain!.wallet.defaultAccount;
+  }
+
+  removeDefaultAccount() {
+    this.checkAinInitiated();
+    this.ain!.wallet.removeDefaultAccount();
+  }
+
+  getAddress() {
+    this.isDefaultAccountExist();
+    return this.ain!.wallet.defaultAccount!.address;
+  }
+
+  async getBalance() {
+    this.isDefaultAccountExist();
+    return await this.ain!.wallet.getBalance();
   }
 
   async getValue(path: string) {
@@ -49,11 +70,6 @@ export default class AinModule {
     if (!this.ain) 
       throw new Error('Set initAin(chainId) First.');
     return true;
-  }
-
-  getAddress() {
-    this.isDefaultAccountExist();
-    return this.ain!.wallet.defaultAccount!.address;
   }
 
   getEventManager() {
