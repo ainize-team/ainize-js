@@ -29,8 +29,10 @@ export default class Ainize {
     console.log('login success! address:', this.ain.getAddress());
   }
 
-  logout() {
+  async logout() {
+    await this.handler.disconnect();
     this.ain.removeDefaultAccount();
+    console.log('logout success!');
   }
 
   async getAddress(): Promise<string> {
