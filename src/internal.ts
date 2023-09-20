@@ -5,8 +5,9 @@ import { HISTORY_TYPE, RESPONSE_STATUS, deposit, request, response } from "./typ
 import { buildTxBody } from "./utils/builder";
 import AinModule from "./ain";
 
-export default class internal {
+export default class Internal {
   private ain = AinModule.getInstance();
+  
   async handleDeposit(req: Request) {
     const { requesterAddress, appName, transferKey, transferValue } = this.getDataFromDepositRequest(req);
     const ops: SetOperation[] = [];

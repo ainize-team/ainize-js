@@ -6,11 +6,14 @@ import AppController from "./controllers/appController";
 import Model from "./model";
 import { deployConfig } from "./types/type";
 import AinModule from "./ain";
+import Internal from "./internal";
+
 export default class Ainize {
   private cache: NodeCache;
-  ain: AinModule = AinModule.getInstance();
   private handler: Handler = Handler.getInstance();
+  ain: AinModule = AinModule.getInstance();
   middleware: Middleware;
+  internal: Internal;
   appController: AppController = AppController.getInstance();
 
   constructor(chainId: 1 | 0) {
@@ -18,6 +21,7 @@ export default class Ainize {
     this.handler.connect();
     this.cache = new NodeCache();
     this.middleware = new Middleware(this.cache);
+    this.internal = new Internal();
   }
   
   static createAinAccount () {
