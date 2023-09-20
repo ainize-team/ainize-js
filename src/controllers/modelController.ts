@@ -65,7 +65,7 @@ export default class ModelController {
     this.isLoggedIn();
     const userAddress = this.ain.getAddress();
     const balancePath = Path.app(modelName).balanceOfUser(userAddress);
-    return await this.ain.getValue(balancePath);
+    return await this.ain.getValue(balancePath) | 0;
   }
 
   async getCreditHistory(modelName: string) {
