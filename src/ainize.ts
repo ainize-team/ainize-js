@@ -20,12 +20,20 @@ export default class Ainize {
     this.handler = new Handler(this);
   }
   
+  createAinAccount () {
+    return this.ain.createAccount();
+  }
+
   login(privateKey: string) {
     this.ain.setDefaultAccount(privateKey);
   }
 
   logout() {
     this.ain.removeDefaultAccount();
+  }
+
+  async getAinBalance(): Promise<number> {
+    return await this.ain.getBalance();
   }
 
   // FIXME(yoojin): add config type and change param type.
@@ -51,9 +59,7 @@ export default class Ainize {
     return new Model(modelName);
   }
 
-  createAinAccount () {
-    return this.ain.createAccount();
-  }  
+  
 
   test() {
     console.log("test");
