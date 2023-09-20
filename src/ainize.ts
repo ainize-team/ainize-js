@@ -10,14 +10,12 @@ export default class Ainize {
   private cache: NodeCache;
   ain: AinModule = AinModule.getInstance();
   middleware: Middleware;
-  handler: Handler;
   appController: AppController = AppController.getInstance();
 
   constructor(chainId: 1 | 0) {
     this.ain.initAin(chainId);
     this.cache = new NodeCache();
     this.middleware = new Middleware(this.cache);
-    this.handler = new Handler(this);
   }
   
   static createAinAccount () {

@@ -71,4 +71,9 @@ export default class AinModule {
       throw new Error('Set initAin(chainId) First.');
     return true;
   }
+
+  getEventManager() {
+    this.checkAinInitiated();
+    return this.ain!.em;
+  }
 }
