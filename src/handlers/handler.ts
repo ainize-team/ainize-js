@@ -3,11 +3,11 @@ import Ain from "@ainblockchain/ain-js";
 import Ainize from "../ainize";
 import { Path } from "../constants";
 import AinModule from "../ain";
-import EventManager from "@ainblockchain/ain-js/lib/event-manager";
 
 export default class Handler {
   private static instance: Handler | undefined;
-  em = AinModule.getInstance().getEventManager();
+  ain = AinModule.getInstance();
+
   static getInstance() {
     if(!Handler.instance){
       Handler.instance = new Handler();
@@ -16,20 +16,23 @@ export default class Handler {
   }
 
   checkEventManager() {
-    if (!this.em) {
-      if(!AinModule.getInstance().getEventManager()){
-        throw new Error('you should init ain first');
-      }
-      this.em = AinModule.getInstance().getEventManager();
+    if(!AinModule.getInstance().getEventManager()){
+      throw new Error('you should init ain first');
     }
     return true;
   }
 
   async connect() {
     this.checkEventManager();
-    await this.em!.connect({},this.disconnectedCb);
+    await this.ain.getEventManager().connect({},this.disconnectedCb);
     console.log('connected');
   };
+  
+  async disconnect() {
+    this.checkEventManager();
+    await this.ain.getEventManager().disconnect();
+    console.log('disconnected');
+  }
 
   private async disconnectedCb() {
     console.log('disconnected. reconnecting...');
@@ -39,7 +42,7 @@ export default class Handler {
   async subscribe(requester:string, recordId:string, appName: string, resolve: any) {
     this.checkEventManager();
     const responsePath = Path.app(appName).response(requester, recordId);
-    const subscribeId = await this.em!.subscribe(
+    const subscribeId = await this.ain.getEventManager().subscribe(
       "VALUE_CHANGED",
       {
         path: responsePath,
@@ -57,7 +60,7 @@ export default class Handler {
 
   async unsubscribe(filterId: string) {
     this.checkEventManager();
-    await this.em!.unsubscribe(
+    await this.ain.getEventManager().unsubscribe(
       filterId,
       (err)=>{
         if (err) {

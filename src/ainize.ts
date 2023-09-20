@@ -18,7 +18,6 @@ export default class Ainize {
 
   constructor(chainId: 1 | 0) {
     this.ain.initAin(chainId);
-    this.handler.connect();
     this.cache = new NodeCache();
     this.middleware = new Middleware(this.cache);
     this.internal = new Internal();
@@ -28,12 +27,20 @@ export default class Ainize {
     return AinModule.getInstance().createAccount();
   }
 
-  login(privateKey: string) {
+  async login(privateKey: string) {
     this.ain.setDefaultAccount(privateKey);
+    await this.handler.connect();
+    console.log('login success! address:', this.ain.getAddress());
   }
 
-  logout() {
+  async logout() {
+    await this.handler.disconnect();
     this.ain.removeDefaultAccount();
+    console.log('logout success!');
+  }
+
+  async getAddress(): Promise<string> {
+    return await this.ain.getAddress();
   }
 
   async getAinBalance(): Promise<number> {
@@ -56,7 +63,7 @@ export default class Ainize {
     }
     
     await this.appController.createApp({ appName: modelName, serviceUrl, billingConfig });
-    return new Model(modelName);
+    return this.model(modelName);
   }
 
   model(modelName: string): Model {
