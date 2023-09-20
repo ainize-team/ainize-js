@@ -1,6 +1,6 @@
 import * as NodeCache from "node-cache";
 import Middleware from "./middlewares/middleware";
-import { DEFAULT_BILLING_CONFIG, getBlockChainEndpoint } from "./constants";
+import { DEFAULT_BILLING_CONFIG, Path, getBlockChainEndpoint } from "./constants";
 import Handler from "./handlers/handler";
 import AppController from "./controllers/appController";
 import Model from "./model";
@@ -66,7 +66,12 @@ export default class Ainize {
     return this.model(modelName);
   }
 
-  model(modelName: string): Model {
+  async model(modelName: string): Promise<Model> {
+    const modelPath = Path.app(modelName).root();
+    const modelData = await this.ain.getValue(modelPath);
+    if(!modelData) {
+      throw new Error("Model not found");
+    }
     return new Model(modelName);
   }
 
