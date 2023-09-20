@@ -7,6 +7,7 @@ import AinModule from "./ain";
 
 export default class Internal {
   private ain = AinModule.getInstance();
+  
   async handleDeposit(req: Request) {
     const { requesterAddress, appName, transferKey, transferValue } = this.getDataFromDepositRequest(req);
     const ops: SetOperation[] = [];
