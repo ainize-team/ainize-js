@@ -20,8 +20,8 @@ export default class Ainize {
     this.handler = new Handler(this);
   }
   
-  createAinAccount () {
-    return this.ain.createAccount();
+  static createAinAccount () {
+    return AinModule.getInstance().createAccount();
   }
 
   login(privateKey: string) {
@@ -58,8 +58,6 @@ export default class Ainize {
   model(modelName: string): Model {
     return new Model(modelName);
   }
-
-  
 
   test() {
     console.log("test");
