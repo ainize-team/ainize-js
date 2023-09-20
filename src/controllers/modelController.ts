@@ -111,7 +111,7 @@ export default class ModelController {
   }
   
   private async getDepositAddress(appName: string) {
-    return (await this.ain.getValue(Path.app(appName).billingConfig())).defaultAddress;
+    return (await this.ain.getValue(Path.app(appName).billingConfig())).depositAddress;
   }
 
   private isLoggedIn() {
