@@ -26,7 +26,7 @@ export default class AinModule {
   }
 
   createAccount() {
-    this.checkAinInitiated()
+    this.checkAinInitiated();
     const newAccount = this.ain!.wallet.create(1)[0];
     return newAccount;
   }
