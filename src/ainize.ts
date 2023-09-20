@@ -9,11 +9,13 @@ import AinModule from "./ain";
 export default class Ainize {
   private cache: NodeCache;
   ain: AinModule = AinModule.getInstance();
+  private handler: Handler = Handler.getInstance();
   middleware: Middleware;
   appController: AppController = AppController.getInstance();
 
   constructor(chainId: 1 | 0) {
     this.ain.initAin(chainId);
+    this.handler.connect();
     this.cache = new NodeCache();
     this.middleware = new Middleware(this.cache);
   }

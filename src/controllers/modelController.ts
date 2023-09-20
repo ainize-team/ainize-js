@@ -4,6 +4,7 @@ import { Path } from "../constants";
 import { getRequestDepositOp, getTransferOp } from "../utils/operator";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
 import Handler from "../handlers/handler";
+import { ContainerStatus } from "../types/type";
 
 export default class ModelController {
   private static instance: ModelController | undefined;
@@ -16,9 +17,11 @@ export default class ModelController {
     return ModelController.instance;
   }
 
-  //TODO(woojae): implement this
   async isRunning(modelName: string) {
-    return await true;
+    const isRunning = await this.ain.getValue(Path.app(modelName).status());
+    if(isRunning !== ContainerStatus.RUNNING) {
+      throw new Error('Model is not running');
+    }
   }
 
   //TODO(woojae): implement this
@@ -40,6 +43,7 @@ export default class ModelController {
 
   async chargeCredit(modelName: string, amount: number) {
     this.isLoggedIn();
+    this.isRunning(modelName);
     const transferKey = Date.now();
     const userAddress = this.ain.getAddress(); 
     const depositAddress = await this.getDepositAddress(modelName);
@@ -74,6 +78,7 @@ export default class ModelController {
   //TODO(woojae): connect with handler
   async use(modelName: string, requestData: string) {
     this.isLoggedIn();
+    this.isRunning(modelName);
     const result = await new Promise(async (resolve, reject) => {
       const requestKey = Date.now();
       const requesterAddress = this.ain.getAddress();
