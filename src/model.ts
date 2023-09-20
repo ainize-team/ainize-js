@@ -2,7 +2,7 @@ import ModelController from "./controllers/modelController";
 
 export default class Model {
   modelName: string;
-  modelController: ModelController;
+  private modelController: ModelController;
 
   constructor(modelName: string) {
     this.modelName = modelName;
