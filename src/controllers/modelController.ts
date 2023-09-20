@@ -19,7 +19,9 @@ export default class ModelController {
 
   async isRunning(modelName: string) {
     const isRunning = await this.ain.getValue(Path.app(modelName).status());
-    return isRunning === ContainerStatus.RUNNING;
+    if(isRunning !== ContainerStatus.RUNNING) {
+      throw new Error('Model is not running');
+    }
   }
 
   //TODO(woojae): implement this
