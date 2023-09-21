@@ -65,7 +65,7 @@ export default class Ainize {
       if (!serviceUrl) {
         serviceUrl = `https://${modelName}.ainetwork.xyz`;
       }
-      const modelPath = Path.app(modelName).root();
+      const modelPath = Path.app(modelName).status();
       await this.handler.subscribe(modelPath, resolve);
       await this.appController.createApp({ appName: modelName, serviceUrl, billingConfig });
     });
