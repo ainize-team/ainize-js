@@ -35,10 +35,20 @@ export default class AppController {
       setRuleOps.push(ruleOp);
     }
 
-    const depositParam = this.depositTriggerFunctionConfig(appName, serviceUrl);
-    const value = this.buildSetFunctionValue(depositParam);
-    const funcOp = buildSetOperation("SET_FUNCTION", depositParam.ref, value);
-    setFunctionOps.push(funcOp);
+    const depositPath = `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`
+    const depositUrl = `${serviceUrl}/deposit`;
+    const depositParam = this.buildTriggerFunctionConfig(appName, depositPath, depositUrl);
+    const depositValue = this.buildSetFunctionValue(depositParam);
+    const depositFuncOp = buildSetOperation("SET_FUNCTION", depositParam.ref, depositValue);
+    setFunctionOps.push(depositFuncOp);
+
+    const serviceFuncPath = Path.app(appName).request("$userAddress", "$requestKey")
+    const serviceFuncUrl = `${serviceUrl}/service`;
+    const serviceFuncParam = this.buildTriggerFunctionConfig(appName, serviceFuncPath, serviceFuncUrl);
+    const serviceFuncValue = this.buildSetFunctionValue(serviceFuncParam);
+    const serviceFuncOp = buildSetOperation("SET_FUNCTION", depositParam.ref, serviceFuncValue);
+    setFunctionOps.push(serviceFuncOp);
+
     const configOp = this.buildSetAppBillingConfigOp(appName, billingConfig);
     setBillingConfigOps.push(configOp);
 
@@ -214,7 +224,7 @@ export default class AppController {
     return buildSetOperation("SET_VALUE", path, value);
   }
 
-  private depositTriggerFunctionConfig = (appName: string, serviceUrl: string): setTriggerFunctionParm => {
+  private buildTriggerFunctionConfig = (appName: string, path: string, serviceUrl: string): setTriggerFunctionParm => {
     return {
       ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       function_type: "REST",
