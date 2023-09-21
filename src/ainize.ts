@@ -7,6 +7,7 @@ import Model from "./model";
 import { deployConfig } from "./types/type";
 import AinModule from "./ain";
 import Internal from "./internal";
+import { Account } from "@ainblockchain/ain-util";
 
 export default class Ainize {
   private cache: NodeCache;
@@ -23,16 +24,27 @@ export default class Ainize {
     this.internal = new Internal();
   }
   
-  static createAinAccount () {
+  /**
+   * Create a new AI Network account.
+   * @returns {Account} created account.
+   */
+  static createAinAccount (): Account {
     return AinModule.getInstance().createAccount();
   }
 
+  /**
+   * Login of the ainize using AI Network account private key.
+   * @param {string} privateKey 
+   */
   async login(privateKey: string) {
     this.ain.setDefaultAccount(privateKey);
     await this.handler.connect();
     console.log('login success! address:', this.ain.getAddress());
   }
 
+  /**
+   * Logout of the ainize.
+   */
   async logout() {
     this.ain.removeDefaultAccount();
     await this.handler.disconnect();
@@ -48,6 +60,11 @@ export default class Ainize {
   }
 
   // FIXME(yoojin): add config type and change param type.
+  /**
+   * Deploy AI model container.
+   * @param {deployConfig} deployConfig Set configuration for container. modelName, billingConfig, etc. 
+   * @returns {Model} Control object of deployed model.
+   */
   async deploy({modelName, billingConfig, serviceUrl}: deployConfig): Promise<Model> {
     // TODO(yoojin, woojae): Deploy container, advanced.
     const deployer = this.ain.getAddress();
@@ -66,6 +83,11 @@ export default class Ainize {
     return this.model(modelName);
   }
 
+  /**
+   * Get deployed model. 
+   * @param modelName 
+   * @returns {Model} Control object of deployed model.
+   */
   async model(modelName: string): Promise<Model> {
     const modelPath = Path.app(modelName).root();
     const modelData = await this.ain.getValue(modelPath);
