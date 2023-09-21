@@ -82,7 +82,8 @@ export default class ModelController {
     const result = await new Promise(async (resolve, reject) => {
       const requestKey = Date.now();
       const requesterAddress = this.ain.getAddress();
-      await this.handler.subscribeResponse(requesterAddress, requestKey.toString(), modelName, resolve);
+      const responsePath = Path.app(modelName).response(requesterAddress, requestKey.toString());
+      await this.handler.subscribe(responsePath, resolve);
       const requestPath = Path.app(modelName).request(requesterAddress, requestKey);
       const requestOp = buildSetOperation("SET_VALUE", requestPath, {prompt: requestData});
       const txBody = buildTxBody(requestOp);

@@ -41,32 +41,13 @@ export default class Handler {
     }
   }
 
-  async subscribeResponse(requester:string, recordId:string, appName: string, resolve: any) {
+  async subscribe(subscribePath: string, resolve: any) {
     this.checkEventManager();
-    const responsePath = Path.app(appName).response(requester, recordId);
-    const subscribeId = await this.ain.getEventManager().subscribe(
-      "VALUE_CHANGED",
-      {
-        path: responsePath,
-        event_source: "USER",
-      },
-      (valueChangedEvent: any) => {
-        this.unsubscribe(subscribeId);
-        resolve(valueChangedEvent.values.after.data);
-      },
-      (err) => {
-        throw new Error(err.message);
-      },
-    );
-  }
 
-  async subscribeDeploy(appName: string, resolve: any) {
-    this.checkEventManager();
-    const appPath = Path.app(appName).root();
     const subscribeId = await this.ain.getEventManager().subscribe(
       "VALUE_CHANGED",
       {
-        path: appPath,
+        path: subscribePath,
         event_source: "USER",
       },
       (valueChangedEvent: any) => {
