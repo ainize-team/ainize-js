@@ -33,7 +33,7 @@ export default class Ainize {
   }
 
   /**
-   * Login of the ainize using AI Network account private key.
+   * Login to ainize using AI Network account private key.
    * @param {string} privateKey 
    */
   async login(privateKey: string) {
@@ -43,7 +43,7 @@ export default class Ainize {
   }
 
   /**
-   * Logout of the ainize.
+   * Logout from ainize.
    */
   async logout() {
     this.ain.removeDefaultAccount();
@@ -62,8 +62,8 @@ export default class Ainize {
   // FIXME(yoojin): add config type and change param type.
   /**
    * Deploy AI model container.
-   * @param {deployConfig} deployConfig Set configuration for container. modelName, billingConfig, etc. 
-   * @returns {Model} Control object of deployed model.
+   * @param {deployConfig} deployConfig Set configuration for setting container. modelName, billingConfig, etc. 
+   * @returns {Model} Deployed model object.
    */
   // TODO(yoojin, woojae): Deploy container, advanced.
   async deploy({modelName, billingConfig, serviceUrl}: deployConfig): Promise<Model> {
@@ -94,7 +94,7 @@ export default class Ainize {
   /**
    * Get deployed model. 
    * @param modelName 
-   * @returns {Model} Control object of deployed model.
+   * @returns {Model} Deployed model object.
    */
   async model(modelName: string): Promise<Model> {
     const modelPath = Path.app(modelName).root();
