@@ -39,7 +39,7 @@ export default class AppController {
     const depositUrl = `${serviceUrl}/deposit`;
     const depositParam: setTriggerFunctionParm = {
       ref: depositPath,
-      function_id: "deposit-tregger",
+      function_id: "deposit-trigger",
       function_type: "REST",
       function_url: depositUrl
     }
@@ -51,7 +51,7 @@ export default class AppController {
     const serviceFuncUrl = `${serviceUrl}/service`;
     const serviceFuncParam: setTriggerFunctionParm = {
       ref: serviceFuncPath,
-      function_id: "service-tregger",
+      function_id: "service-trigger",
       function_type: "REST",
       function_url: serviceFuncUrl
     }
