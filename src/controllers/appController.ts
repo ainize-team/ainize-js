@@ -15,13 +15,6 @@ export default class AppController {
     return AppController.instance;
   }
   
-  /**
-   * Create App for your AI Service on AI Network.
-   * @param {string} appName - The name of app you will create.
-   * @param {TriggerFunctionUrlMap} functioniUrls - The urls of trigger function you set.
-   * @param {setDefaultFlag} setDefaultFlag - Set true which you wan to set config as default.
-   * @returns Result of transaction.
-   */
   async createApp({ appName, serviceUrl, billingConfig }: createAppConfig) {
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
@@ -54,33 +47,16 @@ export default class AppController {
     return await this.ain.sendTransaction(txBody);
   }
 
-  /**
-   * Set billing config to app.
-   * @param {string} appName 
-   * @param {appBillingConfig} config - The configuration of your app's billing.
-   * @returns Result of transaction.
-   */
   async setAppBillingConfig(appName: string, config: appBillingConfig) {
     const setConfigOp = this.buildSetAppBillingConfigOp(appName, config);
     const txBody = buildTxBody(setConfigOp);
     return await this.ain.sendTransaction(txBody);
   }
 
-  /**
-   * Get billing config of app
-   * @param {string} appName 
-   * @returns {Promise<appBillingConfig>} 
-   */
   async getBillingConfig(appName: string): Promise<appBillingConfig> {
     return await this.ain.getValue(Path.app(appName).billingConfig());
   }
 
-  /**
-   * Set trigger function to app.
-   * @param {string} appName 
-   * @param {setTriggerFunctionParam[]} functions 
-   * @returns Result of transaction.
-   */
   async setTriggerFunctions(appName: string, functions: setTriggerFunctionParm[]) {
     const setFunctionOps: SetOperation[] = [];
     for (const param of Object.values(functions)) {
@@ -97,12 +73,6 @@ export default class AppController {
     return await this.ain.sendTransaction(txBody);
   }
 
-  /**
-   * Set rules to app.
-   * @param {string} appName 
-   * @param {setRuleParam} rules
-   * @returns Result of transaction. 
-   */
   async setRules(appName: string, rules: setRuleParam[]) {
     const setRuleOps: SetOperation[] = [];
     for (const rule of Object.values(rules)) {
@@ -133,26 +103,12 @@ export default class AppController {
     return await this.ain.sendTransaction(txBody);
   }
 
-  /**
-   * Remove admin on app.
-   * @param {string} appName 
-   * @param {string} userAddress 
-   * @returns Result of transaction.
-   */
   async deleteAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress, true);
     const txBody = buildTxBody(op);
     return await this.ain.sendTransaction(txBody);
   }
 
-  /**
-   * Check cost of request and check if account can pay. You should use this function before send or handle request.
-   * If you don't set address, it will use default account's address.
-   * @param {string} appName - App name you want to request service to.
-   * @param {string} prompt - Data you want to request to service .
-   * @param {string=} userAddress - Address of account you want to check balance. You should set default account if you don't provide address.
-   * @returns Result cost of service. It throws error when user can't pay.
-   */
     async checkCostAndBalance(appName: string, value: string) {
       const requesterAddress = this.ain.getAddress();
       const billingConfig = (await this.getBillingConfig(appName));
