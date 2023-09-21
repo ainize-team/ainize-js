@@ -37,16 +37,26 @@ export default class AppController {
 
     const depositPath = `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`
     const depositUrl = `${serviceUrl}/deposit`;
-    const depositParam = this.buildTriggerFunctionConfig(appName, depositPath, depositUrl);
+    const depositParam: setTriggerFunctionParm = {
+      ref: depositPath,
+      function_id: "deposit-tregger",
+      function_type: "REST",
+      function_url: depositUrl
+    }
     const depositValue = this.buildSetFunctionValue(depositParam);
     const depositFuncOp = buildSetOperation("SET_FUNCTION", depositParam.ref, depositValue);
     setFunctionOps.push(depositFuncOp);
 
     const serviceFuncPath = Path.app(appName).request("$userAddress", "$requestKey")
     const serviceFuncUrl = `${serviceUrl}/service`;
-    const serviceFuncParam = this.buildTriggerFunctionConfig(appName, serviceFuncPath, serviceFuncUrl);
+    const serviceFuncParam: setTriggerFunctionParm = {
+      ref: serviceFuncPath,
+      function_id: "service-tregger",
+      function_type: "REST",
+      function_url: serviceFuncUrl
+    }
     const serviceFuncValue = this.buildSetFunctionValue(serviceFuncParam);
-    const serviceFuncOp = buildSetOperation("SET_FUNCTION", depositParam.ref, serviceFuncValue);
+    const serviceFuncOp = buildSetOperation("SET_FUNCTION", serviceFuncParam.ref, serviceFuncValue);
     setFunctionOps.push(serviceFuncOp);
 
     const configOp = this.buildSetAppBillingConfigOp(appName, billingConfig);
@@ -222,14 +232,5 @@ export default class AppController {
     const path = `/manage_app/${appName}/config/admin/${userAddress}`;
     const value = !isRemoveOp ? null : true;
     return buildSetOperation("SET_VALUE", path, value);
-  }
-
-  private buildTriggerFunctionConfig = (appName: string, path: string, serviceUrl: string): setTriggerFunctionParm => {
-    return {
-      ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
-      function_type: "REST",
-      function_id: "deposit-trigger",
-      function_url: `${serviceUrl}/deposit`,
-    }
   }
 }
