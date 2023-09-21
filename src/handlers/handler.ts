@@ -24,7 +24,7 @@ export default class Handler {
 
   async connect() {
     this.checkEventManager();
-    await this.ain.getEventManager().connect({},this.disconnectedCb);
+    await this.ain.getEventManager().connect({},this.disconnectedCb.bind(this));
     console.log('connected');
   };
   
@@ -35,7 +35,7 @@ export default class Handler {
   }
 
   private async disconnectedCb() {
-    if(!AinModule.getInstance().isDefaultAccountExist()) {
+    if(AinModule.getInstance().isDefaultAccountExist()) {
       console.log('disconnected. reconnecting...');
       await this.connect();
     }
