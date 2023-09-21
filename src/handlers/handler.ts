@@ -41,13 +41,13 @@ export default class Handler {
     }
   }
 
-  async subscribe(requester:string, recordId:string, appName: string, resolve: any) {
+  async subscribe(subscribePath: string, resolve: any) {
     this.checkEventManager();
-    const responsePath = Path.app(appName).response(requester, recordId);
+
     const subscribeId = await this.ain.getEventManager().subscribe(
       "VALUE_CHANGED",
       {
-        path: responsePath,
+        path: subscribePath,
         event_source: "USER",
       },
       (valueChangedEvent: any) => {

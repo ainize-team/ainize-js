@@ -65,21 +65,29 @@ export default class Ainize {
    * @param {deployConfig} deployConfig Set configuration for container. modelName, billingConfig, etc. 
    * @returns {Model} Control object of deployed model.
    */
+  // TODO(yoojin, woojae): Deploy container, advanced.
   async deploy({modelName, billingConfig, serviceUrl}: deployConfig): Promise<Model> {
-    // TODO(yoojin, woojae): Deploy container, advanced.
-    const deployer = this.ain.getAddress();
-    if (!billingConfig) {
-      billingConfig = {
-        ...DEFAULT_BILLING_CONFIG,
-        depositAddress: deployer,
-      };
+    if(!this.ain.isDefaultAccountExist()) {
+      throw new Error('you should login first');
     }
-    // NOTE(yoojin): For test. We make fixed url on service.
-    if (!serviceUrl) {
-      serviceUrl = `https://${modelName}.ainetwork.xyz`;
-    }
-    
-    await this.appController.createApp({ appName: modelName, serviceUrl, billingConfig });
+    // TODO(yoojin, woojae): Add container deploy logic.
+    const result = await new Promise(async (resolve, reject) => {
+      const deployer = this.ain.getAddress();
+      if (!billingConfig) {
+        billingConfig = {
+          ...DEFAULT_BILLING_CONFIG,
+          depositAddress: deployer,
+        };
+      }
+      // NOTE(yoojin): For test. We make fixed url on service.
+      if (!serviceUrl) {
+        serviceUrl = `https://${modelName}.ainetwork.xyz`;
+      }
+      const modelPath = Path.app(modelName).status();
+      await this.handler.subscribe(modelPath, resolve);
+      await this.appController.createApp({ appName: modelName, serviceUrl, billingConfig });
+    });
+    console.log(`${modelName} deploy success!`);
     return this.model(modelName);
   }
 
