@@ -30,6 +30,17 @@ export enum HISTORY_TYPE {
   USAGE = "USAGE",
 }
 
+export type creditHistories = {
+  [timestamp: string]: creditHistory;
+}
+
+export type creditHistory = {
+  type: HISTORY_TYPE;
+  amount: number;
+  transferKey?: string;
+  requestTimestamp?: string;
+}
+
 export type opResult = {
   code: number;
   bandwidth_gas_amount: number;
