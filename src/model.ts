@@ -10,7 +10,6 @@ export default class Model {
     this.modelController = ModelController.getInstance();
   }
 
-  //TODO(woojae): login not Required
   /**
    * Check if model is running. It throws error when model is not running.
    */
@@ -22,7 +21,6 @@ export default class Model {
    * Get model information. not implemented yet.
    * @returns {string} Model information.
    */
-  //TODO(woojae): login not Required
   async getInformation() {
     return await this.modelController.getInformation(this.modelName);
   }
@@ -32,7 +30,6 @@ export default class Model {
    * @param {string} rerquestData string data for request to model.
    * @returns {number} Estimated cost.
    */
-  //TODO(woojae): login not Required
   async calculateCost (requestData: string) {
     return await this.modelController.calculateCost(this.modelName, requestData);
   }
