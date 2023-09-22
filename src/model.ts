@@ -40,6 +40,7 @@ export default class Model {
    * @returns {string} Transaction hash.
    */
   async chargeCredit(amount: number) {
+    this.isLoggedIn();
     return await this.modelController.chargeCredit(this.modelName, amount);
   }
 
@@ -49,6 +50,7 @@ export default class Model {
    * @returns {string} Transaction hash.
    */
   async withdrawCredit(amount: number) {
+    this.isLoggedIn();
     return await this.modelController.withdrawCredit(this.modelName, amount);
   }
 
@@ -57,6 +59,7 @@ export default class Model {
    * @returns {number} Amount of credit balance.
    */
   async getCreditBalance() {
+    this.isLoggedIn();
     return await this.modelController.getCreditBalance(this.modelName);
   }
 
@@ -65,6 +68,7 @@ export default class Model {
    * @returns {creditHistories} Histories of credit deposit and usage.
    */
   async getCreditHistory() {
+    this.isLoggedIn();
     return await this.modelController.getCreditHistory(this.modelName);
   }
 
@@ -74,6 +78,7 @@ export default class Model {
    * @returns {string} Response data from model.
    */
   async use(requestData: string) {
+    this.isLoggedIn();
     return await this.modelController.use(this.modelName, requestData);
   }
 
@@ -102,8 +107,11 @@ export default class Model {
     return await this.modelController.changeModelInfo(this.modelName, config);
   }
 
-  //TODO(woojae): implement this
   private async isAdmin() {
-    return true;
+    return this.modelController.isAdmin(this.modelName);
+  }
+
+  private isLoggedIn() {
+    return this.modelController.isLoggedIn();
   }
 }
