@@ -42,7 +42,6 @@ export default class ModelController {
   }
 
   async chargeCredit(modelName: string, amount: number): Promise<string> {
-    this.isLoggedIn();
     this.isRunning(modelName);
     const transferKey = Date.now();
     const userAddress = this.ain.getAddress(); 
@@ -61,21 +60,18 @@ export default class ModelController {
   }
 
   async getCreditBalance(modelName: string): Promise<number> {
-    this.isLoggedIn();
     const userAddress = this.ain.getAddress();
     const balancePath = Path.app(modelName).balanceOfUser(userAddress);
     return await this.ain.getValue(balancePath) as number | 0;
   }
 
   async getCreditHistory(modelName: string): Promise<creditHistories> {
-    this.isLoggedIn();
     const userAddress = this.ain.getAddress();
     const creditHistoryPath = Path.app(modelName).historyOfUser(userAddress);
     return await this.ain.getValue(creditHistoryPath) as creditHistories;
   }
 
   async use(modelName: string, requestData: string) : Promise<string> {
-    this.isLoggedIn();
     this.isRunning(modelName);
     const result = await new Promise(async (resolve, reject) => {
       const requestKey = Date.now();
@@ -91,14 +87,18 @@ export default class ModelController {
     return result as string;
   }
 
-  //TODO(woojae): implement this. 
   async run(modelName: string): Promise<void> {
-    await true;
+    const statusPath = Path.app(modelName).status();
+    const statusOp = buildSetOperation("SET_VALUE", statusPath, ContainerStatus.RUNNING);
+    const txBody = buildTxBody(statusOp);
+    await this.ain.sendTransaction(txBody);
   }
 
-  //TODO(woojae): implement this.
   async stop(modelName: string): Promise<void> {
-    await true;
+    const statusPath = Path.app(modelName).status();
+    const statusOp = buildSetOperation("SET_VALUE", statusPath, ContainerStatus.STOP);
+    const txBody = buildTxBody(statusOp);
+    await this.ain.sendTransaction(txBody);
   }
 
   //TODO:(woojae): implement this
@@ -106,13 +106,21 @@ export default class ModelController {
     await true;
   }
   
-  private async getDepositAddress(appName: string): Promise<string> {
-    return (await this.ain.getValue(Path.app(appName).billingConfig())).depositAddress;
+  private async getDepositAddress(modelName: string): Promise<string> {
+    return (await this.ain.getValue(Path.app(modelName).billingConfig())).depositAddress;
   }
 
-  private isLoggedIn(): boolean {
+  isLoggedIn(): void {
     if(!this.ain.getDefaultAccount())
       throw new Error('You should login First.');
-    return true;
+  }
+
+  async isAdmin(modelName: string): Promise<void> {
+    this.isLoggedIn();
+    const adminPath = `/manage_app/${modelName}/config/admin`;
+    const adminList = await this.ain.getValue(adminPath);
+    if(!adminList[this.ain.getAddress()]) {
+      throw new Error('You are not admin');
+    }
   }
 }
