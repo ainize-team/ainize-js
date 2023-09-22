@@ -75,7 +75,6 @@ export default class ModelController {
     return await this.ain.getValue(creditHistoryPath) as creditHistories;
   }
 
-  //TODO(woojae): connect with handler
   async use(modelName: string, requestData: string) : Promise<string> {
     this.isLoggedIn();
     this.isRunning(modelName);
@@ -93,21 +92,18 @@ export default class ModelController {
     return result as string;
   }
 
-  //TODO(woojae): implement this
-  //NOTE(woojae): need admin
+  //TODO(woojae): implement this. 
   async run(modelName: string): Promise<void> {
     await true;
   }
 
-  //TODO(woojae): implement this
-  //NOTE:(woojae): need admin
+  //TODO(woojae): implement this.
   async stop(modelName: string): Promise<void> {
     await true;
   }
 
   //TODO:(woojae): implement this
-  //NOTE:(woojae): need admin
-  async changeModelInfo(modelName: string, config: any):Promise<void> {
+  async changeModelInfo(modelName: string, config: any): Promise<void> {
     await true;
   }
   
