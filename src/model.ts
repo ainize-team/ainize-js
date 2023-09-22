@@ -80,7 +80,6 @@ export default class Model {
   /**
    * Change status of AI model container to Running. Need to be admin. Not implemented yet.
    */
-  //NOTE(woojae): need admin
   async run() {
     await this.isAdmin();
     return await this.modelController.run(this.modelName);
@@ -89,7 +88,6 @@ export default class Model {
   /**
    * Change status of AI model container to Stopped. Need to be admin. Not implemented yet.
    */
-  //NOTE(woojae): need admin
   async stop() {
     await this.isAdmin();
     return await this.modelController.stop(this.modelName);
@@ -99,7 +97,6 @@ export default class Model {
    * Change model configuration. Need to be admin. Not implemented yet.
    * @param {any} config Configuration to change. Not implemented yet.
    */
-  //NOTE(woojae): need admin
   async changeModelInfo(config: any) {
     await this.isAdmin();
     return await this.modelController.changeModelInfo(this.modelName, config);

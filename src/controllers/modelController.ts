@@ -4,7 +4,7 @@ import { Path } from "../constants";
 import { getRequestDepositOp, getTransferOp } from "../utils/operator";
 import { buildSetOperation, buildTxBody } from "../utils/builder";
 import Handler from "../handlers/handler";
-import { ContainerStatus } from "../types/type";
+import { ContainerStatus, creditHistories } from "../types/type";
 
 export default class ModelController {
   private static instance: ModelController | undefined;
@@ -17,7 +17,7 @@ export default class ModelController {
     return ModelController.instance;
   }
 
-  async isRunning(modelName: string) {
+  async isRunning(modelName: string): Promise<void> {
     const isRunning = await this.ain.getValue(Path.app(modelName).status());
     if(isRunning !== ContainerStatus.RUNNING) {
       throw new Error('Model is not running');
@@ -25,11 +25,11 @@ export default class ModelController {
   }
 
   //TODO(woojae): implement this
-  async getInformation(modelName: string) {
+  async getInformation(modelName: string): Promise<string> {
     return await 'information of model';
   }
 
-  async calculateCost(modelName: string, requestData: string) {
+  async calculateCost(modelName: string, requestData: string): Promise<number> {
     const billingConfig = await this.ain.getValue(Path.app(modelName).billingConfig());
     const token = requestData.split(' ').length;
     let cost = token * billingConfig.costPerToken;
@@ -41,7 +41,7 @@ export default class ModelController {
     return cost;
   }
 
-  async chargeCredit(modelName: string, amount: number) {
+  async chargeCredit(modelName: string, amount: number): Promise<string> {
     this.isLoggedIn();
     this.isRunning(modelName);
     const transferKey = Date.now();
@@ -61,22 +61,22 @@ export default class ModelController {
     return await true;
   }
 
-  async getCreditBalance(modelName: string) {
+  async getCreditBalance(modelName: string): Promise<number> {
     this.isLoggedIn();
     const userAddress = this.ain.getAddress();
     const balancePath = Path.app(modelName).balanceOfUser(userAddress);
-    return await this.ain.getValue(balancePath) | 0;
+    return await this.ain.getValue(balancePath) as number | 0;
   }
 
-  async getCreditHistory(modelName: string) {
+  async getCreditHistory(modelName: string): Promise<creditHistories> {
     this.isLoggedIn();
     const userAddress = this.ain.getAddress();
     const creditHistoryPath = Path.app(modelName).historyOfUser(userAddress);
-    return await this.ain.getValue(creditHistoryPath);
+    return await this.ain.getValue(creditHistoryPath) as creditHistories;
   }
 
   //TODO(woojae): connect with handler
-  async use(modelName: string, requestData: string) {
+  async use(modelName: string, requestData: string) : Promise<string> {
     this.isLoggedIn();
     this.isRunning(modelName);
     const result = await new Promise(async (resolve, reject) => {
@@ -90,32 +90,32 @@ export default class ModelController {
       await this.ain.sendTransaction(txBody);
       return requestKey;
     });
-    return result;
+    return result as string;
   }
 
   //TODO(woojae): implement this
   //NOTE(woojae): need admin
-  async run(modelName: string) {
-    return await true; 
+  async run(modelName: string): Promise<void> {
+    await true;
   }
 
   //TODO(woojae): implement this
   //NOTE:(woojae): need admin
-  async stop(modelName: string) {
-    return await true;
+  async stop(modelName: string): Promise<void> {
+    await true;
   }
 
   //TODO:(woojae): implement this
   //NOTE:(woojae): need admin
-  async changeModelInfo(modelName: string, config: any) {
-    return await true;
+  async changeModelInfo(modelName: string, config: any):Promise<void> {
+    await true;
   }
   
-  private async getDepositAddress(appName: string) {
+  private async getDepositAddress(appName: string): Promise<string> {
     return (await this.ain.getValue(Path.app(appName).billingConfig())).depositAddress;
   }
 
-  private isLoggedIn() {
+  private isLoggedIn(): boolean {
     if(!this.ain.getDefaultAccount())
       throw new Error('You should login First.');
     return true;
