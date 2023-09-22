@@ -117,7 +117,7 @@ export default class ModelController {
 
   async isAdmin(modelName: string): Promise<void> {
     this.isLoggedIn();
-    const adminPath = Path.app(modelName);
+    const adminPath = `/manage_app/${modelName}/config/admin`;
     const adminList = await this.ain.getValue(adminPath);
     if(!adminList[this.ain.getAddress()]) {
       throw new Error('You are not admin');
