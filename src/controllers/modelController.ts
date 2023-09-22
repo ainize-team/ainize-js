@@ -55,7 +55,6 @@ export default class ModelController {
     return this.ain.sendTransaction(txBody);
   }
   
-
   //TODO(woojae): implement this
   async withdrawCredit(modelName: string, amount: number) {
     return await true;
