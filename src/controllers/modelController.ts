@@ -25,7 +25,7 @@ export default class ModelController {
   }
 
   //TODO(woojae): implement this
-  async getInformation(modelName: string): Promise<string> {
+  async getInformation(modelName: string): Promise<any> {
     return await 'information of model';
   }
 
