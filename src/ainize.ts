@@ -12,10 +12,10 @@ import { Account } from "@ainblockchain/ain-util";
 export default class Ainize {
   private cache: NodeCache;
   private handler: Handler = Handler.getInstance();
-  ain: AinModule = AinModule.getInstance();
+  private ain: AinModule = AinModule.getInstance();
   middleware: Middleware;
   internal: Internal;
-  appController: AppController = AppController.getInstance();
+  private appController: AppController = AppController.getInstance();
 
   constructor(chainId: 1 | 0) {
     this.ain.initAin(chainId);

@@ -7,7 +7,7 @@
     "build": "rm -rf ./dist && tsc",
     "dev": "rm -rf ./dist && tsc",
     "test": "NODE_ENV=dev jest --passWithNoTests",
-    "docs": "yarn build && typedoc --out docs"
+    "docs": "yarn build && typedoc --options typedoc.json --out docs"
   },
   "engines": {
     "node": ">=16"
