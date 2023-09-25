@@ -1,3 +1,3 @@
 {
-  "excludeNotDocumented": true,
+  "entryPoints": ["./src/ainize.ts", "./src/model.ts"]
 }
