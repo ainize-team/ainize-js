@@ -79,7 +79,7 @@ export default class Service {
    */
   async request(requestData: string) {
     this.isLoggedIn();
-    return await this.serviceController.use(this.serviceName, requestData);
+    return await this.serviceController.request(this.serviceName, requestData);
   }
 
   /**
