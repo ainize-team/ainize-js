@@ -36,7 +36,7 @@
 <a href="#import" id="import" style="color: inherit; text-decoration: none;">
   <h3>Import</h3>
 </a>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">Ainize</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-sdk&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(&lt;</span><span class="hl-7">CHAIN_ID</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">YOUR_PRIVATE_KEY</span><span class="hl-1">&gt;);</span>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">Ainize</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-sdk&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(&lt;</span><span class="hl-7">CHAIN_ID</span><span class="hl-1">&gt;);</span>
 </code></pre>
 <p>CHAIN_ID</p>
 <ul>
@@ -44,35 +44,45 @@
 <li>1: AI Network main net</li>
 </ul>
 
-<a href="#app" id="app" style="color: inherit; text-decoration: none;">
-  <h3>App</h3>
+<a href="#login" id="login" style="color: inherit; text-decoration: none;">
+  <h3>Login</h3>
 </a>
-<p>You can manage the AI Network app required for operating AI Services.</p>
-<pre><code class="language-typescript"><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">app</span><span class="hl-1">.</span><span class="hl-0">create</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">SERVICE_URL</span><span class="hl-1">&gt;);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">app</span><span class="hl-1">.</span><span class="hl-0">setTriggerFunction</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">TRIGGER_URLS</span><span class="hl-1">&gt;);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">app</span><span class="hl-1">.</span><span class="hl-0">setBillingConfig</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">BILLING_CONFIG</span><span class="hl-1">&gt;);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">app</span><span class="hl-1">.</span><span class="hl-0">setRules</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">RULES</span><span class="hl-1">&gt;);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">app</span><span class="hl-1">.</span><span class="hl-0">addAdmin</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">ADDRESS</span><span class="hl-1">&gt;);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">app</span><span class="hl-1">.</span><span class="hl-0">deleteAdmin</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">ADDRESS</span><span class="hl-1">&gt;);</span>
+<p>You should login to ainize with AI Network account before deploy the container.</p>
+<pre><code class="language-typescript"><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(&lt;</span><span class="hl-7">YOUR_PRIVATE_KEY</span><span class="hl-1">&gt;);</span>
 </code></pre>
+
+<a href="#deploy" id="deploy" style="color: inherit; text-decoration: none;">
+  <h3>Deploy</h3>
+</a>
+<p>You can deploy your AI model to ainize.</p>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">model</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">deploy</span><span class="hl-1">(&lt;</span><span class="hl-7">CONFIGURATION</span><span class="hl-1">&gt;);</span>
+</code></pre>
+<p>CONFIGURATION</p>
 <ul>
-<li>APP_NAME: The app name to be registered on AI Network.</li>
-<li>SERVICE_URL: The URL for sending API requests to your AI Service.</li>
+<li>modelName: The name you want to deploying model.</li>
+<li>billingConfig: Billing configuration required for model usage.<ul>
+<li>depositAddress: The address for receiving AIN deposits.</li>
+<li>costPerToken: Cost per token for model usage.</li>
+<li>minCost: Minimum cost.</li>
+<li>maxCost: Maximum cost. (optional)</li>
 </ul>
-
-<a href="#service" id="service" style="color: inherit; text-decoration: none;">
-  <h3>Service</h3>
-</a>
-<p>You can use AI Service.</p>
-<pre><code class="language-typescript"><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">deposit</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">AMOUNT</span><span class="hl-1">&gt;);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">writeRequest</span><span class="hl-1">(&lt;</span><span class="hl-7">APP_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">SERVICE_NAME</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">PROMPT</span><span class="hl-1">&gt;);</span>
+</li>
+</ul>
+<p>You can stop or run your model container. Model deployer only can use this.</p>
+<pre><code class="language-typescript"><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">stop</span><span class="hl-1">();</span><br/><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">run</span><span class="hl-1">();</span>
 </code></pre>
 
-<a href="#admin" id="admin" style="color: inherit; text-decoration: none;">
-  <h3>Admin</h3>
+<a href="#using-model" id="using-model" style="color: inherit; text-decoration: none;">
+  <h3>Using Model</h3>
 </a>
-<p>You can get user requests.</p>
-<pre><code class="language-typescript"><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">admin</span><span class="hl-1">.</span><span class="hl-0">deposit</span><span class="hl-1">(&lt;</span><span class="hl-7">REQUEST</span><span class="hl-1">&gt;);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-4">admin</span><span class="hl-1">.</span><span class="hl-0">writeResponse</span><span class="hl-1">(&lt;</span><span class="hl-7">REQUEST</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">COST_AMOUNT</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">RESPONSE_DATA</span><span class="hl-1">&gt;, &lt;</span><span class="hl-7">RESPONSE_STATUS</span><span class="hl-1">&gt;);</span>
+<p>You can use a model using <code>ainize.model(&lt;MODEL_NAME&gt;)</code>.</p>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">model</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">model</span><span class="hl-1">(&lt;</span><span class="hl-7">MODEL_NAME</span><span class="hl-1">&gt;);</span>
 </code></pre>
-
-<a href="#test" id="test" style="color: inherit; text-decoration: none;">
-  <h2>Test</h2>
-</a>
-<pre><code class="language-bash"><span class="hl-0">yarn</span><span class="hl-1"> </span><span class="hl-2">test</span>
+<p>You should deposit AIN to credit before using model.</p>
+<pre><code class="language-typescript"><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">deposit</span><span class="hl-1">(&lt;</span><span class="hl-7">AMOUNT</span><span class="hl-1">&gt;);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">balance</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">getCreditBalance</span><span class="hl-1">();</span>
+</code></pre>
+<p>If you have enough credit, you can use the model.</p>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">use</span><span class="hl-1">(&lt;</span><span class="hl-7">REQUEST_DATA</span><span class="hl-1">&gt;);</span>
 </code></pre>
 </div></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
