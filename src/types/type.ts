@@ -22,7 +22,6 @@ export type appBillingConfig = {
   costPerToken: number;
   minCost: number;
   maxCost?: number;
-  responseTimeout?: number;
 };
 
 export enum HISTORY_TYPE {
