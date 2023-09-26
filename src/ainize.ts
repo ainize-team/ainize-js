@@ -3,7 +3,7 @@ import Middleware from "./middlewares/middleware";
 import { DEFAULT_BILLING_CONFIG, Path, getBlockChainEndpoint } from "./constants";
 import Handler from "./handlers/handler";
 import AppController from "./controllers/appController";
-import Model from "./model";
+import Service from "./service";
 import { deployConfig } from "./types/type";
 import AinModule from "./ain";
 import Internal from "./internal";
@@ -61,12 +61,12 @@ export default class Ainize {
 
   // FIXME(yoojin): add config type and change param type.
   /**
-   * Deploy AI model container.
-   * @param {deployConfig} deployConfig Set configuration for setting container. modelName, billingConfig, etc. 
-   * @returns {Model} Deployed model object.
+   * Deploy AI service container.
+   * @param {deployConfig} deployConfig Set configuration for setting container. serviceName, billingConfig, etc. 
+   * @returns {Service} Deployed service object.
    */
   // TODO(yoojin, woojae): Deploy container, advanced.
-  async deploy({modelName, billingConfig, serviceUrl}: deployConfig): Promise<Model> {
+  async deploy({serviceName, billingConfig, serviceUrl}: deployConfig): Promise<Service> {
     if(!this.ain.isDefaultAccountExist()) {
       throw new Error('you should login first');
     }
@@ -81,28 +81,28 @@ export default class Ainize {
       }
       // NOTE(yoojin): For test. We make fixed url on service.
       if (!serviceUrl) {
-        serviceUrl = `https://${modelName}.ainetwork.xyz`;
+        serviceUrl = `https://${serviceName}.ainetwork.xyz`;
       }
-      const modelPath = Path.app(modelName).status();
-      await this.handler.subscribe(modelPath, resolve);
-      await this.appController.createApp({ appName: modelName, serviceUrl, billingConfig });
+      const servicePath = Path.app(serviceName).status();
+      await this.handler.subscribe(servicePath, resolve);
+      await this.appController.createApp({ appName: serviceName, serviceUrl, billingConfig });
     });
-    console.log(`${modelName} deploy success!`);
-    return this.model(modelName);
+    console.log(`${serviceName} deploy success!`);
+    return this.getService(serviceName);
   }
 
   /**
-   * Get deployed model. 
-   * @param modelName 
-   * @returns {Model} Deployed model object.
+   * Get deployed service. 
+   * @param serviceName 
+   * @returns {Service} Deployed service object.
    */
-  async model(modelName: string): Promise<Model> {
-    const modelPath = Path.app(modelName).root();
-    const modelData = await this.ain.getValue(modelPath);
-    if(!modelData) {
-      throw new Error("Model not found");
+  async getService(serviceName: string): Promise<Service> {
+    const servicePath = Path.app(serviceName).root();
+    const serviceData = await this.ain.getValue(servicePath);
+    if(!serviceData) {
+      throw new Error("Service not found");
     }
-    return new Model(modelName);
+    return new Service(serviceName);
   }
 
   test() {
