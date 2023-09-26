@@ -27,24 +27,24 @@ export type appBillingConfig = {
 export enum HISTORY_TYPE {
   DEPOSIT = "DEPOSIT",
   USAGE = "USAGE",
-}
+};
 
 export type creditHistories = {
   [timestamp: string]: creditHistory;
-}
+};
 
 export type creditHistory = {
   type: HISTORY_TYPE;
   amount: number;
   transferKey?: string;
   requestTimestamp?: string;
-}
+};
 
 export type opResult = {
   code: number;
   bandwidth_gas_amount: number;
   message?: string;
-}
+};
 
 export type txResult = {
   gas_amount_total: object;
@@ -58,7 +58,7 @@ export type txResult = {
 export enum RESPONSE_STATUS {
   SUCCESS = "SUCCESS",
   FAIL = "FAIL",
-}
+};
 
 export type request = {
   requestData: string,
@@ -71,28 +71,28 @@ export type response = request & {
   responseData: string,
   cost: number,
   status: RESPONSE_STATUS,
-}
+};
 
 export type deposit = {
   transferKey: string,
   transferValue: number,
   appName: string,
   requesterAddress: string,
-}
+};
 
 export type deployConfig = {
   serviceName: string,
   billingConfig?: appBillingConfig,
-  serviceUrl?: string, // NOTE(yoojin): for test.
-}
+  serviceUrl?: string, // NOTE(yoojin): Remove when container deploy logic was available.
+};
 
 export type createAppConfig = {
   appName: string,
   billingConfig: appBillingConfig,
   serviceUrl: string,
-}
+};
 
 export enum ContainerStatus {
   RUNNING = "RUNNING",
   STOP = "STOP",
-}
+};

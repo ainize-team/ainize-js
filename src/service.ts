@@ -1,5 +1,4 @@
 import ServiceController from "./controllers/serviceController";
-import { creditHistories } from "./types/type";
 
 export default class Service {
   serviceName: string;

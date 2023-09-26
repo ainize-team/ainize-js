@@ -5,8 +5,9 @@ export const buildSetOperation = (type: SetOperationType, ref: string, value: an
     type,
     ref,
     value,
-  }
+  };
 }
+
 export const buildTxBody = (operation: SetOperation | SetOperation[], timestamp? : number): TransactionBody => {
   return {
     operation: Array.isArray(operation) ? {
@@ -16,5 +17,5 @@ export const buildTxBody = (operation: SetOperation | SetOperation[], timestamp?
     gas_price: 500,
     timestamp: timestamp? timestamp : Date.now(),
     nonce: -1,
-  }
+  };
 }

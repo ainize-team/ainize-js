@@ -111,12 +111,6 @@ export default class AppController {
     return await this.ain.sendTransaction(txBody);
   }
 
-  /**
-   * Add admin on app.
-   * @param {string} appName 
-   * @param {string} userAddress
-   * @returns Result of transaction.
-   */
   async addAdmin(appName: string, userAddress: string) {
     const op = this.buildSetAdminOp(appName, userAddress);
     const txBody = buildTxBody(op);

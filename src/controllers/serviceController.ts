@@ -24,7 +24,7 @@ export default class ServiceController {
     }
   }
 
-  //TODO(woojae): implement this
+  // TODO(woojae): implement this
   async getInformation(serviceName: string): Promise<any> {
     return await 'information of service';
   }
@@ -54,7 +54,7 @@ export default class ServiceController {
     return this.ain.sendTransaction(txBody);
   }
   
-  //TODO(woojae): implement this
+  // TODO(woojae): implement this
   async withdrawCredit(serviceName: string, amount: number) {
     return await true;
   }
@@ -101,7 +101,7 @@ export default class ServiceController {
     await this.ain.sendTransaction(txBody);
   }
 
-  //TODO:(woojae): implement this
+  // TODO:(woojae): implement this
   async changeServiceInfo(serviceName: string, config: any): Promise<void> {
     await true;
   }
