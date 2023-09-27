@@ -1,0 +1,16 @@
+{
+  "out": "./docs/dist/api/",
+  "includes": "./src",
+  "exclude": [
+      "**/src/controllers/**/*",
+      "**/src/handlers/**/*",
+      "**/src/middlewares/**/*",
+      "**/src/ain.ts",
+      "**/src/internal.ts",
+      "**/src/utils/**/*",
+      "**/src/constants.ts",
+  ],
+
+  "excludeExternals": true,
+  "excludePrivate": true
+}
