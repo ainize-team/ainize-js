@@ -61,7 +61,7 @@ export enum RESPONSE_STATUS {
 };
 
 export type request = {
-  requestData: string,
+  requestData: any,
   requesterAddress: string,
   requestKey: string,
   appName: string,
