@@ -30,37 +30,37 @@ ainize.login(<YOUR_PRIVATE_KEY>);
 ```
 
 ### Deploy
-You can deploy your AI model to ainize.
+You can deploy your AI service to ainize.
 ```typescript
-const model = await ainize.deploy(<CONFIGURATION>);
+const service = await ainize.deploy(<CONFIGURATION>);
 ```
 CONFIGURATION
-- modelName: The name you want to deploying model.
-- billingConfig: Billing configuration required for model usage.
+- serviceName: The name you want to deploying service.
+- billingConfig: Billing configuration required for service usage.
   - depositAddress: The address for receiving AIN deposits.
-  - costPerToken: Cost per token for model usage.
+  - costPerToken: Cost per token for service usage.
   - minCost: Minimum cost.
   - maxCost: Maximum cost. (optional)
 
-You can stop or run your model container. Model deployer only can use this.
+You can stop or run your service container. Only service deployer can use this.
 ```typescript
-model.stop();
-model.run();
+service.stop();
+service.run();
 ```
 
-### Using Model
-You can use a model using `ainize.model(<MODEL_NAME>)`.
+### Using Service
+You can use a service using `ainize.service(<SERVICE_NAME>)`.
 ```typescript
-const model = await ainize.model(<MODEL_NAME>);
+const service = await ainize.service(<SERVICE_NAME>);
 ```
 
-You should deposit AIN to credit before using model.
+You should deposit AIN to credit before using service.
 ```typescript
-await model.deposit(<AMOUNT>);
-const balance = await model.getCreditBalance();
+await service.chargeCredit(<AMOUNT>);
+const balance = await service.getCreditBalance();
 ```
 
-If you have enough credit, you can use the model.
+If you have enough credit, you can use the service.
 ```typescript
-const result = await model.use(<REQUEST_DATA>);
+const result = await service.use(<REQUEST_DATA>);
 ``` 
