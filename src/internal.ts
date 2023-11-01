@@ -35,14 +35,14 @@ export default class Internal {
   }
   
   getDataFromServiceRequest(req: Request) {
-    if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[4] || !req.body.value.prompt) {
+    if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[4] || !req.body.value) {
       throw new Error("Not from service request");
     }
     const requestData: request = {
       appName: req.body.valuePath[1],
       requesterAddress: req.body.auth.addr,
       requestKey: req.body.valuePath[4],
-      requestData: req.body.value.prompt,
+      requestData: req.body.value,
     }
     return requestData;
   }

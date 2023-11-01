@@ -3,6 +3,7 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "declaration": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "module": "commonjs",
     "noEmitOnError": true,

@@ -1,6 +1,6 @@
-import * as NodeCache from "node-cache";
+import NodeCache from "node-cache";
 import Middleware from "./middlewares/middleware";
-import { DEFAULT_BILLING_CONFIG, Path, getBlockChainEndpoint } from "./constants";
+import { DEFAULT_BILLING_CONFIG, Path } from "./constants";
 import Handler from "./handlers/handler";
 import AppController from "./controllers/appController";
 import Service from "./service";
@@ -13,9 +13,9 @@ export default class Ainize {
   private cache: NodeCache;
   private handler: Handler = Handler.getInstance();
   private ain: AinModule = AinModule.getInstance();
+  private appController: AppController = AppController.getInstance();
   middleware: Middleware;
   internal: Internal;
-  private appController: AppController = AppController.getInstance();
 
   constructor(chainId: 1 | 0) {
     this.ain.initAin(chainId);

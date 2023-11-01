@@ -1,8 +1,5 @@
-const _ = require("lodash");
-import Ain from "@ainblockchain/ain-js";
-import Ainize from "../ainize";
-import { Path } from "../constants";
 import AinModule from "../ain";
+import _ from "lodash";
 
 export default class Handler {
   private static instance: Handler | undefined;
