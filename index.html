@@ -54,35 +54,35 @@
 <a href="#deploy" id="deploy" style="color: inherit; text-decoration: none;">
   <h3>Deploy</h3>
 </a>
-<p>You can deploy your AI model to ainize.</p>
-<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">model</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">deploy</span><span class="hl-1">(&lt;</span><span class="hl-7">CONFIGURATION</span><span class="hl-1">&gt;);</span>
+<p>You can deploy your AI service to ainize.</p>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">service</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">deploy</span><span class="hl-1">(&lt;</span><span class="hl-7">CONFIGURATION</span><span class="hl-1">&gt;);</span>
 </code></pre>
 <p>CONFIGURATION</p>
 <ul>
-<li>modelName: The name you want to deploying model.</li>
-<li>billingConfig: Billing configuration required for model usage.<ul>
+<li>serviceName: The name you want to deploying service.</li>
+<li>billingConfig: Billing configuration required for service usage.<ul>
 <li>depositAddress: The address for receiving AIN deposits.</li>
-<li>costPerToken: Cost per token for model usage.</li>
+<li>costPerToken: Cost per token for service usage.</li>
 <li>minCost: Minimum cost.</li>
 <li>maxCost: Maximum cost. (optional)</li>
 </ul>
 </li>
 </ul>
-<p>You can stop or run your model container. Model deployer only can use this.</p>
-<pre><code class="language-typescript"><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">stop</span><span class="hl-1">();</span><br/><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">run</span><span class="hl-1">();</span>
+<p>You can stop or run your service container. Only service deployer can use this.</p>
+<pre><code class="language-typescript"><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">stop</span><span class="hl-1">();</span><br/><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">run</span><span class="hl-1">();</span>
 </code></pre>
 
-<a href="#using-model" id="using-model" style="color: inherit; text-decoration: none;">
-  <h3>Using Model</h3>
+<a href="#using-service" id="using-service" style="color: inherit; text-decoration: none;">
+  <h3>Using Service</h3>
 </a>
-<p>You can use a model using <code>ainize.model(&lt;MODEL_NAME&gt;)</code>.</p>
-<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">model</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">model</span><span class="hl-1">(&lt;</span><span class="hl-7">MODEL_NAME</span><span class="hl-1">&gt;);</span>
+<p>You can use a service using <code>ainize.service(&lt;SERVICE_NAME&gt;)</code>.</p>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">service</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">service</span><span class="hl-1">(&lt;</span><span class="hl-7">SERVICE_NAME</span><span class="hl-1">&gt;);</span>
 </code></pre>
-<p>You should deposit AIN to credit before using model.</p>
-<pre><code class="language-typescript"><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">deposit</span><span class="hl-1">(&lt;</span><span class="hl-7">AMOUNT</span><span class="hl-1">&gt;);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">balance</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">getCreditBalance</span><span class="hl-1">();</span>
+<p>You should deposit AIN to credit before using service.</p>
+<pre><code class="language-typescript"><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">chargeCredit</span><span class="hl-1">(&lt;</span><span class="hl-7">AMOUNT</span><span class="hl-1">&gt;);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">balance</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">getCreditBalance</span><span class="hl-1">();</span>
 </code></pre>
-<p>If you have enough credit, you can use the model.</p>
-<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">use</span><span class="hl-1">(&lt;</span><span class="hl-7">REQUEST_DATA</span><span class="hl-1">&gt;);</span>
+<p>If you have enough credit, you can use the service.</p>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">use</span><span class="hl-1">(&lt;</span><span class="hl-7">REQUEST_DATA</span><span class="hl-1">&gt;);</span>
 </code></pre>
 </div></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
