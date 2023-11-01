@@ -51,7 +51,7 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       ref: Path.app(appName).balanceOfUser("$userAddress"),
       value: {
         ".rule": {
-          write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData) && newData > 0",
+          write: "(util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true) && util.isNumber(newData) && newData >= 0",
         },
       },
     },
