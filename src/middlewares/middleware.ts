@@ -37,11 +37,7 @@ export default class Middleware {
    * @returns Null if if request is duplicated.
    */
   triggerFilter = (req: Request, res: Response) => {
-    if (req.body.fid === undefined){
-      res.send("not from trigger");
-      return;
-    }
-    if (req.body.transaction === undefined){
+    if (req.body.fid || req.body.transaction){
       res.send("not from trigger");
       return;
     }
