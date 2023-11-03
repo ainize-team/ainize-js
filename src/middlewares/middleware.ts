@@ -16,7 +16,7 @@ export default class Middleware {
    * @returns Null if if request is duplicated.
    */
   triggerDuplicateFilter = (req: Request, res: Response, next: NextFunction) => {
-    if (req.body.fid === undefined){
+    if (req.body.transaction.hash === undefined){
       next();
     }
     const txHash = req.body.transaction.hash;
@@ -27,5 +27,29 @@ export default class Middleware {
       // if request is first request, set cache 
     this.cache.set(txHash, "in_progress", 500);
     next();
+  }
+    /**
+   * Middleware for AI Network trigger call. It will filter duplicated request triggered by same transaction.
+   * It will pass request which is not from AI Network trigger.
+   * You can set filter inside specific api.
+   * @param {Request} request - Request data 
+   * @param {Res} response - Response data
+   * @returns Null if if request is duplicated.
+   */
+  triggerFilter = (req: Request, res: Response) => {
+    if (req.body.fid === undefined){
+      res.send("not from trigger");
+      return;
+    }
+    if (req.body.transaction === undefined){
+      res.send("not from trigger");
+      return;
+    }
+    const txHash = req.body.transaction.hash;
+    if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
+      res.send("duplicated");
+      return;
+    }
+    this.cache.set(txHash, "in_progress", 500);
   }
 }
