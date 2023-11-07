@@ -79,7 +79,7 @@ export default class ServiceController {
       const responsePath = Path.app(serviceName).response(requesterAddress, requestKey.toString());
       await this.handler.subscribe(responsePath, resolve);
       const requestPath = Path.app(serviceName).request(requesterAddress, requestKey);
-      const requestOp = buildSetOperation("SET_VALUE", requestPath, {prompt: requestData});
+      const requestOp = buildSetOperation("SET_VALUE", requestPath, requestData);
       const txBody = buildTxBody(requestOp);
       await this.ain.sendTransaction(txBody);
       return requestKey;
