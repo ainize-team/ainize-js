@@ -60,7 +60,8 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       value: {
         ".rule": {
           write: 
-            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
+            "auth.addr === $userAddress && " +
+            "(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`) === 0 || " +
             "(getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))"
         },
       },
