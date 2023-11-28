@@ -31,14 +31,6 @@ export const Path = {
 export const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
   const rootRef = Path.app(appName).root();
   return {
-    root: {
-      ref: rootRef,
-      value: {
-        ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
-        },
-      },
-    },
     deposit: {
       ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       value: {
@@ -56,7 +48,7 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       },
     },
     balanceHistory: {
-      ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
+      ref: `${rootRef}/balance/$userAddress/history/$timestamp`,
       value: {
         ".rule": {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
