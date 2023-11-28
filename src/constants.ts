@@ -78,9 +78,12 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       ref: Path.app(appName).billingConfig(),
       value: {
         ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress) && " + 
-          "util.isDict(newData) && util.isNumber(newData.costPerToken) && util.isNumber(newData.minCost) && " + 
-          "util.isEmpty(newData.maxCost) || (util.isNumber(newData.maxCost) && newData.maxCost >= newData.minCost)",
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && " +
+          "util.isDict(newData) && " + 
+          "util.isString(newData.depositAddress) && " + 
+          "util.isNumber(newData.costPerToken) && " + 
+          "util.isNumber(newData.minCost) && newData.minCost >= 0" + 
+          "(util.isEmpty(newData.maxCost) || (util.isNumber(newData.maxCost) && newData.maxCost >= newData.minCost))",
         },
       },
     },
