@@ -29,7 +29,8 @@ export default class ServiceController {
     return await 'information of service';
   }
 
-  async calculateCost(serviceName: string, requestData: string): Promise<number> {
+  // FIXME(yoojin): Temporary deprecated. Need new pricing rules.
+  private async calculateCost(serviceName: string, requestData: string): Promise<number> {
     const billingConfig = await this.ain.getValue(Path.app(serviceName).billingConfig());
     const token = requestData.split(' ').length;
     let cost = token * billingConfig.costPerToken;
