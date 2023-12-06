@@ -47,7 +47,7 @@ export default class ServiceController {
   }
 
   async chargeCredit(serviceName: string, amount: number): Promise<string> {
-    this.isRunning(serviceName);
+    this.checkRunning(serviceName);
     const transferKey = Date.now();
     const userAddress = this.ain.getAddress(); 
     const depositAddress = await this.getDepositAddress(serviceName);
@@ -77,7 +77,7 @@ export default class ServiceController {
   }
 
   async request(serviceName: string, requestData: string) : Promise<string> {
-    this.isRunning(serviceName);
+    this.checkRunning(serviceName);
     const result = await new Promise(async (resolve, reject) => {
       const requestKey = Date.now();
       const requesterAddress = this.ain.getAddress();
