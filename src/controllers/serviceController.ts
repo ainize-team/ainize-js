@@ -17,11 +17,16 @@ export default class ServiceController {
     return ServiceController.instance;
   }
 
-  async isRunning(serviceName: string): Promise<void> {
-    const isRunning = await this.ain.getValue(Path.app(serviceName).status());
-    if(isRunning !== ContainerStatus.RUNNING) {
-      throw new Error('Service is not running');
+  async checkRunning(serviceName: string): Promise<void> {
+    const isRunning = await this.isRunning(serviceName);
+    if (!isRunning) {
+      throw new Error('Service is not running.');
     }
+  }
+
+  async isRunning(serviceName: string): Promise<boolean> {
+    const runningStatus = await this.ain.getValue(Path.app(serviceName).status());
+    return runningStatus === ContainerStatus.RUNNING ? true : false;
   }
 
   // TODO(woojae): implement this
