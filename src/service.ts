@@ -16,6 +16,7 @@ export default class Service {
   async isRunning() {
     return await this.serviceController.isRunning(this.serviceName);
   }
+  
   /**
    * Get service information. not implemented yet.
    * @returns {string} Service information.
