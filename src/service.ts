@@ -10,12 +10,12 @@ export default class Service {
   }
 
   /**
-   * Check if service is running. It throws error when service is not running.
+   * Gets whether the service is running or not.
+   * @returns {Promise<boolean>}
    */
   async isRunning() {
     return await this.serviceController.isRunning(this.serviceName);
   }
-
   /**
    * Get service information. not implemented yet.
    * @returns {string} Service information.
