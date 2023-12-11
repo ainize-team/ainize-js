@@ -1,6 +1,6 @@
-# ainize-sdk
+# ainize-js
 
-A Typescript SDK for the Ainize, a system for running AI services on the AI Network.
+A Typescript JS for the Ainize, a system for running AI services on the AI Network.
 
 ## Requirements
 node >= 16
@@ -8,14 +8,14 @@ node >= 16
 ## usage
 ### Install
 ```bash
-npm install @ainize-team/ainize-sdk
+npm install @ainize-team/ainize-js
 
-yarn install @ainize-team/ainize-sdk
+yarn install @ainize-team/ainize-js
 ```
 
 ### Import
 ```typescript
-import Ainize from '@ainize-team/ainize-sdk'
+import Ainize from '@ainize-team/ainize-js'
 const ainize = new Ainize(<CHAIN_ID>);
 ```
 
@@ -49,9 +49,9 @@ service.run();
 ```
 
 ### Using Service
-You can use a service using `ainize.service(<SERVICE_NAME>)`.
+You can use a service using `ainize.getService(<SERVICE_NAME>)`.
 ```typescript
-const service = await ainize.service(<SERVICE_NAME>);
+const service = await ainize.getService(<SERVICE_NAME>);
 ```
 
 You should deposit AIN to credit before using service.
