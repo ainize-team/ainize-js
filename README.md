@@ -62,5 +62,5 @@ const balance = await service.getCreditBalance();
 
 If you have enough credit, you can use the service.
 ```typescript
-const result = await service.use(<REQUEST_DATA>);
+const result = await service.request(<REQUEST_DATA>);
 ``` 

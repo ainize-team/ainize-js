@@ -31,14 +31,6 @@ export const Path = {
 export const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
   const rootRef = Path.app(appName).root();
   return {
-    root: {
-      ref: rootRef,
-      value: {
-        ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true"
-        },
-      },
-    },
     deposit: {
       ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       value: {
@@ -56,7 +48,7 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       },
     },
     balanceHistory: {
-      ref: `${rootRef}/balance/$userAddress/history/$timestamp_and_type`,
+      ref: `${rootRef}/balance/$userAddress/history/$timestamp`,
       value: {
         ".rule": {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
@@ -68,7 +60,8 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       value: {
         ".rule": {
           write: 
-            "auth.addr === $userAddress && getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`) !== null && " +
+            "auth.addr === $userAddress && " +
+            "(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`) === 0 || " +
             "(getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))"
         },
       },
@@ -85,9 +78,12 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       ref: Path.app(appName).billingConfig(),
       value: {
         ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.depositAddress) && " + 
-          "util.isDict(newData) && util.isNumber(newData.costPerToken) && util.isNumber(newData.minCost) && " + 
-          "util.isEmpty(newData.maxCost) || (util.isNumber(newData.maxCost) && newData.maxCost >= newData.minCost)",
+          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && " +
+          "util.isDict(newData) && " + 
+          "util.isString(newData.depositAddress) && " + 
+          "util.isNumber(newData.costPerToken) && " + 
+          "util.isNumber(newData.minCost) && newData.minCost >= 0" + 
+          "(util.isEmpty(newData.maxCost) || (util.isNumber(newData.maxCost) && newData.maxCost >= newData.minCost))",
         },
       },
     },
