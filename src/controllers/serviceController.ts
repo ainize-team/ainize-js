@@ -17,11 +17,16 @@ export default class ServiceController {
     return ServiceController.instance;
   }
 
-  async isRunning(serviceName: string): Promise<void> {
-    const isRunning = await this.ain.getValue(Path.app(serviceName).status());
-    if(isRunning !== ContainerStatus.RUNNING) {
-      throw new Error('Service is not running');
+  async checkRunning(serviceName: string): Promise<void> {
+    const isRunning = await this.isRunning(serviceName);
+    if (!isRunning) {
+      throw new Error('Service is not running.');
     }
+  }
+
+  async isRunning(serviceName: string): Promise<boolean> {
+    const runningStatus = await this.ain.getValue(Path.app(serviceName).status());
+    return runningStatus === ContainerStatus.RUNNING ? true : false;
   }
 
   // TODO(woojae): implement this
@@ -43,7 +48,7 @@ export default class ServiceController {
   }
 
   async chargeCredit(serviceName: string, amount: number): Promise<string> {
-    this.isRunning(serviceName);
+    this.checkRunning(serviceName);
     const transferKey = Date.now();
     const userAddress = this.ain.getAddress(); 
     const depositAddress = await this.getDepositAddress(serviceName);
@@ -73,7 +78,7 @@ export default class ServiceController {
   }
 
   async request(serviceName: string, requestData: any) : Promise<any> {
-    this.isRunning(serviceName);
+    this.checkRunning(serviceName);
     const result = await new Promise(async (resolve, reject) => {
       const requestKey = Date.now();
       const requesterAddress = this.ain.getAddress();
