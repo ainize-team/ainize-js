@@ -30,7 +30,9 @@ export default class Service {
    * @returns {number} Estimated cost.
    */
   async calculateCost (requestData: string) {
-    return await this.serviceController.calculateCost(this.serviceName, requestData);
+    // FIXME(yoojin): Temporary deprecated. Need new pricing rules.
+    // return await this.serviceController.calculateCost(this.serviceName, requestData);
+    return 0;
   }
 
   /**
@@ -76,7 +78,7 @@ export default class Service {
    * @param {string} requestData String data for request to service. 
    * @returns {string} Response data from service.
    */
-  async request(requestData: string) {
+  async request(requestData: any) {
     this.isLoggedIn();
     return await this.serviceController.request(this.serviceName, requestData);
   }
