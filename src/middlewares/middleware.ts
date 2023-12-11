@@ -42,7 +42,7 @@ export default class Middleware {
       return;
     }
     const txHash = req.body.transaction.hash;
-    if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
+    if (this.cache.get(txHash)) {
       res.send("duplicated");
       return;
     }
