@@ -13,10 +13,10 @@
 <div class="tsd-page-title">
 <h2>Ainize-SDK</h2></div>
 <div class="tsd-panel tsd-typography">
-<a href="#ainize-sdk" id="ainize-sdk" style="color: inherit; text-decoration: none;">
-  <h1>ainize-sdk</h1>
+<a href="#ainize-js" id="ainize-js" style="color: inherit; text-decoration: none;">
+  <h1>ainize-js</h1>
 </a>
-<p>A Typescript SDK for the Ainize, a system for running AI services on the AI Network.</p>
+<p>A Typescript JS for the Ainize, a system for running AI services on the AI Network.</p>
 
 <a href="#requirements" id="requirements" style="color: inherit; text-decoration: none;">
   <h2>Requirements</h2>
@@ -30,13 +30,13 @@
 <a href="#install" id="install" style="color: inherit; text-decoration: none;">
   <h3>Install</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-sdk</span><br/><br/><span class="hl-0">yarn</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-sdk</span>
+<pre><code class="language-bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-js</span><br/><br/><span class="hl-0">yarn</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-js</span>
 </code></pre>
 
 <a href="#import" id="import" style="color: inherit; text-decoration: none;">
   <h3>Import</h3>
 </a>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">Ainize</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-sdk&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(&lt;</span><span class="hl-7">CHAIN_ID</span><span class="hl-1">&gt;);</span>
+<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">Ainize</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(&lt;</span><span class="hl-7">CHAIN_ID</span><span class="hl-1">&gt;);</span>
 </code></pre>
 <p>CHAIN_ID</p>
 <ul>
@@ -75,14 +75,14 @@
 <a href="#using-service" id="using-service" style="color: inherit; text-decoration: none;">
   <h3>Using Service</h3>
 </a>
-<p>You can use a service using <code>ainize.service(&lt;SERVICE_NAME&gt;)</code>.</p>
-<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">service</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">service</span><span class="hl-1">(&lt;</span><span class="hl-7">SERVICE_NAME</span><span class="hl-1">&gt;);</span>
+<p>You can use a service using <code>ainize.getService(&lt;SERVICE_NAME&gt;)</code>.</p>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">service</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">getService</span><span class="hl-1">(&lt;</span><span class="hl-7">SERVICE_NAME</span><span class="hl-1">&gt;);</span>
 </code></pre>
 <p>You should deposit AIN to credit before using service.</p>
 <pre><code class="language-typescript"><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">chargeCredit</span><span class="hl-1">(&lt;</span><span class="hl-7">AMOUNT</span><span class="hl-1">&gt;);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">balance</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">getCreditBalance</span><span class="hl-1">();</span>
 </code></pre>
 <p>If you have enough credit, you can use the service.</p>
-<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">use</span><span class="hl-1">(&lt;</span><span class="hl-7">REQUEST_DATA</span><span class="hl-1">&gt;);</span>
+<pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">service</span><span class="hl-1">.</span><span class="hl-0">request</span><span class="hl-1">(&lt;</span><span class="hl-7">REQUEST_DATA</span><span class="hl-1">&gt;);</span>
 </code></pre>
 </div></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
