@@ -34,7 +34,8 @@ export default class ServiceController {
     return await 'information of service';
   }
 
-  async calculateCost(serviceName: string, requestData: string): Promise<number> {
+  // FIXME(yoojin): Temporary deprecated. Need new pricing rules.
+  private async calculateCost(serviceName: string, requestData: string): Promise<number> {
     const billingConfig = await this.ain.getValue(Path.app(serviceName).billingConfig());
     const token = requestData.split(' ').length;
     let cost = token * billingConfig.costPerToken;
@@ -76,7 +77,7 @@ export default class ServiceController {
     return await this.ain.getValue(creditHistoryPath) as creditHistories;
   }
 
-  async request(serviceName: string, requestData: string) : Promise<string> {
+  async request(serviceName: string, requestData: any) : Promise<any> {
     this.checkRunning(serviceName);
     const result = await new Promise(async (resolve, reject) => {
       const requestKey = Date.now();
