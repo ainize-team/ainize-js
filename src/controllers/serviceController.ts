@@ -81,16 +81,20 @@ export default class ServiceController {
     this.checkRunning(serviceName);
     const result = await new Promise(async (resolve, reject) => {
       requestKey = requestKey || Date.now().toString();
-      const requesterAddress = this.ain.getAddress();
-      const responsePath = Path.app(serviceName).response(requesterAddress, requestKey);
-      await this.handler.subscribe(responsePath, resolve);
-      const requestPath = Path.app(serviceName).request(requesterAddress, requestKey);
-      const requestOp = buildSetOperation("SET_VALUE", requestPath, requestData);
-      const txBody = buildTxBody(requestOp);
-      await this.ain.sendTransaction(txBody);
-      return requestKey;
+      try {
+        const requesterAddress = this.ain.getAddress();
+        const responsePath = Path.app(serviceName).response(requesterAddress, requestKey.toString());
+        await this.handler.subscribe(responsePath, resolve);
+        const requestPath = Path.app(serviceName).request(requesterAddress, requestKey);
+        const requestOp = buildSetOperation("SET_VALUE", requestPath, requestData);
+        const txBody = buildTxBody(requestOp);
+        await this.ain.sendTransaction(txBody);
+      } catch (e: any) {
+        if (e instanceof Error)
+          return reject(new Error(e.message));
+      }
     });
-    return result as string;
+    return result;
   }
 
   async run(serviceName: string): Promise<void> {
