@@ -83,6 +83,7 @@ export default class Ainize {
       if (!serviceUrl) {
         serviceUrl = `https://${serviceName}.ainetwork.xyz`;
       }
+      serviceUrl = serviceUrl.replace(/\/$/, '');
       const servicePath = Path.app(serviceName).status();
       await this.handler.subscribe(servicePath, resolve);
       await this.appController.createApp({ appName: serviceName, serviceUrl, billingConfig });
