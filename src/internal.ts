@@ -4,6 +4,7 @@ import { getChangeBalanceOp, getResponseOp, getWriteHistoryOp } from "./utils/op
 import { HISTORY_TYPE, RESPONSE_STATUS, deposit, request, response } from "./types/type";
 import { buildTxBody } from "./utils/builder";
 import AinModule from "./ain";
+import { extractDataFromDepositRequest, extractDataFromServiceRequest } from "./utils/extractor";
 
 export default class Internal {
   private ain = AinModule.getInstance();
@@ -35,28 +36,10 @@ export default class Internal {
   }
   
   getDataFromServiceRequest(req: Request) {
-    if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[4] || !req.body.value) {
-      throw new Error("Not from service request");
-    }
-    const requestData: request = {
-      appName: req.body.valuePath[1],
-      requesterAddress: req.body.auth.addr,
-      requestKey: req.body.valuePath[4],
-      requestData: req.body.value,
-    }
-    return requestData;
+    return extractDataFromServiceRequest(req);
   }
 
   private getDataFromDepositRequest(req: Request) {
-    if(!req.body.valuePath[1] || !req.body.valuePath[4] || !req.body.value) {
-      throw new Error("Not from deposit request");
-    }
-    const depositData: deposit = {
-      transferKey: req.body.valuePath[4],
-      transferValue: req.body.value,
-      appName: req.body.valuePath[1],
-      requesterAddress: req.body.auth.addr,
-    }
-    return depositData;
+    return extractDataFromDepositRequest(req);
   }
 }
