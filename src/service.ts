@@ -42,7 +42,7 @@ export default class Service {
    * @returns {string} Transaction hash.
    */
   async chargeCredit(amount: number) {
-    this.isLoggedIn();
+    this.checkLoggedIn();
     return await this.serviceController.chargeCredit(this.serviceName, amount);
   }
 
@@ -52,7 +52,7 @@ export default class Service {
    * @returns {string} Transaction hash.
    */
   async withdrawCredit(amount: number) {
-    this.isLoggedIn();
+    this.checkLoggedIn();
     return await this.serviceController.withdrawCredit(this.serviceName, amount);
   }
 
@@ -61,7 +61,7 @@ export default class Service {
    * @returns {number} Amount of credit balance.
    */
   async getCreditBalance() {
-    this.isLoggedIn();
+    this.checkLoggedIn();
     return await this.serviceController.getCreditBalance(this.serviceName);
   }
 
@@ -70,7 +70,7 @@ export default class Service {
    * @returns {creditHistories} Histories of credit deposit and usage.
    */
   async getCreditHistory() {
-    this.isLoggedIn();
+    this.checkLoggedIn();
     return await this.serviceController.getCreditHistory(this.serviceName);
   }
 
@@ -80,7 +80,7 @@ export default class Service {
    * @returns {string} Response data from service.
    */
   async request(requestData: any, requestKey?: string) {
-    this.isLoggedIn();
+    this.checkLoggedIn();
     return await this.serviceController.request(this.serviceName, requestData, requestKey);
   }
 
@@ -113,7 +113,7 @@ export default class Service {
     return this.serviceController.isAdmin(this.serviceName);
   }
 
-  private isLoggedIn() {
-    return this.serviceController.isLoggedIn();
+  private checkLoggedIn() {
+    return this.serviceController.checkLoggedIn();
   }
 }
