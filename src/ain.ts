@@ -2,6 +2,7 @@ import Ain from "@ainblockchain/ain-js";
 import { getBlockChainEndpoint } from "./constants";
 import { TransactionBody } from "@ainblockchain/ain-util";
 import { txResult } from "./types/type";
+import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
 
 // NOTE(yoojin): Plz suggest a good name.
 export default class AinModule {
@@ -39,19 +40,29 @@ export default class AinModule {
     this.ain!.wallet.addAndSetDefaultAccount(privateKey);
   }
 
+  setSigner(signer: Signer) {
+    this.checkAinInitiated();
+    this.ain!.setSigner(signer);
+  }
+
   getDefaultAccount() {
     this.checkAinInitiated();
     return this.ain!.wallet.defaultAccount;
   }
 
-  removeDefaultAccount() {
+  getSigner() {
     this.checkAinInitiated();
-    this.ain!.wallet.removeDefaultAccount();
+    return this.ain!.signer
   }
 
   getAddress() {
-    this.isDefaultAccountExist();
-    return this.ain!.wallet.defaultAccount!.address;
+    this.checkAinInitiated();
+    return this.getSigner().getAddress(); 
+  }
+
+  removeDefaultAccount() {
+    this.checkAinInitiated();
+    this.ain!.wallet.removeDefaultAccount();
   }
 
   async getBalance() {
@@ -64,14 +75,14 @@ export default class AinModule {
     return await this.ain!.db.ref(path).getValue();
   }
 
-  private async _sendTransaction(data: TransactionBody) {
+  private async _sendTransaction(txBody: TransactionBody) {
     this.checkAinInitiated();
-    return await this.ain!.sendTransaction(data);
+    return await this.ain!.signer.sendTransaction(txBody);
   }
 
   private checkAinInitiated(): boolean {
     if (!this.ain) 
-      throw new Error('Set initAin(chainId) First.');
+      throw new Error('Set initAin(chainId) First.'); 
     return true;
   }
 
