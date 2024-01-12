@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@ainblockchain/ain-js@^1.3.5":
-  version "1.6.0"
-  resolved "https://registry.npmjs.org/@ainblockchain/ain-js/-/ain-js-1.6.0.tgz"
-  integrity sha512-REzTJAf8w2TIsJLH7DhKWJF+kxfgMnCCwzWaeD4rYAv4TeD70PhFmYDrDMuy/qZd5KKMXqMigiU9PLWbiu8a7A==
+"@ainblockchain/ain-js@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.6.3.tgz#56ca744a6bf5e558f2acba75f106e8f88f5426ba"
+  integrity sha512-rdQfT6jcqcF4VP1twwMQkCijZ6SN1RewTjU1D35rJ7ZnRQjoIxekkodkdcIDVvyUEpR6A6iuT9SSSTz9KUMNbA==
   dependencies:
     "@ainblockchain/ain-util" "^1.1.9"
     "@types/node" "^12.7.3"
