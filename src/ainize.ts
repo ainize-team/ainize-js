@@ -8,6 +8,7 @@ import { deployConfig } from "./types/type";
 import AinModule from "./ain";
 import Internal from "./internal";
 import { Account } from "@ainblockchain/ain-util";
+import { AinWalletSigner } from "@ainblockchain/ain-js/lib/signer/ain-wallet-signer";
 
 export default class Ainize {
   private cache: NodeCache;
@@ -40,6 +41,15 @@ export default class Ainize {
     this.ain.setDefaultAccount(privateKey);
     await this.handler.connect();
     console.log('login success! address:', this.ain.getAddress());
+  }
+
+  /**
+   * Login to ainize using AIN Wallet Signer.
+   */
+  async loginWithSigner() {
+    const signer = new AinWalletSigner;
+    this.ain.setSigner(signer);
+    console.log('login success! address: ', this.ain.getAddress());
   }
 
   /**
