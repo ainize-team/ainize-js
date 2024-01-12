@@ -56,7 +56,7 @@ export default class Ainize {
    * Logout from ainize.
    */
   async logout() {
-    this.ain.removeDefaultAccount();
+    this.ain.removeSigner();
     await this.handler.disconnect();
     console.log('logout success!');
   }

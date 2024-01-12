@@ -3,6 +3,7 @@ import { getBlockChainEndpoint } from "./constants";
 import { TransactionBody } from "@ainblockchain/ain-util";
 import { txResult } from "./types/type";
 import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
+import { DefaultSigner } from "@ainblockchain/ain-js/lib/signer/default-signer"
 
 // NOTE(yoojin): Plz suggest a good name.
 export default class AinModule {
@@ -64,6 +65,15 @@ export default class AinModule {
     this.checkAinInitiated();
     this.ain!.wallet.removeDefaultAccount();
   }
+
+  removeSigner() {
+    this.checkAinInitiated();
+    const wallet = this.ain!.wallet;
+    const provider = this.ain!.provider;
+    wallet.removeDefaultAccount();
+    this.ain!.setSigner(new DefaultSigner(wallet, provider))
+  }
+
 
   async getBalance() {
     this.isDefaultAccountExist();
