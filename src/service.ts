@@ -79,9 +79,9 @@ export default class Service {
    * @param {string} requestData String data for request to service. 
    * @returns {string} Response data from service.
    */
-  async request(requestData: any) {
+  async request(requestData: any, requestKey?: string) {
     this.isLoggedIn();
-    return await this.serviceController.request(this.serviceName, requestData);
+    return await this.serviceController.request(this.serviceName, requestData, requestKey);
   }
 
   /**
