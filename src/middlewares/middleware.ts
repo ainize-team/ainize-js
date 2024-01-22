@@ -29,7 +29,7 @@ export default class Middleware {
       return;
     }
     this.cache.set(txHash, "in_progress", 500);
-    _.isEqual(result, triggerValue) ? res.send("not from blockChain") : next();
+    _.isEqual(result, triggerValue) ? next(): res.send("not from blockChain");
   }
   /**
    *  DEPRECATED
