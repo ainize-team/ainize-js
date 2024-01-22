@@ -48,7 +48,7 @@ export default class ServiceController {
   }
 
   async chargeCredit(serviceName: string, amount: number): Promise<string> {
-    this.checkRunning(serviceName);
+    await this.checkRunning(serviceName);
     const transferKey = Date.now();
     const userAddress = this.ain.getAddress(); 
     const depositAddress = await this.getDepositAddress(serviceName);
