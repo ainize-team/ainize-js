@@ -22,12 +22,6 @@ export default class AinModule {
     this.ain = new Ain(blockchainEndpoint, chainId);
   }
 
-  isDefaultAccountExist(): boolean {
-    if (this.getDefaultAccount())
-      return true;
-    return false;
-  }
-
   createAccount() {
     this.checkAinInitiated();
     const newAccount = this.ain!.wallet.create(1)[0];
@@ -58,7 +52,11 @@ export default class AinModule {
 
   getAddress() {
     this.checkAinInitiated();
-    return this.getSigner().getAddress(); 
+    try {
+      return this.getSigner().getAddress(); 
+    } catch (e) {
+      return null;
+    }
   }
 
   removeDefaultAccount() {
@@ -74,10 +72,9 @@ export default class AinModule {
     this.ain!.setSigner(new DefaultSigner(wallet, provider))
   }
 
-
   async getBalance() {
-    this.isDefaultAccountExist();
-    return await this.ain!.wallet.getBalance();
+    const address = this.getAddress();
+    return address ? await this.ain!.wallet.getBalance(address) : null;
   }
 
   async getValue(path: string) {
@@ -92,7 +89,7 @@ export default class AinModule {
 
   private checkAinInitiated(): boolean {
     if (!this.ain) 
-      throw new Error('Set initAin(chainId) First.'); 
+      throw new Error('Set initAin(chainId) first.');
     return true;
   }
 
