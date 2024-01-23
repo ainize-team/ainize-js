@@ -2,6 +2,8 @@ import Ain from "@ainblockchain/ain-js";
 import { getBlockChainEndpoint } from "./constants";
 import { TransactionBody } from "@ainblockchain/ain-util";
 import { txResult } from "./types/type";
+import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
+import { DefaultSigner } from "@ainblockchain/ain-js/lib/signer/default-signer"
 
 // NOTE(yoojin): Plz suggest a good name.
 export default class AinModule {
@@ -20,12 +22,6 @@ export default class AinModule {
     this.ain = new Ain(blockchainEndpoint, chainId);
   }
 
-  isDefaultAccountExist(): boolean {
-    if (this.getDefaultAccount())
-      return true;
-    return false;
-  }
-
   createAccount() {
     this.checkAinInitiated();
     const newAccount = this.ain!.wallet.create(1)[0];
@@ -39,9 +35,28 @@ export default class AinModule {
     this.ain!.wallet.addAndSetDefaultAccount(privateKey);
   }
 
+  setSigner(signer: Signer) {
+    this.checkAinInitiated();
+    this.ain!.setSigner(signer);
+  }
+
   getDefaultAccount() {
     this.checkAinInitiated();
     return this.ain!.wallet.defaultAccount;
+  }
+
+  getSigner() {
+    this.checkAinInitiated();
+    return this.ain!.signer
+  }
+
+  getAddress() {
+    this.checkAinInitiated();
+    try {
+      return this.getSigner().getAddress(); 
+    } catch (e) {
+      return null;
+    }
   }
 
   removeDefaultAccount() {
@@ -49,14 +64,17 @@ export default class AinModule {
     this.ain!.wallet.removeDefaultAccount();
   }
 
-  getAddress() {
-    this.isDefaultAccountExist();
-    return this.ain!.wallet.defaultAccount!.address;
+  removeSigner() {
+    this.checkAinInitiated();
+    const wallet = this.ain!.wallet;
+    const provider = this.ain!.provider;
+    wallet.removeDefaultAccount();
+    this.ain!.setSigner(new DefaultSigner(wallet, provider))
   }
 
   async getBalance() {
-    this.isDefaultAccountExist();
-    return await this.ain!.wallet.getBalance();
+    const address = this.getAddress();
+    return address ? await this.ain!.wallet.getBalance(address) : null;
   }
 
   async getValue(path: string) {
@@ -64,14 +82,14 @@ export default class AinModule {
     return await this.ain!.db.ref(path).getValue();
   }
 
-  private async _sendTransaction(data: TransactionBody) {
+  private async _sendTransaction(txBody: TransactionBody) {
     this.checkAinInitiated();
-    return await this.ain!.sendTransaction(data);
+    return await this.ain!.signer.sendTransaction(txBody);
   }
 
   private checkAinInitiated(): boolean {
     if (!this.ain) 
-      throw new Error('Set initAin(chainId) First.');
+      throw new Error('Set initAin(chainId) first.');
     return true;
   }
 

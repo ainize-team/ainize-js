@@ -120,13 +120,16 @@ export default class ServiceController {
     return (await this.ain.getValue(Path.app(serviceName).billingConfig())).depositAddress;
   }
 
-  isLoggedIn(): void {
-    if(!this.ain.getDefaultAccount())
-      throw new Error('You should login First.');
+  checkLoggedIn(): void {
+    try {
+      !this.ain.getAddress();
+    } catch(error) {
+      throw new Error('You should login first.');
+    }
   }
 
   async isAdmin(serviceName: string): Promise<void> {
-    this.isLoggedIn();
+    this.checkLoggedIn();
     const adminPath = `/manage_app/${serviceName}/config/admin`;
     const adminList = await this.ain.getValue(adminPath);
     if(!adminList[this.ain.getAddress()]) {
