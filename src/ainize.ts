@@ -40,7 +40,7 @@ export default class Ainize {
   async login(privateKey: string) {
     this.ain.setDefaultAccount(privateKey);
     await this.handler.connect();
-    console.log('login success! address:', this.ain.getAddress());
+    console.log('login success! address:', await this.ain.getAddress());
   }
 
   /**
@@ -49,7 +49,7 @@ export default class Ainize {
   async loginWithSigner() {
     const signer = new AinWalletSigner;
     this.ain.setSigner(signer);
-    console.log('login success! address: ', this.ain.getAddress());
+    console.log('login success! address: ', await this.ain.getAddress());
   }
 
   /**
@@ -61,24 +61,11 @@ export default class Ainize {
     console.log('logout success!');
   }
 
-  /**
-   * Throw error if user doesn't log in.
-   * @returns {}
-   */
-  async checkLoggedIn() {
-    const address = await this.ain.getAddress();
-    if (!address) {
-      throw new Error('You should login first.');
-    }
-  }
-
   async getAddress(): Promise<string> {
-    await this.checkLoggedIn();
-    return await this.ain.getAddress()!;
+    return await this.ain.getAddress();
   }
 
   async getAinBalance(): Promise<number> {
-    await this.checkLoggedIn();
     return await this.ain.getBalance() || 0;
   }
 
@@ -90,10 +77,9 @@ export default class Ainize {
    */
   // TODO(yoojin, woojae): Deploy container, advanced.
   async deploy({serviceName, billingConfig, serviceUrl}: deployConfig): Promise<Service> {
-    await this.checkLoggedIn();
     // TODO(yoojin, woojae): Add container deploy logic.
     const result = await new Promise(async (resolve, reject) => {
-      const deployer = this.ain.getAddress()!;
+      const deployer = await this.ain.getAddress();
       if (!billingConfig) {
         billingConfig = {
           ...DEFAULT_BILLING_CONFIG,

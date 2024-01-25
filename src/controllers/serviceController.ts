@@ -50,7 +50,7 @@ export default class ServiceController {
   async chargeCredit(serviceName: string, amount: number): Promise<string> {
     this.checkRunning(serviceName);
     const transferKey = Date.now();
-    const userAddress = this.ain.getAddress(); 
+    const userAddress = await this.ain.getAddress(); 
     const depositAddress = await this.getDepositAddress(serviceName);
     const op_list: SetOperation[] = [
       getTransferOp(userAddress, depositAddress, transferKey.toString(), amount),
@@ -66,13 +66,14 @@ export default class ServiceController {
   }
 
   async getCreditBalance(serviceName: string): Promise<number> {
-    const userAddress = this.ain.getAddress();
+    const userAddress = await this.ain.getAddress();
+    console.log("userAddress in getCreditBalance", userAddress)
     const balancePath = Path.app(serviceName).balanceOfUser(userAddress);
     return await this.ain.getValue(balancePath) as number | 0;
   }
 
   async getCreditHistory(serviceName: string): Promise<creditHistories> {
-    const userAddress = this.ain.getAddress();
+    const userAddress = await this.ain.getAddress();
     const creditHistoryPath = Path.app(serviceName).historyOfUser(userAddress);
     return await this.ain.getValue(creditHistoryPath) as creditHistories;
   }
@@ -82,7 +83,7 @@ export default class ServiceController {
     const result = await new Promise(async (resolve, reject) => {
       requestKey = requestKey || Date.now().toString();
       try {
-        const requesterAddress = this.ain.getAddress();
+        const requesterAddress = await this.ain.getAddress();
         const responsePath = Path.app(serviceName).response(requesterAddress, requestKey.toString());
         await this.handler.subscribe(responsePath, resolve);
         const requestPath = Path.app(serviceName).request(requesterAddress, requestKey);
@@ -121,9 +122,7 @@ export default class ServiceController {
   }
 
   checkLoggedIn(): void {
-    try {
-      !this.ain.getAddress();
-    } catch(error) {
+    if (!this.ain.isAccountSetUp()) {
       throw new Error('You should login first.');
     }
   }
@@ -132,8 +131,8 @@ export default class ServiceController {
     this.checkLoggedIn();
     const adminPath = `/manage_app/${serviceName}/config/admin`;
     const adminList = await this.ain.getValue(adminPath);
-    if(!adminList[this.ain.getAddress()]) {
-      throw new Error('You are not admin');
+    if(!adminList[(await this.ain.getAddress())]) {
+      throw new Error('You are not a service admin.');
     }
   }
 }
