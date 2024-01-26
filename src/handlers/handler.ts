@@ -49,7 +49,7 @@ export default class Handler {
       },
       (valueChangedEvent: any) => {
         this.unsubscribe(subscribeId);
-        resolve(valueChangedEvent.values.after.data);
+        resolve(valueChangedEvent.values.after);
       },
       (err) => {
         throw new Error(err.message);
