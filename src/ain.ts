@@ -50,12 +50,22 @@ export default class AinModule {
     return this.ain!.signer
   }
 
-  getAddress() {
+  async getAddress() {
     this.checkAinInitiated();
     try {
       return this.getSigner().getAddress(); 
     } catch (e) {
-      return null;
+      throw new Error("Need to set up an account or signer first.");
+    }
+  }
+
+  isAccountSetUp() {
+    try {
+      this.checkAinInitiated();
+      this.getSigner().getAddress();
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -73,8 +83,9 @@ export default class AinModule {
   }
 
   async getBalance() {
-    const address = this.getAddress();
-    return address ? await this.ain!.wallet.getBalance(address) : null;
+    const address = await this.getAddress();
+    const balancePath = `/accounts/${address}/balance`;
+    return await this.ain!.db.ref(balancePath).getValue();
   }
 
   async getValue(path: string) {
@@ -110,6 +121,13 @@ export default class AinModule {
   private handleTxResultWrapper(operation: Function) {
     return async (args: any) => {
       const res = await operation(args);
+      // ainWalletSigner return txHash or undefined.
+      if (typeof res === 'string') {
+        return res;
+      } else if (res === undefined) {
+        throw new Error(`Failed to build transaction.`);
+      }
+      // defaultSigner return a result object of transactions.
       const { tx_hash, result } = res;
       if (this.hasFailedOpResultList(result)) {
         throw new Error(

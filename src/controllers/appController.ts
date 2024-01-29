@@ -124,7 +124,7 @@ export default class AppController {
   }
 
     async checkCostAndBalance(appName: string, value: string) {
-      const requesterAddress = this.ain.getAddress();
+      const requesterAddress = await this.ain.getAddress();
       const billingConfig = (await this.getBillingConfig(appName));
       const token = value.split(' ').length;
       let cost = token * billingConfig.costPerToken;
