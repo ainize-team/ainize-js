@@ -29,6 +29,12 @@ You should login to ainize with AI Network account before deploy the container.
 ainize.login(<YOUR_PRIVATE_KEY>);
 ```
 
+You can also login using [AIN Wallet](https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl) on the web.
+```typescript
+ainize.loginWithSigner();
+```
+This feature is supported from AIN Wallet version 2.1.0 or later.
+
 ### Deploy
 You can deploy your AI service to ainize.
 ```typescript
