@@ -26,7 +26,7 @@ export const extractTriggerDataFromRequest = (req:Request) => {
   const triggerData = {
     triggerPath: path,
     triggerValue: req.body.value,
-    txHash: req.body.txhash,
+    txHash: req.body.transaction.hash,
   }
   return triggerData
 }
