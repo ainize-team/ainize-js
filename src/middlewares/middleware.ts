@@ -23,17 +23,17 @@ export default class Middleware {
     //check if request is from blockchain trigger
     const { triggerPath, triggerValue, txHash } = extractTriggerDataFromRequest(req);
     if(!triggerPath || !triggerValue || !txHash) {
-      res.send("not from blockChain");
+      res.send("Not from blockChain");
       return;
     }
     const result = await this.ain.getValue(triggerPath);
     // if request is first reque st, set cache 
     if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
-      res.send("duplicated");
+      res.send("Duplicated");
       return;
     }
     this.cache.set(txHash, "in_progress", 500);
-    _.isEqual(result, triggerValue) ? next(): res.send("not from blockChain");
+    _.isEqual(result, triggerValue) ? next(): res.send("Not from blockChain");
   }
   /**
    *  DEPRECATED
