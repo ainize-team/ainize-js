@@ -22,6 +22,10 @@ export default class Middleware {
   blockchainTriggerFilter = async (req: Request, res: Response, next: NextFunction) => {
     //check if request is from blockchain trigger
     const { triggerPath, triggerValue, txHash } = extractTriggerDataFromRequest(req);
+    if(!triggerPath || !triggerValue || !txHash) {
+      res.send("not from blockChain");
+      return;
+    }
     const result = await this.ain.getValue(triggerPath);
     // if request is first reque st, set cache 
     if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
