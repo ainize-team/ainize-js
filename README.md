@@ -33,7 +33,7 @@ You can also login using [AIN Wallet](https://chromewebstore.google.com/detail/a
 ```typescript
 ainize.loginWithSigner();
 ```
-This feature is supported from AIN Wallet version 2.1.0 or later.
+This feature is supported from AIN Wallet version 2.0.5 or later.
 
 ### Deploy
 You can deploy your AI service to ainize.
