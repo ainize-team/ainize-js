@@ -8,6 +8,7 @@ import { deployConfig } from "./types/type";
 import AinModule from "./ain";
 import Internal from "./internal";
 import { Account } from "@ainblockchain/ain-util";
+import { AinWalletSigner } from "@ainblockchain/ain-js/lib/signer/ain-wallet-signer";
 
 export default class Ainize {
   private cache: NodeCache;
@@ -39,14 +40,23 @@ export default class Ainize {
   async login(privateKey: string) {
     this.ain.setDefaultAccount(privateKey);
     await this.handler.connect();
-    console.log('login success! address:', this.ain.getAddress());
+    console.log('login success! address:', await this.ain.getAddress());
+  }
+
+  /**
+   * Login to ainize using AIN Wallet Signer.
+   */
+  async loginWithSigner() {
+    const signer = new AinWalletSigner;
+    this.ain.setSigner(signer);
+    console.log('login success! address: ', await this.ain.getAddress());
   }
 
   /**
    * Logout from ainize.
    */
   async logout() {
-    this.ain.removeDefaultAccount();
+    this.ain.removeSigner();
     await this.handler.disconnect();
     console.log('logout success!');
   }
@@ -56,7 +66,7 @@ export default class Ainize {
   }
 
   async getAinBalance(): Promise<number> {
-    return await this.ain.getBalance();
+    return await this.ain.getBalance() || 0;
   }
 
   // FIXME(yoojin): add config type and change param type.
@@ -67,12 +77,9 @@ export default class Ainize {
    */
   // TODO(yoojin, woojae): Deploy container, advanced.
   async deploy({serviceName, billingConfig, serviceUrl}: deployConfig): Promise<Service> {
-    if(!this.ain.isDefaultAccountExist()) {
-      throw new Error('you should login first');
-    }
     // TODO(yoojin, woojae): Add container deploy logic.
     const result = await new Promise(async (resolve, reject) => {
-      const deployer = this.ain.getAddress();
+      const deployer = await this.ain.getAddress();
       if (!billingConfig) {
         billingConfig = {
           ...DEFAULT_BILLING_CONFIG,
@@ -83,6 +90,7 @@ export default class Ainize {
       if (!serviceUrl) {
         serviceUrl = `https://${serviceName}.ainetwork.xyz`;
       }
+      serviceUrl = serviceUrl.replace(/\/$/, '');
       const servicePath = Path.app(serviceName).status();
       await this.handler.subscribe(servicePath, resolve);
       await this.appController.createApp({ appName: serviceName, serviceUrl, billingConfig });

@@ -32,7 +32,7 @@ export default class Handler {
   }
 
   private async disconnectedCb() {
-    if(AinModule.getInstance().isDefaultAccountExist()) {
+    if(await AinModule.getInstance().getAddress()) {
       console.log('disconnected. reconnecting...');
       await this.connect();
     }
@@ -49,7 +49,7 @@ export default class Handler {
       },
       (valueChangedEvent: any) => {
         this.unsubscribe(subscribeId);
-        resolve(valueChangedEvent.values.after.data);
+        resolve(valueChangedEvent.values.after);
       },
       (err) => {
         throw new Error(err.message);

@@ -2,6 +2,8 @@ import Ain from "@ainblockchain/ain-js";
 import { getBlockChainEndpoint } from "./constants";
 import { TransactionBody } from "@ainblockchain/ain-util";
 import { txResult } from "./types/type";
+import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
+import { DefaultSigner } from "@ainblockchain/ain-js/lib/signer/default-signer"
 
 // NOTE(yoojin): Plz suggest a good name.
 export default class AinModule {
@@ -20,12 +22,6 @@ export default class AinModule {
     this.ain = new Ain(blockchainEndpoint, chainId);
   }
 
-  isDefaultAccountExist(): boolean {
-    if (this.getDefaultAccount())
-      return true;
-    return false;
-  }
-
   createAccount() {
     this.checkAinInitiated();
     const newAccount = this.ain!.wallet.create(1)[0];
@@ -39,9 +35,38 @@ export default class AinModule {
     this.ain!.wallet.addAndSetDefaultAccount(privateKey);
   }
 
+  setSigner(signer: Signer) {
+    this.checkAinInitiated();
+    this.ain!.setSigner(signer);
+  }
+
   getDefaultAccount() {
     this.checkAinInitiated();
     return this.ain!.wallet.defaultAccount;
+  }
+
+  getSigner() {
+    this.checkAinInitiated();
+    return this.ain!.signer
+  }
+
+  async getAddress() {
+    this.checkAinInitiated();
+    try {
+      return this.getSigner().getAddress(); 
+    } catch (e) {
+      throw new Error("Need to set up an account or signer first.");
+    }
+  }
+
+  isAccountSetUp() {
+    try {
+      this.checkAinInitiated();
+      this.getSigner().getAddress();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   removeDefaultAccount() {
@@ -49,14 +74,18 @@ export default class AinModule {
     this.ain!.wallet.removeDefaultAccount();
   }
 
-  getAddress() {
-    this.isDefaultAccountExist();
-    return this.ain!.wallet.defaultAccount!.address;
+  removeSigner() {
+    this.checkAinInitiated();
+    const wallet = this.ain!.wallet;
+    const provider = this.ain!.provider;
+    wallet.removeDefaultAccount();
+    this.ain!.setSigner(new DefaultSigner(wallet, provider))
   }
 
   async getBalance() {
-    this.isDefaultAccountExist();
-    return await this.ain!.wallet.getBalance();
+    const address = await this.getAddress();
+    const balancePath = `/accounts/${address}/balance`;
+    return await this.ain!.db.ref(balancePath).getValue();
   }
 
   async getValue(path: string) {
@@ -64,14 +93,14 @@ export default class AinModule {
     return await this.ain!.db.ref(path).getValue();
   }
 
-  private async _sendTransaction(data: TransactionBody) {
+  private async _sendTransaction(txBody: TransactionBody) {
     this.checkAinInitiated();
-    return await this.ain!.sendTransaction(data);
+    return await this.ain!.signer.sendTransaction(txBody);
   }
 
   private checkAinInitiated(): boolean {
     if (!this.ain) 
-      throw new Error('Set initAin(chainId) First.');
+      throw new Error('Set initAin(chainId) first.');
     return true;
   }
 
@@ -92,6 +121,13 @@ export default class AinModule {
   private handleTxResultWrapper(operation: Function) {
     return async (args: any) => {
       const res = await operation(args);
+      // ainWalletSigner return txHash or undefined.
+      if (typeof res === 'string') {
+        return res;
+      } else if (res === undefined) {
+        throw new Error(`Failed to build transaction.`);
+      }
+      // defaultSigner return a result object of transactions.
       const { tx_hash, result } = res;
       if (this.hasFailedOpResultList(result)) {
         throw new Error(
