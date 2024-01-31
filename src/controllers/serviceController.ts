@@ -67,7 +67,6 @@ export default class ServiceController {
 
   async getCreditBalance(serviceName: string): Promise<number> {
     const userAddress = await this.ain.getAddress();
-    console.log("userAddress in getCreditBalance", userAddress)
     const balancePath = Path.app(serviceName).balanceOfUser(userAddress);
     return await this.ain.getValue(balancePath) as number | 0;
   }
