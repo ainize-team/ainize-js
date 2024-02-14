@@ -28,13 +28,18 @@ export default class Handler {
   async disconnect() {
     this.checkEventManager();
     await this.ain.getEventManager().disconnect();
-    console.log('disconnected');
+    console.log('Disconnected');
   }
 
   private async disconnectedCb() {
-    if(await AinModule.getInstance().getAddress()) {
-      console.log('disconnected. reconnecting...');
-      await this.connect();
+    try {
+      const address = await AinModule.getInstance().getAddress();
+      if (address) {
+        console.log('Disconnected. Reconnecting...');
+        await this.connect();
+      }
+    } catch (_) {
+      return;
     }
   }
 
