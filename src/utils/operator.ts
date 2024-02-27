@@ -66,7 +66,6 @@ export const getResponseOp = (
   requestKey: string,
   status: RESPONSE_STATUS,
   responseData: string,
-  cost: number,
 ) => {
   const responsePath = Path.app(appName).response(requesterAddress, requestKey);
   const responseValue = {
