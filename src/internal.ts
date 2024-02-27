@@ -43,10 +43,11 @@ export default class Internal {
     return extractDataFromDepositRequest(req);
   }
 
-  private async checkBalance(address: string, cost: number) {
-    const userBalance = await this.ain.getBalance(address);
+  async checkBalance(req: Request, cost: number, errorMsg?: string) {
+    const { requesterAddress } = this.getDataFromDepositRequest(req);
+    const userBalance = await this.ain.getBalance(requesterAddress);
     if (userBalance < cost) {
-      throw new Error("User does not have sufficient balance.");
+      throw new Error(errorMsg ? errorMsg : "User does not have sufficient balance.");
     }
   }
 }
