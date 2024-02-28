@@ -82,8 +82,8 @@ export default class AinModule {
     this.ain!.setSigner(new DefaultSigner(wallet, provider))
   }
 
-  async getBalance() {
-    const address = await this.getAddress();
+  async getBalance(address?: string) {
+    address = address || await this.getAddress();
     const balancePath = `/accounts/${address}/balance`;
     return await this.ain!.db.ref(balancePath).getValue();
   }

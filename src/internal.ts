@@ -22,8 +22,8 @@ export default class Internal {
 
   async handleRequest(req: Request, cost: number, status: RESPONSE_STATUS, responseData: string) {
     const { requesterAddress, requestKey, appName } = this.getDataFromServiceRequest(req);
-    const ops:SetOperation[] = [];
-    const responseOp = getResponseOp(appName, requesterAddress, requestKey, status, responseData, cost);
+    const ops: SetOperation[] = [];
+    const responseOp = getResponseOp(appName, requesterAddress, requestKey, status, responseData);
     ops.push(responseOp);
     if(cost > 0) {
       const changeBalanceOp = getChangeBalanceOp(appName, requesterAddress, 'DEC_VALUE', cost);
@@ -41,5 +41,13 @@ export default class Internal {
 
   private getDataFromDepositRequest(req: Request) {
     return extractDataFromDepositRequest(req);
+  }
+
+  async checkBalance(req: Request, cost: number, errorMsg?: string) {
+    const { requesterAddress } = this.getDataFromDepositRequest(req);
+    const userBalance = await this.ain.getBalance(requesterAddress);
+    if (userBalance < cost) {
+      throw new Error(errorMsg ? errorMsg : "User does not have sufficient balance.");
+    }
   }
 }
