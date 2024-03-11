@@ -26,14 +26,17 @@ export default class Middleware {
       res.send("Not from blockchain");
       return;
     }
-    const result = await this.ain.getValue(triggerPath);
-    // if request is first reque st, set cache 
+    // NOTE(yoojin): Validation will changed. Temp comment out.
+    // const result = await this.ain.getValue(triggerPath);
+    
+    // If request is first reque st, set cache 
     if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
       res.send("Duplicated");
       return;
     }
     this.cache.set(txHash, "in_progress", 500);
-    _.isEqual(result, triggerValue) ? next(): res.send("Not from blockchain");
+    // NOTE(yoojin): Validation will changed. Temp comment out.
+    // _.isEqual(result, triggerValue) ? next(): res.send("Not from blockchain");
   }
   /**
    *  DEPRECATED
