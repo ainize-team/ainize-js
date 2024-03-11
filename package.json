@@ -1,6 +1,6 @@
 {
   "name": "@ainize-team/ainize-js",
-  "version": "1.1.1",
+  "version": "1.1.1-beta.1",
   "main": "dist/ainize.js",
   "types": "dist/ainize.d.ts",
   "scripts": {
