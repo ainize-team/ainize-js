@@ -31,7 +31,8 @@ export default class Middleware {
       
       // If request is first reque st, set cache 
       if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
-        throw new Error("Duplicated");
+        res.send("Duplicated");
+        return;
       }
       this.cache.set(txHash, "in_progress", 500);
       // NOTE(yoojin): Validation will changed. Temp comment out.
