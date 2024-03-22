@@ -21,22 +21,26 @@ export default class Middleware {
    */
   blockchainTriggerFilter = async (req: Request, res: Response, next: NextFunction) => {
     //check if request is from blockchain trigger
-    const { triggerPath, triggerValue, txHash } = extractTriggerDataFromRequest(req);
-    if(!triggerPath || !triggerValue || !txHash) {
-      res.send("Not from blockchain");
-      return;
+    try {
+      const { triggerPath, triggerValue, txHash } = extractTriggerDataFromRequest(req);
+      if(!triggerPath || !triggerValue || !txHash) {
+        throw new Error("Not from blockchain");
+      }
+      // NOTE(yoojin): Validation will changed. Temp comment out.
+      // const result = await this.ain.getValue(triggerPath);
+      
+      // If request is first reque st, set cache 
+      if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
+        throw new Error("Duplicated");
+      }
+      this.cache.set(txHash, "in_progress", 500);
+      // NOTE(yoojin): Validation will changed. Temp comment out.
+      // _.isEqual(result, triggerValue) ? next(): res.send("Not from blockchain");
+      next();
+    } catch (e) {
+      console.log("Filtering Error ", e)
+      res.send(e);
     }
-    // NOTE(yoojin): Validation will changed. Temp comment out.
-    // const result = await this.ain.getValue(triggerPath);
-    
-    // If request is first reque st, set cache 
-    if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
-      res.send("Duplicated");
-      return;
-    }
-    this.cache.set(txHash, "in_progress", 500);
-    // NOTE(yoojin): Validation will changed. Temp comment out.
-    // _.isEqual(result, triggerValue) ? next(): res.send("Not from blockchain");
   }
   /**
    *  DEPRECATED
