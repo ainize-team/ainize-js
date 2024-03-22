@@ -40,6 +40,7 @@ export default class Middleware {
     } catch (e) {
       console.log("Filtering Error ", e)
       res.send(e);
+      return;
     }
   }
   /**
