@@ -1,12 +1,10 @@
 import NodeCache from "node-cache";
-import Middleware from "./middlewares/middleware";
 import { DEFAULT_BILLING_CONFIG, Path } from "./constants";
 import Handler from "./handlers/handler";
 import AppController from "./controllers/appController";
 import Service from "./service";
 import { deployConfig } from "./types/type";
 import AinModule from "./ain";
-import Internal from "./internal";
 import { Account } from "@ainblockchain/ain-util";
 import { AinWalletSigner } from "@ainblockchain/ain-js/lib/signer/ain-wallet-signer";
 
@@ -15,14 +13,10 @@ export default class Ainize {
   private handler: Handler = Handler.getInstance();
   private ain: AinModule = AinModule.getInstance();
   private appController: AppController = AppController.getInstance();
-  middleware: Middleware;
-  internal: Internal;
 
   constructor(chainId: 1 | 0) {
     this.ain.initAin(chainId);
     this.cache = new NodeCache();
-    this.middleware = new Middleware(this.cache);
-    this.internal = new Internal();
   }
   
   /**

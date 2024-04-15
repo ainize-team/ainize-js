@@ -77,7 +77,7 @@ export default class ServiceController {
     return await this.ain.getValue(creditHistoryPath) as creditHistories;
   }
 
-  async request(serviceName: string, requestData: any, requestKey?: string) : Promise<any> {
+  async request(serviceName: string, requestData: any, requestKey?: string, historypath?: string) : Promise<any> {
     this.checkRunning(serviceName);
     const result = await new Promise(async (resolve, reject) => {
       requestKey = requestKey || Date.now().toString();
