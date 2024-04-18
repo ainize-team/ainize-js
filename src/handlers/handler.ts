@@ -21,7 +21,7 @@ export default class Handler {
 
   async connect() {
     this.checkEventManager();
-    await this.ain.getEventManager().connect({},this.disconnectedCb.bind(this));
+    await this.ain.getEventManager().connect(this.disconnectedCb.bind(this));
     console.log('connected');
   };
   
