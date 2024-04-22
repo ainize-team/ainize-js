@@ -35,7 +35,9 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
       value: {
         ".rule": {
-          write: "data === null && util.isNumber(newData) && getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
+          write: 
+            "data === null && util.isNumber(newData) && " + 
+            "getValue(`/transfer/` + $userAddress + `/` + getValue(`/apps/" + `${appName}` + "/billingConfig/depositAddress`) + `/` + $transferKey + `/value`) === newData"
         },
       },
     },
@@ -51,7 +53,10 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       ref: `${rootRef}/balance/$userAddress/history/$timestamp`,
       value: {
         ".rule": {
-          write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isNumber(newData.amount) && (newData.type === 'DEPOSIT' || newData.type === 'USAGE')"
+          write: 
+            "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && " +
+            "util.isDict(newData) && util.isNumber(newData.amount) && " + 
+            "(newData.type === 'DEPOSIT' || newData.type === 'USAGE')",
         },
       },
     },
@@ -60,9 +65,10 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       value: {
         ".rule": {
           write: 
-            "auth.addr === $userAddress && " +
+            "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true || " +
+            "(auth.addr === $userAddress && " +
             "(getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`) === 0 || " +
-            "(getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`)))"
+            "(getValue(`/apps/" + `${appName}` + "/balance/` + $userAddress + `/balance`)  >= getValue(`/apps/" + `${appName}` + "/billingConfig/minCost`))))",
         },
       },
     },

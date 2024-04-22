@@ -21,19 +21,25 @@ export default class Middleware {
    */
   blockchainTriggerFilter = async (req: Request, res: Response, next: NextFunction) => {
     //check if request is from blockchain trigger
-    const { triggerPath, triggerValue, txHash } = extractTriggerDataFromRequest(req);
-    if(!triggerPath || !triggerValue || !txHash) {
-      res.send("Not from blockchain");
+    try {
+      const { triggerPath, triggerValue, txHash } = extractTriggerDataFromRequest(req);
+      if(!triggerPath || !triggerValue || !txHash) {
+        throw new Error("Not from blockchain");
+      }
+      const result = await this.ain.getValue(triggerPath);
+      
+      // If request is first request, set cache 
+      if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
+        res.send("Duplicated");
+        return;
+      }
+      this.cache.set(txHash, "in_progress", 500);
+      _.isEqual(result, triggerValue) ? next(): res.send("Not from blockchain");
+    } catch (e) {
+      console.log("Filtering Error ", e)
+      res.send(e);
       return;
     }
-    const result = await this.ain.getValue(triggerPath);
-    // if request is first reque st, set cache 
-    if (this.cache.get(txHash) && this.cache.get(txHash) !== "error") {
-      res.send("Duplicated");
-      return;
-    }
-    this.cache.set(txHash, "in_progress", 500);
-    _.isEqual(result, triggerValue) ? next(): res.send("Not from blockchain");
   }
   /**
    *  DEPRECATED

@@ -22,10 +22,10 @@ export default class Internal {
 
   async handleRequest(req: Request, cost: number, status: RESPONSE_STATUS, responseData: string) {
     const { requesterAddress, requestKey, appName } = this.getDataFromServiceRequest(req);
-    const ops:SetOperation[] = [];
+    const ops: SetOperation[] = [];
     const responseOp = getResponseOp(appName, requesterAddress, requestKey, status, responseData, cost);
     ops.push(responseOp);
-    if(cost > 0) {
+    if (cost > 0) {
       const changeBalanceOp = getChangeBalanceOp(appName, requesterAddress, 'DEC_VALUE', cost);
       const writeHistoryOp = getWriteHistoryOp(appName, requesterAddress, HISTORY_TYPE.USAGE, cost, requestKey);
       ops.push(changeBalanceOp);

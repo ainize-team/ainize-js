@@ -49,6 +49,7 @@ export default class Ainize {
   async loginWithSigner() {
     const signer = new AinWalletSigner;
     this.ain.setSigner(signer);
+    await this.handler.connect();
     console.log('login success! address: ', await this.ain.getAddress());
   }
 
