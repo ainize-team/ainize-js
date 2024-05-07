@@ -1,5 +1,5 @@
 import Ain from "@ainblockchain/ain-js";
-import { getBlockChainEndpoint } from "./constants";
+import { getBlockChainAPIEndpoint, getBlockChainEventEndpoint } from "./constants";
 import { TransactionBody } from "@ainblockchain/ain-util";
 import { txResult } from "./types/type";
 import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
@@ -18,8 +18,9 @@ export default class AinModule {
   }
 
   initAin(chainId: 0 | 1) {
-    const blockchainEndpoint = getBlockChainEndpoint(chainId);
-    this.ain = new Ain(blockchainEndpoint, chainId);
+    const blockchainAPIEndpoint = getBlockChainAPIEndpoint(chainId);
+    const blockchainEventEndpoint = getBlockChainEventEndpoint(chainId);
+    this.ain = new Ain(blockchainAPIEndpoint,blockchainEventEndpoint, chainId);
   }
 
   createAccount() {

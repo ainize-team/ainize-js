@@ -42,7 +42,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@ainblockchain/ain-js": "^1.9.0",
+    "@ainblockchain/ain-js": "^1.10.0",
     "axios": "^0.26.1",
     "express": "^4.18.2",
     "fast-json-stable-stringify": "^2.1.0",
