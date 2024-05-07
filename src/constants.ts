@@ -1,11 +1,11 @@
 import { appBillingConfig } from "./types/type"
 
-export const getBlockChainAPIEndpoint = (chainId: number) =>{
+export const getBlockChainAPIEndpoint = (chainId: number) => {
   return chainId === 1 ? "https://mainnet-api.ainetwork.ai" : "https://testnet-api.ainetwork.ai"
 }
 
-export const getBlockChainEventEndpoint = (chainId: number) =>{
-  return chainId === 1 ? "https://mainnet-event.ainetwork.ai" : "https://testnet-event.ainetwork.ai"
+export const getBlockChainEventEndpoint = (chainId: number) => {
+  return chainId === 1 ? "wss://mainnet-event.ainetwork.ai" : "wss://testnet-event.ainetwork.ai"
 }
 
 export const Path = {
