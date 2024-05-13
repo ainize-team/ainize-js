@@ -22,10 +22,12 @@ export const Path = {
       service: () => `${Path.app(appName).root()}/service`,
       userOfService: (userAddress: string) => 
         `${Path.app(appName).service()}/${userAddress}`,
+      requestKey: (userAddress: string, requestKey: string) => 
+        `${Path.app(appName).userOfService(userAddress)}/${requestKey}`,
       request: (userAddress: string, requestKey: string) => 
-        `${Path.app(appName).userOfService(userAddress)}/${requestKey}/request`,
+        `${Path.app(appName).requestKey(userAddress, requestKey)}/request`,
       response: (userAddress: string, requestKey: string) => 
-        `${Path.app(appName).userOfService(userAddress)}/${requestKey}/response`,
+        `${Path.app(appName).requestKey(userAddress, requestKey)}/response`,
     }
   },
   transfer: (from: string, to: string, transferKey: string) => 
@@ -33,7 +35,6 @@ export const Path = {
 }
 
 export const defaultAppRules = (appName: string): { [type: string]: { ref: string, value: object } } => {
-  const rootRef = Path.app(appName).root();
   return {
     deposit: {
       ref: `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`,
@@ -54,7 +55,7 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       },
     },
     balanceHistory: {
-      ref: `${rootRef}/balance/$userAddress/history/$timestamp`,
+      ref: `${Path.app(appName).balance()}/$userAddress/history/$timestamp`,
       value: {
         ".rule": {
           write: 
@@ -66,7 +67,7 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
     },
     // NOTE(jiyoung): add state rule for test.
     requestKey: {
-      ref: `${Path.app(appName).userOfService("$userAddress")}/$requestKey`,
+      ref: Path.app(appName).requestKey("$userAddress", "$requestKey"),
       value: {
         ".rule": {
           state: {
