@@ -64,6 +64,18 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
         },
       },
     },
+    // NOTE(jiyoung): add state rule for test.
+    requestKey: {
+      ref: `${Path.app(appName).userOfService("$userAddress")}/$requestKey`,
+      value: {
+        ".rule": {
+          state: {
+            gc_max_siblings: 20,
+            gc_num_siblings_deleted: 10,
+          },
+        },
+      }
+    },
     request: {
       ref: Path.app(appName).request("$userAddress", "$requestKey"),
       value: {

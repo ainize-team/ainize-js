@@ -20,7 +20,7 @@ export default class AinModule {
   initAin(chainId: 0 | 1) {
     const blockchainAPIEndpoint = getBlockChainAPIEndpoint(chainId);
     const blockchainEventEndpoint = getBlockChainEventEndpoint(chainId);
-    this.ain = new Ain(blockchainAPIEndpoint,blockchainEventEndpoint, chainId);
+    this.ain = new Ain('http://localhost:8081/', 'ws://localhost:5100/', chainId);
   }
 
   createAccount() {
