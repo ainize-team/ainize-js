@@ -65,7 +65,6 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
         },
       },
     },
-    // NOTE(jiyoung): add state rule for test.
     requestKey: {
       ref: Path.app(appName).requestKey("$userAddress", "$requestKey"),
       value: {
@@ -90,7 +89,7 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
       },
     },
     response: {
-      ref: Path.app(appName).response("userAddress", "$requestKey"),
+      ref: Path.app(appName).response("$userAddress", "$requestKey"),
       value: {
         ".rule": {
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && util.isDict(newData) && util.isString(newData.status)"
