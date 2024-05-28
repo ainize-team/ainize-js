@@ -107,7 +107,7 @@ export default class Ainize {
    */
   async getService(serviceName: string): Promise<Service> {
     const servicePath = Path.app(serviceName).root();
-    const serviceData = await this.ain.getValue(servicePath);
+    const serviceData = await this.ain.getValue(servicePath, { is_shallow: true });
     if(!serviceData) {
       throw new Error("Service not found");
     }
