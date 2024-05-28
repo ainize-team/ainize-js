@@ -4,6 +4,7 @@ import { TransactionBody } from "@ainblockchain/ain-util";
 import { txResult } from "./types/type";
 import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
 import { DefaultSigner } from "@ainblockchain/ain-js/lib/signer/default-signer"
+import { GetOptions } from "@ainblockchain/ain-js/lib/types";
 
 // NOTE(yoojin): Plz suggest a good name.
 export default class AinModule {
@@ -20,7 +21,7 @@ export default class AinModule {
   initAin(chainId: 0 | 1) {
     const blockchainAPIEndpoint = getBlockChainAPIEndpoint(chainId);
     const blockchainEventEndpoint = getBlockChainEventEndpoint(chainId);
-    this.ain = new Ain(blockchainAPIEndpoint,blockchainEventEndpoint, chainId);
+    this.ain = new Ain(blockchainAPIEndpoint, blockchainEventEndpoint, chainId);
   }
 
   createAccount() {
@@ -89,9 +90,9 @@ export default class AinModule {
     return await this.ain!.db.ref(balancePath).getValue();
   }
 
-  async getValue(path: string) {
+  async getValue(path: string, options?: GetOptions) {
     this.checkAinInitiated();
-    return await this.ain!.db.ref(path).getValue();
+    return await this.ain!.db.ref().getValue(path, options);
   }
 
   private async _sendTransaction(txBody: TransactionBody) {
