@@ -22,13 +22,11 @@ export default class Handler {
   async connect() {
     this.checkEventManager();
     await this.ain.getEventManager().connect(this.disconnectedCb.bind(this));
-    console.log('connected');
   };
   
   async disconnect() {
     this.checkEventManager();
     await this.ain.getEventManager().disconnect();
-    console.log('Disconnected');
   }
 
   private async disconnectedCb() {

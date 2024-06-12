@@ -40,7 +40,6 @@ export default class Ainize {
   async login(privateKey: string) {
     this.ain.setDefaultAccount(privateKey);
     await this.handler.connect();
-    console.log('login success! address:', await this.ain.getAddress());
   }
 
   /**
@@ -50,7 +49,6 @@ export default class Ainize {
     const signer = new AinWalletSigner;
     this.ain.setSigner(signer);
     await this.handler.connect();
-    console.log('login success! address: ', await this.ain.getAddress());
   }
 
   /**
@@ -59,7 +57,6 @@ export default class Ainize {
   async logout() {
     this.ain.removeSigner();
     await this.handler.disconnect();
-    console.log('logout success!');
   }
 
   async getAddress(): Promise<string> {

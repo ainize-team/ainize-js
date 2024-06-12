@@ -77,18 +77,34 @@ export default class ServiceController {
     return await this.ain.getValue(creditHistoryPath) as creditHistories;
   }
 
-  async request(serviceName: string, requestData: any, requestKey?: string) : Promise<any> {
+  async request(serviceName: string, requestData: any, requestKey?: string, params?: any) : Promise<any> {
     this.checkRunning(serviceName);
     const result = await new Promise(async (resolve, reject) => {
       requestKey = requestKey || Date.now().toString();
       try {
         const requesterAddress = await this.ain.getAddress();
         const responsePath = Path.app(serviceName).response(requesterAddress, requestKey.toString());
-        await this.handler.subscribe(responsePath, resolve);
+        if(params === undefined){
+          await this.handler.subscribe(responsePath, resolve);
+        }
         const requestPath = Path.app(serviceName).request(requesterAddress, requestKey);
         const requestOp = buildSetOperation("SET_VALUE", requestPath, requestData);
         const txBody = buildTxBody(requestOp);
         await this.ain.sendTransaction(txBody);
+        if(params !== undefined) {
+          let i = 0;
+          let intervalId = setInterval(async ()=>{
+            const response = await this.ain.getValue(responsePath);
+            if (i++ > 50){
+              clearInterval(intervalId)
+              resolve("timeout")
+            }
+            if(response !== null){
+              clearInterval(intervalId)
+              resolve(response)
+            }
+          },500)
+        }
       } catch (e: any) {
         if (e instanceof Error)
           return reject(new Error(e.message));

@@ -79,11 +79,11 @@ export default class Service {
    * @param {string} requestData String data for request to service. 
    * @returns {string} Response data from service.
    */
-  async request(requestData: any, requestKey?: string) {
+  async request(requestData: any, requestKey?: string, params?: any) {
     this.checkLoggedIn();
-    return await this.serviceController.request(this.serviceName, requestData, requestKey);
+    return await this.serviceController.request(this.serviceName, requestData, requestKey, params);
   }
-
+  
   /**
    * Change status of AI service container to Running. Need to be admin. Not implemented yet.
    */
