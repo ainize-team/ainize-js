@@ -19,6 +19,10 @@ export default class Handler {
     return true;
   }
 
+  isConnected(): boolean {
+    return this.ain.getEventManager().isConnected();
+  }
+
   async connect() {
     this.checkEventManager();
     await this.ain.getEventManager().connect(this.disconnectedCb.bind(this));
