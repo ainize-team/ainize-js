@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@ainblockchain/ain-js@^1.10.2":
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.10.2.tgz#c0ed1e230a6c2b3703169a5c243c173944004bdd"
-  integrity sha512-2lHYnvbjEHm3/K5Lw5wCNVBtj61Z1p1u+FbveXMg4vDCwUnuYwvCrtZjTxxv13MXHoJ6izdkkA3X93GWtQhpow==
+"@ainblockchain/ain-js@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.12.0.tgz#6bd2c051ae200b6a8eee28d175f14fa677f56e04"
+  integrity sha512-wsipsiVzgtAkNhBR04t/UlQ7nXnIt1MRU11kctYzCbFsz8YrVhrX6WM2kXxWEsm37KnmtsZkt7f6WgfO/JdM4Q==
   dependencies:
-    "@ainblockchain/ain-util" "^1.1.9"
+    "@ainblockchain/ain-util" "^1.2.1"
     "@types/node" "^12.7.3"
     "@types/randombytes" "^2.0.0"
     "@types/semver" "^7.3.4"
@@ -31,10 +31,10 @@
     uuid "^3.3.3"
     ws "^8.16.0"
 
-"@ainblockchain/ain-util@^1.1.9":
-  version "1.1.9"
-  resolved "https://registry.npmjs.org/@ainblockchain/ain-util/-/ain-util-1.1.9.tgz"
-  integrity sha512-u3q0h0zwWk+vzZ6VpBZiagVKJbNw/Dw4LVjBAhOvgPCx/E3jHHQCufIMDGqD4wjeBuHVtTAQyMTv7LRPSZFBGg==
+"@ainblockchain/ain-util@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-util/-/ain-util-1.2.1.tgz#c5445f4718da0820c4955be44b07400172a864ef"
+  integrity sha512-++Sjv4PBT2/sdHeQNCDNb67ZIObxQnRQzILh+E72BUNnaEcS9cf9+4RC9I8JRqWkBiPvsD7oJPpMYYn0xwfECg==
   dependencies:
     bip39 "^3.0.4"
     bn.js "^4.11.8"
