@@ -26,7 +26,7 @@ export default class Handler {
 
   async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
     this.checkEventManager();
-    await this.ain.getEventManager().connect(connectionCb, this.connectionRetry.bind(this, connectionCb, disconnectionCb));
+    await this.ain.getEventManager().connect(connectionCb, this.connectionRetryCb.bind(this, connectionCb, disconnectionCb));
     console.log('connected');
   };
   
@@ -36,7 +36,7 @@ export default class Handler {
     console.log('Disconnected');
   }
 
-  private async connectionRetry(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, webSocket?: any) {
+  private async connectionRetryCb(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, webSocket?: any) {
     try {
       if (disconnectionCb) {
         disconnectionCb(webSocket);
