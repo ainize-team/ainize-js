@@ -1,3 +1,4 @@
+import { ConnectionCallback, DisconnectionCallback } from "@ainblockchain/ain-js/lib/types";
 import AinModule from "../ain";
 import _ from "lodash";
 
@@ -23,9 +24,9 @@ export default class Handler {
     return this.ain.getEventManager().isConnected();
   }
 
-  async connect() {
+  async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
     this.checkEventManager();
-    await this.ain.getEventManager().connect(this.disconnectedCb.bind(this));
+    await this.ain.getEventManager().connect(connectionCb, this.connectionRetry.bind(this, connectionCb, disconnectionCb));
     console.log('connected');
   };
   
@@ -35,12 +36,15 @@ export default class Handler {
     console.log('Disconnected');
   }
 
-  private async disconnectedCb() {
+  private async connectionRetry(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, webSocket?: any) {
     try {
+      if (disconnectionCb) {
+        disconnectionCb(webSocket);
+      }
       const address = await AinModule.getInstance().getAddress();
       if (address) {
         console.log('Disconnected. Reconnecting...');
-        await this.connect();
+        await this.connect(connectionCb, disconnectionCb);
       }
     } catch (_) {
       return;
