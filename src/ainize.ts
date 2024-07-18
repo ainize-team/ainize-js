@@ -9,6 +9,7 @@ import AinModule from "./ain";
 import Internal from "./internal";
 import { Account } from "@ainblockchain/ain-util";
 import { AinWalletSigner } from "@ainblockchain/ain-js/lib/signer/ain-wallet-signer";
+import { ConnectionCallback, DisconnectionCallback } from "@ainblockchain/ain-js/lib/types";
 
 export default class Ainize {
   private cache: NodeCache;
@@ -37,19 +38,19 @@ export default class Ainize {
    * Login to ainize using AI Network account private key.
    * @param {string} privateKey 
    */
-  async login(privateKey: string) {
+  async login(privateKey: string, connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
     this.ain.setDefaultAccount(privateKey);
-    await this.handler.connect();
+    await this.handler.connect(connectionCb, disconnectionCb);
     console.log('login success! address:', await this.ain.getAddress());
   }
 
   /**
    * Login to ainize using AIN Wallet Signer.
    */
-  async loginWithSigner() {
+  async loginWithSigner(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
     const signer = new AinWalletSigner;
     this.ain.setSigner(signer);
-    await this.handler.connect();
+    await this.handler.connect(connectionCb, disconnectionCb);
     console.log('login success! address: ', await this.ain.getAddress());
   }
 
