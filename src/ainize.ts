@@ -36,21 +36,27 @@ export default class Ainize {
 
   /**
    * Login to ainize using AI Network account private key.
-   * @param {string} privateKey 
+   * @param {string} privateKey The private key to initialize the AinModule with.
+   * @param {ConnectionCallback} ConnectionCallback The connection callback function.
+   * @param {DisconnectionCallback} disconnectionCallback The disconnection callback function.
+   * @param {string} customClientId The custom client id to set.
    */
-  async login(privateKey: string, connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
+  async login(privateKey: string, connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, customClientId?: string) {
     this.ain.setDefaultAccount(privateKey);
-    await this.handler.connect(connectionCb, disconnectionCb);
+    await this.handler.connect(connectionCb, disconnectionCb, customClientId);
     console.log('login success! address:', await this.ain.getAddress());
   }
 
   /**
    * Login to ainize using AIN Wallet Signer.
+   * @param {ConnectionCallback} ConnectionCallback The connection callback function.
+   * @param {DisconnectionCallback} disconnectionCallback The disconnection callback function.
+   * @param {string} customClientId The custom client id to set.
    */
-  async loginWithSigner(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
+  async loginWithSigner(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, customClientId?: string) {
     const signer = new AinWalletSigner;
     this.ain.setSigner(signer);
-    await this.handler.connect(connectionCb, disconnectionCb);
+    await this.handler.connect(connectionCb, disconnectionCb, customClientId);
     console.log('login success! address: ', await this.ain.getAddress());
   }
 
