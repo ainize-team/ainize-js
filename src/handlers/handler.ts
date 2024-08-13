@@ -24,9 +24,9 @@ export default class Handler {
     return this.ain.getEventManager().isConnected();
   }
 
-  async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
+  async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, customClientId?: string) {
     this.checkEventManager();
-    await this.ain.getEventManager().connect(connectionCb, this.connectionRetryCb.bind(this, connectionCb, disconnectionCb));
+    await this.ain.getEventManager().connect(connectionCb, this.connectionRetryCb.bind(this, connectionCb, disconnectionCb, customClientId));
     console.log('connected');
   };
   
@@ -36,7 +36,7 @@ export default class Handler {
     console.log('Disconnected');
   }
 
-  private async connectionRetryCb(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, webSocket?: any) {
+  private async connectionRetryCb(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, customClientId?: string, webSocket?: any) {
     try {
       if (disconnectionCb) {
         disconnectionCb(webSocket);
@@ -44,7 +44,7 @@ export default class Handler {
       const address = await AinModule.getInstance().getAddress();
       if (address) {
         console.log('Disconnected. Reconnecting...');
-        await this.connect(connectionCb, disconnectionCb);
+        await this.connect(connectionCb, disconnectionCb, customClientId);
       }
     } catch (_) {
       return;
