@@ -1,6 +1,6 @@
 # ainize-js
 
-A Typescript JS for the Ainize, a system for running AI services on the AI Network.
+A Typescript JS for the Ainize, a system for running AI models on the AI Network.
 
 ## Requirements
 
@@ -45,47 +45,47 @@ ainize.loginWithSigner();
 
 This feature is supported from AIN Wallet version 2.0.5 or later.
 
-### Using Service
+### Using model
 
-You can use a service using `ainize.getService(<SERVICE_NAME>)`.
+You can use a model using `ainize.getModel(<MODEL_NAME>)`.
 
 ```typescript
-const service = await ainize.getService(<SERVICE_NAME>);
+const model = await ainize.getModel(<MODEL_NAME>);
 ```
 
-You should deposit AIN to credit before using service.
+You should deposit AIN to AI model for credit before using model.
 
 ```typescript
-await service.chargeCredit(<AMOUNT>);
-const balance = await service.getCreditBalance();
+await model.chargeCredit(<AMOUNT>);
+const balance = await model.getCreditBalance();
 ```
 
-If you have enough credit, you can use the service.
+If you have enough credit, you can use the model.
 
 ```typescript
-const result = await service.request(<REQUEST_DATA>);
+const result = await model.request(<REQUEST_DATA>);
 ```
 
 ### Deploy
 
-You can deploy your AI service to ainize.
+You can deploy your AI model to ainize. Anyone can use your AI model with AIN token.
 
-```typescript
-const service = await ainize.deploy(<CONFIGURATION>);
-```
+CONFIGURATION(JSON)
 
-CONFIGURATION
-
-- serviceName: The name you want to deploying service.
-- billingConfig: Billing configuration required for service usage.
+- modelName: The name you want to deploying model.
+- billingConfig: Billing configuration required for model usage.
   - depositAddress: The address for receiving AIN deposits.
-  - costPerToken: Cost per token for service usage.
+  - costPerToken: Cost per token for model usage.
   - minCost: Minimum cost.
   - maxCost: Maximum cost. (optional)
 
-You can stop or run your service container. Only service deployer can use this.
+```typescript
+const model = await ainize.deploy(<CONFIGURATION>);
+```
+
+You can stop or run your model container. Only model deployer can use this.
 
 ```typescript
-service.stop();
-service.run();
+model.stop();
+model.run();
 ```

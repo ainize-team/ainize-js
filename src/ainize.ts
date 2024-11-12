@@ -3,7 +3,7 @@ import Middleware from "./middlewares/middleware";
 import { DEFAULT_BILLING_CONFIG, Path } from "./constants";
 import Handler from "./handlers/handler";
 import AppController from "./controllers/appController";
-import Service from "./service";
+import Model from "./model";
 import { deployConfig } from "./types/type";
 import AinModule from "./ain";
 import Internal from "./internal";
@@ -79,12 +79,12 @@ export default class Ainize {
 
   // FIXME(yoojin): add config type and change param type.
   /**
-   * Deploy AI service container.
-   * @param {deployConfig} deployConfig Set configuration for setting container. serviceName, billingConfig, etc. 
-   * @returns {Service} Deployed service object.
+   * Deploy AI model container.
+   * @param {deployConfig} deployConfig Set configuration for setting container. modelName, billingConfig, etc. 
+   * @returns {Model} Deployed model object.
    */
   // TODO(yoojin, woojae): Deploy container, advanced.
-  async deploy({serviceName, billingConfig, serviceUrl}: deployConfig): Promise<Service> {
+  async deploy({modelName, billingConfig, modelUrl}: deployConfig): Promise<Model> {
     // TODO(yoojin, woojae): Add container deploy logic.
     const result = await new Promise(async (resolve, reject) => {
       const deployer = await this.ain.getAddress();
@@ -94,31 +94,31 @@ export default class Ainize {
           depositAddress: deployer,
         };
       }
-      // NOTE(yoojin): For test. We make fixed url on service.
-      if (!serviceUrl) {
-        serviceUrl = `https://${serviceName}.ainetwork.xyz`;
+      // NOTE(yoojin): For test. We make fixed url on model.
+      if (!modelUrl) {
+        modelUrl = `https://${modelName}.ainetwork.xyz`;
       }
-      serviceUrl = serviceUrl.replace(/\/$/, '');
-      const servicePath = Path.app(serviceName).status();
-      await this.handler.subscribe(servicePath, resolve);
-      await this.appController.createApp({ appName: serviceName, serviceUrl, billingConfig });
+      modelUrl = modelUrl.replace(/\/$/, '');
+      const modelPath = Path.app(modelName).status();
+      await this.handler.subscribe(modelPath, resolve);
+      await this.appController.createApp({ appName: modelName, modelUrl, billingConfig });
     });
-    console.log(`${serviceName} deploy success!`);
-    return this.getService(serviceName);
+    console.log(`${modelName} deploy success!`);
+    return this.getModel(modelName);
   }
 
   /**
-   * Get deployed service. 
-   * @param serviceName 
-   * @returns {Service} Deployed service object.
+   * Get deployed model. 
+   * @param modelName 
+   * @returns {Model} Deployed model object.
    */
-  async getService(serviceName: string): Promise<Service> {
-    const servicePath = Path.app(serviceName).root();
-    const serviceData = await this.ain.getValue(servicePath, { is_shallow: true });
-    if(!serviceData) {
-      throw new Error("Service not found");
+  async getModel(modelName: string): Promise<Model> {
+    const modelPath = Path.app(modelName).root();
+    const modelData = await this.ain.getValue(modelPath, { is_shallow: true });
+    if(!modelData) {
+      throw new Error("Model not found");
     }
-    return new Service(serviceName);
+    return new Model(modelName);
   }
 
   test() {
