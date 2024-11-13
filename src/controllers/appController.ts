@@ -15,7 +15,7 @@ export default class AppController {
     return AppController.instance;
   }
   
-  async createApp({ appName, serviceUrl, billingConfig }: createAppConfig) {
+  async createApp({ appName, modelUrl, billingConfig }: createAppConfig) {
     const setRuleOps: SetOperation[] = [];
     const setFunctionOps: SetOperation[] = [];
     const setBillingConfigOps: SetOperation[] = [] ;
@@ -29,7 +29,7 @@ export default class AppController {
     }
 
     const depositPath = `${Path.app(appName).depositOfUser("$userAddress")}/$transferKey`
-    const depositUrl = `${serviceUrl}/deposit`;
+    const depositUrl = `${modelUrl}/deposit`;
     const depositParam: setTriggerFunctionParm = {
       ref: depositPath,
       function_id: "deposit-trigger",
@@ -40,17 +40,17 @@ export default class AppController {
     const depositFuncOp = buildSetOperation("SET_FUNCTION", depositParam.ref, depositValue);
     setFunctionOps.push(depositFuncOp);
 
-    const serviceFuncPath = Path.app(appName).request("$userAddress", "$requestKey")
-    const serviceFuncUrl = `${serviceUrl}/service`;
-    const serviceFuncParam: setTriggerFunctionParm = {
-      ref: serviceFuncPath,
-      function_id: "service-trigger",
+    const modelFuncPath = Path.app(appName).request("$userAddress", "$requestKey")
+    const modelFuncUrl = `${modelUrl}/model`;
+    const modelFuncParam: setTriggerFunctionParm = {
+      ref: modelFuncPath,
+      function_id: "model-trigger",
       function_type: "REST",
-      function_url: serviceFuncUrl
+      function_url: modelFuncUrl
     }
-    const serviceFuncValue = this.buildSetFunctionValue(serviceFuncParam);
-    const serviceFuncOp = buildSetOperation("SET_FUNCTION", serviceFuncParam.ref, serviceFuncValue);
-    setFunctionOps.push(serviceFuncOp);
+    const modelFuncValue = this.buildSetFunctionValue(modelFuncParam);
+    const modelFuncOp = buildSetOperation("SET_FUNCTION", modelFuncParam.ref, modelFuncValue);
+    setFunctionOps.push(modelFuncOp);
 
     const configOp = this.buildSetAppBillingConfigOp(appName, billingConfig);
     setBillingConfigOps.push(configOp);

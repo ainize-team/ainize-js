@@ -1,9 +1,9 @@
 import { Request } from "express";
 import { deposit, request } from "../types/type";
 
-export const extractDataFromServiceRequest = (req:Request) => {
+export const extractDataFromModelRequest = (req:Request) => {
   if(!req.body.valuePath[1] || !req.body.valuePath[3] || !req.body.valuePath[4] || !req.body.value) {
-    throw new Error("Not from service request");
+    throw new Error("Not from model request");
   }
   const requestData: request = {
     appName: req.body.valuePath[1],

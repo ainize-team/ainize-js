@@ -4,7 +4,7 @@ import { getChangeBalanceOp, getResponseOp, getWriteHistoryOp } from "./utils/op
 import { HISTORY_TYPE, RESPONSE_STATUS, deposit, request, response } from "./types/type";
 import { buildTxBody } from "./utils/builder";
 import AinModule from "./ain";
-import { extractDataFromDepositRequest, extractDataFromServiceRequest } from "./utils/extractor";
+import { extractDataFromDepositRequest, extractDataFromModelRequest } from "./utils/extractor";
 
 export default class Internal {
   private ain = AinModule.getInstance();
@@ -21,7 +21,7 @@ export default class Internal {
   }
 
   async handleRequest(req: Request, cost: number, status: RESPONSE_STATUS, responseData: string) {
-    const { requesterAddress, requestKey, appName } = this.getDataFromServiceRequest(req);
+    const { requesterAddress, requestKey, appName } = this.getDataFromModelRequest(req);
     const ops: SetOperation[] = [];
     const responseOp = getResponseOp(appName, requesterAddress, requestKey, status, responseData, cost);
     ops.push(responseOp);
@@ -35,8 +35,8 @@ export default class Internal {
     return await this.ain.sendTransaction(txBody);
   }
   
-  getDataFromServiceRequest(req: Request) {
-    return extractDataFromServiceRequest(req);
+  getDataFromModelRequest(req: Request) {
+    return extractDataFromModelRequest(req);
   }
 
   private getDataFromDepositRequest(req: Request) {
