@@ -81,15 +81,15 @@ export type deposit = {
 };
 
 export type deployConfig = {
-  serviceName: string,
+  modelName: string,
   billingConfig?: appBillingConfig,
-  serviceUrl?: string, // NOTE(yoojin): Remove when container deploy logic was available.
+  modelUrl?: string, // NOTE(yoojin): Remove when container deploy logic was available.
 };
 
 export type createAppConfig = {
   appName: string,
   billingConfig: appBillingConfig,
-  serviceUrl: string,
+  modelUrl: string,
 };
 
 export enum ContainerStatus {
