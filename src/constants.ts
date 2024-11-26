@@ -103,9 +103,9 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
           write: "util.isAppAdmin(`" + `${appName}` + "`, auth.addr, getValue) === true && " +
           "util.isDict(newData) && " + 
           "util.isString(newData.depositAddress) && " + 
-          "util.isNumber(newData.costPerToken) && " + 
-          "util.isNumber(newData.minCost) && newData.minCost >= 0 &&" + 
-          "(util.isEmpty(newData.maxCost) || (util.isNumber(newData.maxCost) && newData.maxCost >= newData.minCost))",
+          "util.isNumber(newData.inputPrice) && " + 
+          "util.isNumber(newData.outputPrice) && " + 
+          "util.isNumber(newData.minCost) && newData.minCost >= 0 &&"
         },
       },
     },
