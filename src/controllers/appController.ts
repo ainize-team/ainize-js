@@ -123,15 +123,12 @@ export default class AppController {
     return await this.ain.sendTransaction(txBody);
   }
 
-    async checkCostAndBalance(appName: string, value: string) {
+    async checkCostAndBalance(appName: string, inputToken: number, outputToken: number) {
       const requesterAddress = await this.ain.getAddress();
       const billingConfig = (await this.getBillingConfig(appName));
-      const token = value.split(' ').length;
-      let cost = token * billingConfig.costPerToken;
+      let cost = inputToken * billingConfig.inputPrice + outputToken * billingConfig.outputPrice;
       if (billingConfig.minCost && cost < billingConfig.minCost) {
         cost = billingConfig.minCost;
-      } else if (billingConfig.maxCost && cost > billingConfig.maxCost) {
-        cost = billingConfig.maxCost;
       }
       const balance = await this.getCreditBalance(appName, requesterAddress);
       if (balance < cost) {

@@ -19,9 +19,9 @@ export type setRuleParam = {
 
 export type appBillingConfig = {
   depositAddress: string;
-  costPerToken: number;
+  inputPrice: number;
+  outputPrice: number;
   minCost: number;
-  maxCost?: number;
 };
 
 export enum HISTORY_TYPE {

@@ -113,7 +113,8 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
 }
 
 export const DEFAULT_BILLING_CONFIG: Omit<appBillingConfig, "depositAddress"> = {
-  costPerToken: 0,
+  inputPrice: 0,
+  outputPrice: 0,
   minCost: 0,
 };
 
