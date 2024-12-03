@@ -48,6 +48,7 @@ This feature is supported from AIN Wallet version 2.0.5 or later.
 ### Using model
 
 You can use a model using `ainize.getModel(<MODEL_NAME>)`.
+For example, you can use the `Ainize_free_inference` model, which runs Meta's [Llama 3.1 8B instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) model.
 
 ```typescript
 const model = await ainize.getModel(<MODEL_NAME>);
