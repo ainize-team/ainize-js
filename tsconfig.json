@@ -15,7 +15,7 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "es2016",
+    "target": "ES2021",
   },
   "include": [
     "src/**/*"

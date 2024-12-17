@@ -10,6 +10,7 @@ import Internal from "./internal";
 import { Account } from "@ainblockchain/ain-util";
 import { AinWalletSigner } from "@ainblockchain/ain-js/lib/signer/ain-wallet-signer";
 import { ConnectionCallback, DisconnectionCallback } from "@ainblockchain/ain-js/lib/types";
+import { nameParser } from "./utils/appName";
 
 export default class Ainize {
   private cache: NodeCache;
@@ -86,7 +87,8 @@ export default class Ainize {
   // TODO(yoojin, woojae): Deploy container, advanced.
   async deploy({modelName, billingConfig, modelUrl}: deployConfig): Promise<Model> {
     // TODO(yoojin, woojae): Add container deploy logic.
-    const result = await new Promise(async (resolve, reject) => {
+    const pasredName = nameParser(modelName);
+    await new Promise(async (resolve, reject) => {
       const deployer = await this.ain.getAddress();
       if (!billingConfig) {
         billingConfig = {
@@ -96,15 +98,15 @@ export default class Ainize {
       }
       // NOTE(yoojin): For test. We make fixed url on model.
       if (!modelUrl) {
-        modelUrl = `https://${modelName}.ainetwork.xyz`;
+        modelUrl = `https://${pasredName}.ainetwork.xyz`;
       }
       modelUrl = modelUrl.replace(/\/$/, '');
-      const modelPath = Path.app(modelName).status();
+      const modelPath = Path.app(pasredName).status();
       await this.handler.subscribe(modelPath, resolve);
-      await this.appController.createApp({ appName: modelName, modelUrl, billingConfig });
+      await this.appController.createApp({ appName: pasredName, modelUrl, billingConfig });
     });
-    console.log(`${modelName} deploy success!`);
-    return this.getModel(modelName);
+    console.log(`${pasredName} deploy success!`);
+    return this.getModel(pasredName);
   }
 
   /**
@@ -113,12 +115,13 @@ export default class Ainize {
    * @returns {Model} Deployed model object.
    */
   async getModel(modelName: string): Promise<Model> {
-    const modelPath = Path.app(modelName).root();
+    const parsedName = nameParser(modelName);
+    const modelPath = Path.app(parsedName).root();
     const modelData = await this.ain.getValue(modelPath, { is_shallow: true });
     if(!modelData) {
       throw new Error("Model not found");
     }
-    return new Model(modelName);
+    return new Model(parsedName);
   }
 
   test() {
