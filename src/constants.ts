@@ -65,17 +65,17 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
         },
       },
     },
-    requestKey: {
-      ref: Path.app(appName).requestKey("$userAddress", "$requestKey"),
-      value: {
-        ".rule": {
-          state: {
-            gc_max_siblings: 20,
-            gc_num_siblings_deleted: 10,
-          },
-        },
-      }
-    },
+    // requestKey: {
+    //   ref: Path.app(appName).requestKey("$userAddress", "$requestKey"),
+    //   value: {
+    //     ".rule": {
+    //       state: {
+    //         gc_max_siblings: 20,
+    //         gc_num_siblings_deleted: 10,
+    //       },
+    //     },
+    //   }
+    // },
     request: {
       ref: Path.app(appName).request("$userAddress", "$requestKey"),
       value: {
