@@ -1,59 +1,64 @@
 # ainize-js
 
-A Typescript JS for the Ainize, a system for running AI models on the AI Network.
+A JavaScript library for the Ainize, a system for running AI models on the AI Network.
 
 ## Requirements
 
-node >= 16
+node >= 18
 
-## usage
-
-### Install
+## Installation
 
 ```bash
+// from NPM
 npm install @ainize-team/ainize-js
 
-yarn install @ainize-team/ainize-js
+// from Yarn
+yarn add @ainize-team/ainize-js
 ```
 
-### Import
-
-CHAIN_ID
-
-- 0: AI Network test net
-- 1: AI Network main net
-
+Then import the libraries in your code:
 ```typescript
+// ES6
+import Ainize from '@ainize-team/ainize-js';
 
-import Ainize from '@ainize-team/ainize-js'
-const ainize = new Ainize(<CHAIN_ID>);
+// CommonJS
+const Ainize = require('@ainize-team/ainize-js').default;
 ```
 
-### Login
 
-You should login to ainize with AI Network account before deploy the container.
+## Usage
 
-```typescript
-import { Ainize } from '@ainize-team/ainize-js';
-const ainize = new Ainize(1);// 0 for testnet, 1 for mainnet. You can earn testnet AIN at https://faucet.ainetwork.ai/.
-ainize.login(<YOUR_PRIVATE_KEY>);
-```
+### Create account
 
+You should login to ainize with AI Network account before deploy the container.\
 If you don't have an AI Network account, you can create one with the following script.
 
 ```typescript
-import { Ainize } from '@ainize-team/ainize-js';
+import Ainize from '@ainize-team/ainize-js';
 const wallet = Ainize.createAinAccount();
 console.log(wallet);
+// {
+//   address: '0x44f2...985B',
+//   private_key: '14ba...4e67',
+//   public_key: '5fec...7784'
+// }
+```
+
+### Login
+```typescript
+import Ainize from '@ainize-team/ainize-js';
+const ainize = new Ainize(1);// 0 for testnet, 1 for mainnet. You can earn testnet AIN at https://faucet.ainetwork.ai/.
+ainize.login(<YOUR_PRIVATE_KEY>);
 ```
 
 You can also login using [AIN Wallet](https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl) on the web.
 
 ```typescript
-import { Ainize } from '@ainize-team/ainize-js';
+import Ainize from '@ainize-team/ainize-js';
 const ainize = new Ainize(1);
 ainize.loginWithSigner();
 ```
+
 
 This feature is supported from AIN Wallet version 2.0.5 or later.
 
@@ -63,50 +68,7 @@ You can use a model using `ainize.getModel(<MODEL_NAME>)`.
 For example, you can use the `meta-llama/Llama-3.1-8B-instruct` model, which runs Meta's [Llama-3.1-8B-instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) model.
 
 ```typescript
-import { Ainize } from '@ainize-team/ainize-js';
-const ainPrivateKey = ''; // Insert your private key here
-const main = async () => {
-  try {
-    const ainize = new Ainize(1);
-    await ainize.login(ainPrivateKey);
-    const model = await ainize.getModel('meta-llama/Llama-3.1-8B-instruct');
-    console.log(model.modelName);
-    ainize.logout();
-  }catch(e) {
-    console.log(e);
-  }
-}
-main();
-
-```
-
-You should deposit AIN to AI model for credit before using model. If you are using a free model, you can skip this step. If you don't have AIN, you can swap at uniswap or you can buy from CEX.
-
-```typescript
-import { Ainize } from '@ainize-team/ainize-js';
-const ainPrivateKey = ''; // Insert your private key here
-const main = async () => {
-  try {
-    const ainize = new Ainize(1);
-    await ainize.login(ainPrivateKey);
-    console.log('Your ain: ',await ainize.getAinBalance());
-    const model = await ainize.getModel('meta-llama/Llama-3.1-8B-instruct');
-    console.log("before charge: ",await model.getCreditBalance());
-    await model.chargeCredit(10);
-    console.log("after charge: ",await model.getCreditBalance());
-    ainize.logout();
-  }catch(e) {
-    console.log(e);
-  }
-}
-main();
-
-```
-
-If you have enough credit, you can use the model.
-
-```typescript
-import { Ainize } from '@ainize-team/ainize-js';
+import Ainize from '@ainize-team/ainize-js';
 const ainPrivateKey = ''; // Insert your private key here
 
 const main = async () => {
@@ -115,14 +77,12 @@ const main = async () => {
     await ainize.login(ainPrivateKey);
     const inferenceModel = await ainize.getModel('meta-llama/Llama-3.1-8B-instruct');
     const request = {
-      "prompt": "hi"
+      "prompt": "Hi! How’s it going?"
     };
-    const cost = await inferenceModel.calculateCost(request.prompt);
-    console.log(cost);
     const response = await inferenceModel.request(request);
     console.log(response);
     ainize.logout();
-  }catch(e) {
+  } catch(e) {
     console.log(e);
   }
 }
@@ -130,6 +90,12 @@ main();
 
 ```
 
+### Currently supported models
+| Model    | MODEL_NAME | Insight Link |
+| -------- | ------- | ------- |
+| LLaMA 3.1 8B  | meta-llama/Llama-3.1-8B-instruct | [Link](https://insight.ainetwork.ai/database/values/apps/meta_llama_llama_3_1_8b_instruct/) |
+
+<!--
 ### Deploy
 
 You can deploy your AI model to ainize. Anyone can use your AI model with AIN token.
@@ -171,3 +137,4 @@ You can stop or run your model container. Only model deployer can use this.
 model.stop();
 model.run();
 ```
+-->
