@@ -20,10 +20,10 @@ export const Path = {
       depositOfUser: (userAddress: string) => `${Path.app(appName).deposit()}/${userAddress}`,
       billingConfig: () => `${Path.app(appName).root()}/billingConfig`,
       model: () => `${Path.app(appName).root()}/model`,
-      userOfModel: (userAddress: string) => 
+      requestUser: (userAddress: string) => 
         `${Path.app(appName).model()}/${userAddress}`,
       requestKey: (userAddress: string, requestKey: string) => 
-        `${Path.app(appName).userOfModel(userAddress)}/${requestKey}`,
+        `${Path.app(appName).requestUser(userAddress)}/${requestKey}`,
       request: (userAddress: string, requestKey: string) => 
         `${Path.app(appName).requestKey(userAddress, requestKey)}/request`,
       response: (userAddress: string, requestKey: string) => 
@@ -65,17 +65,28 @@ export const defaultAppRules = (appName: string): { [type: string]: { ref: strin
         },
       },
     },
-    // requestKey: {
-    //   ref: Path.app(appName).requestKey("$userAddress", "$requestKey"),
-    //   value: {
-    //     ".rule": {
-    //       state: {
-    //         gc_max_siblings: 20,
-    //         gc_num_siblings_deleted: 10,
-    //       },
-    //     },
-    //   }
-    // },
+    requestUser: {
+      ref: Path.app(appName).requestUser("$userAddress"),
+      value: {
+        ".rule": {
+          state: {
+            gc_max_siblings: 50,
+            gc_num_siblings_deleted: 10,
+          },
+        }
+      }
+    },
+    requestKey: {
+      ref: Path.app(appName).requestKey("$userAddress", "$requestKey"),
+      value: {
+        ".rule": {
+          state: {
+            gc_max_siblings: 20,
+            gc_num_siblings_deleted: 10,
+          },
+        },
+      }
+    },
     request: {
       ref: Path.app(appName).request("$userAddress", "$requestKey"),
       value: {
