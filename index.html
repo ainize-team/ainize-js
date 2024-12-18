@@ -16,45 +16,40 @@
 <a href="#ainize-js" id="ainize-js" style="color: inherit; text-decoration: none;">
   <h1>ainize-js</h1>
 </a>
-<p>A Typescript JS for the Ainize, a system for running AI models on the AI Network.</p>
+<p>A JavaScript library for the Ainize, a system for running AI models on the AI Network.</p>
 
 <a href="#requirements" id="requirements" style="color: inherit; text-decoration: none;">
   <h2>Requirements</h2>
 </a>
-<p>node &gt;= 16</p>
+<p>node &gt;= 18</p>
 
-<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
-  <h2>usage</h2>
+<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+  <h2>Installation</h2>
 </a>
-
-<a href="#install" id="install" style="color: inherit; text-decoration: none;">
-  <h3>Install</h3>
-</a>
-<pre><code class="language-bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-js</span><br/><br/><span class="hl-0">yarn</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-js</span>
+<pre><code class="language-bash"><span class="hl-0">//</span><span class="hl-1"> </span><span class="hl-2">from</span><span class="hl-1"> </span><span class="hl-2">NPM</span><br/><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-js</span><br/><br/><span class="hl-0">//</span><span class="hl-1"> </span><span class="hl-2">from</span><span class="hl-1"> </span><span class="hl-2">Yarn</span><br/><span class="hl-0">yarn</span><span class="hl-1"> </span><span class="hl-2">add</span><span class="hl-1"> </span><span class="hl-2">@ainize-team/ainize-js</span>
+</code></pre>
+<p>Then import the libraries in your code:</p>
+<pre><code class="language-typescript"><span class="hl-3">// ES6</span><br/><span class="hl-4">import</span><span class="hl-1"> </span><span class="hl-5">Ainize</span><span class="hl-1"> </span><span class="hl-4">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-3">// CommonJS</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">Ainize</span><span class="hl-1"> = </span><span class="hl-0">require</span><span class="hl-1">(</span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">).</span><span class="hl-5">default</span><span class="hl-1">;</span>
 </code></pre>
 
-<a href="#import" id="import" style="color: inherit; text-decoration: none;">
-  <h3>Import</h3>
+<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+  <h2>Usage</h2>
 </a>
-<p>CHAIN_ID</p>
-<ul>
-<li>0: AI Network test net</li>
-<li>1: AI Network main net</li>
-</ul>
-<pre><code class="language-typescript"><br/><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">Ainize</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(&lt;</span><span class="hl-7">CHAIN_ID</span><span class="hl-1">&gt;);</span>
+
+<a href="#create-account" id="create-account" style="color: inherit; text-decoration: none;">
+  <h3>Create account</h3>
+</a>
+<p>You should login to ainize with AI Network account before deploy the container.<br>If you don&#39;t have an AI Network account, you can create one with the following script.</p>
+<pre><code class="language-typescript"><span class="hl-4">import</span><span class="hl-1"> </span><span class="hl-5">Ainize</span><span class="hl-1"> </span><span class="hl-4">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">wallet</span><span class="hl-1"> = </span><span class="hl-5">Ainize</span><span class="hl-1">.</span><span class="hl-0">createAinAccount</span><span class="hl-1">();</span><br/><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-5">wallet</span><span class="hl-1">);</span><br/><span class="hl-3">// {</span><br/><span class="hl-3">//   address: &#39;0x44f2...985B&#39;,</span><br/><span class="hl-3">//   private_key: &#39;14ba...4e67&#39;,</span><br/><span class="hl-3">//   public_key: &#39;5fec...7784&#39;</span><br/><span class="hl-3">// }</span>
 </code></pre>
 
 <a href="#login" id="login" style="color: inherit; text-decoration: none;">
   <h3>Login</h3>
 </a>
-<p>You should login to ainize with AI Network account before deploy the container.</p>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Ainize</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><span class="hl-9">// 0 for testnet, 1 for mainnet. You can earn testnet AIN at https://faucet.ainetwork.ai/.</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(&lt;</span><span class="hl-7">YOUR_PRIVATE_KEY</span><span class="hl-1">&gt;);</span>
-</code></pre>
-<p>If you don&#39;t have an AI Network account, you can create one with the following script.</p>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Ainize</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">wallet</span><span class="hl-1"> = </span><span class="hl-4">Ainize</span><span class="hl-1">.</span><span class="hl-0">createAinAccount</span><span class="hl-1">();</span><br/><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">wallet</span><span class="hl-1">);</span>
+<pre><code class="language-typescript"><span class="hl-4">import</span><span class="hl-1"> </span><span class="hl-5">Ainize</span><span class="hl-1"> </span><span class="hl-4">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">ainize</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><span class="hl-3">// 0 for testnet, 1 for mainnet. You can earn testnet AIN at https://faucet.ainetwork.ai/.</span><br/><span class="hl-5">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(&lt;</span><span class="hl-9">YOUR_PRIVATE_KEY</span><span class="hl-1">&gt;);</span>
 </code></pre>
 <p>You can also login using <a href="https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl">AIN Wallet</a> on the web.</p>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Ainize</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><br/><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">loginWithSigner</span><span class="hl-1">();</span>
+<pre><code class="language-typescript"><span class="hl-4">import</span><span class="hl-1"> </span><span class="hl-5">Ainize</span><span class="hl-1"> </span><span class="hl-4">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">ainize</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><br/><span class="hl-5">ainize</span><span class="hl-1">.</span><span class="hl-0">loginWithSigner</span><span class="hl-1">();</span>
 </code></pre>
 <p>This feature is supported from AIN Wallet version 2.0.5 or later.</p>
 
@@ -63,36 +58,69 @@
 </a>
 <p>You can use a model using <code>ainize.getModel(&lt;MODEL_NAME&gt;)</code>.
 For example, you can use the <code>meta-llama/Llama-3.1-8B-instruct</code> model, which runs Meta&#39;s <a href="https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct">Llama-3.1-8B-instruct</a> model.</p>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Ainize</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainPrivateKey</span><span class="hl-1"> = </span><span class="hl-2">&#39;&#39;</span><span class="hl-1">; </span><span class="hl-9">// Insert your private key here</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">main</span><span class="hl-1"> = </span><span class="hl-5">async</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(</span><span class="hl-4">ainPrivateKey</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">model</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">getModel</span><span class="hl-1">(</span><span class="hl-2">&#39;meta-llama/Llama-3.1-8B-instruct&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-4">modelName</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">logout</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><span class="hl-3">catch</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span><br/><span class="hl-0">main</span><span class="hl-1">();</span><br/>
-</code></pre>
-<p>You should deposit AIN to AI model for credit before using model. If you are using a free model, you can skip this step. If you don&#39;t have AIN, you can swap at uniswap or you can buy from CEX.</p>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Ainize</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainPrivateKey</span><span class="hl-1"> = </span><span class="hl-2">&#39;&#39;</span><span class="hl-1">; </span><span class="hl-9">// Insert your private key here</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">main</span><span class="hl-1"> = </span><span class="hl-5">async</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(</span><span class="hl-4">ainPrivateKey</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-2">&#39;Your ain: &#39;</span><span class="hl-1">,</span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">getAinBalance</span><span class="hl-1">());</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">model</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">getModel</span><span class="hl-1">(</span><span class="hl-2">&#39;meta-llama/Llama-3.1-8B-instruct&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-2">&quot;before charge: &quot;</span><span class="hl-1">,</span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">getCreditBalance</span><span class="hl-1">());</span><br/><span class="hl-1">    </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">chargeCredit</span><span class="hl-1">(</span><span class="hl-8">10</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-2">&quot;after charge: &quot;</span><span class="hl-1">,</span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">getCreditBalance</span><span class="hl-1">());</span><br/><span class="hl-1">    </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">logout</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><span class="hl-3">catch</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span><br/><span class="hl-0">main</span><span class="hl-1">();</span><br/>
-</code></pre>
-<p>If you have enough credit, you can use the model.</p>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Ainize</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainPrivateKey</span><span class="hl-1"> = </span><span class="hl-2">&#39;&#39;</span><span class="hl-1">; </span><span class="hl-9">// Insert your private key here</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">main</span><span class="hl-1"> = </span><span class="hl-5">async</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(</span><span class="hl-4">ainPrivateKey</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">inferenceModel</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">getModel</span><span class="hl-1">(</span><span class="hl-2">&#39;meta-llama/Llama-3.1-8B-instruct&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">request</span><span class="hl-1"> = {</span><br/><span class="hl-1">      </span><span class="hl-2">&quot;prompt&quot;</span><span class="hl-4">:</span><span class="hl-1"> </span><span class="hl-2">&quot;hi&quot;</span><br/><span class="hl-1">    };</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">cost</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">inferenceModel</span><span class="hl-1">.</span><span class="hl-0">calculateCost</span><span class="hl-1">(</span><span class="hl-4">request</span><span class="hl-1">.</span><span class="hl-4">prompt</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">cost</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">response</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">inferenceModel</span><span class="hl-1">.</span><span class="hl-0">request</span><span class="hl-1">(</span><span class="hl-4">request</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">response</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">logout</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><span class="hl-3">catch</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span><br/><span class="hl-0">main</span><span class="hl-1">();</span><br/>
+<pre><code class="language-typescript"><span class="hl-4">import</span><span class="hl-1"> </span><span class="hl-5">Ainize</span><span class="hl-1"> </span><span class="hl-4">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">ainPrivateKey</span><span class="hl-1"> = </span><span class="hl-2">&#39;&#39;</span><span class="hl-1">; </span><span class="hl-3">// Insert your private key here</span><br/><br/><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-0">main</span><span class="hl-1"> = </span><span class="hl-6">async</span><span class="hl-1"> () </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">try</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">ainize</span><span class="hl-1"> = </span><span class="hl-6">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">await</span><span class="hl-1"> </span><span class="hl-5">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(</span><span class="hl-5">ainPrivateKey</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">inferenceModel</span><span class="hl-1"> = </span><span class="hl-4">await</span><span class="hl-1"> </span><span class="hl-5">ainize</span><span class="hl-1">.</span><span class="hl-0">getModel</span><span class="hl-1">(</span><span class="hl-2">&#39;meta-llama/Llama-3.1-8B-instruct&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">request</span><span class="hl-1"> = {</span><br/><span class="hl-1">      </span><span class="hl-2">&quot;prompt&quot;</span><span class="hl-5">:</span><span class="hl-1"> </span><span class="hl-2">&quot;Hi! How’s it going?&quot;</span><br/><span class="hl-1">    };</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">response</span><span class="hl-1"> = </span><span class="hl-4">await</span><span class="hl-1"> </span><span class="hl-5">inferenceModel</span><span class="hl-1">.</span><span class="hl-0">request</span><span class="hl-1">(</span><span class="hl-5">request</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-5">response</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-5">ainize</span><span class="hl-1">.</span><span class="hl-0">logout</span><span class="hl-1">();</span><br/><span class="hl-1">  } </span><span class="hl-4">catch</span><span class="hl-1">(</span><span class="hl-5">e</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-5">e</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span><br/><span class="hl-0">main</span><span class="hl-1">();</span><br/>
 </code></pre>
 
-<a href="#deploy" id="deploy" style="color: inherit; text-decoration: none;">
-  <h3>Deploy</h3>
+<a href="#currently-supported-models" id="currently-supported-models" style="color: inherit; text-decoration: none;">
+  <h3>Currently supported models</h3>
 </a>
-<p>You can deploy your AI model to ainize. Anyone can use your AI model with AIN token.</p>
-<p>CONFIGURATION(JSON)</p>
-<ul>
-<li>modelName: The name you want to deploying model.</li>
-<li>billingConfig: Billing configuration required for model usage.<ul>
-<li>depositAddress: The address for receiving AIN deposits.</li>
-<li>costPerToken: Cost per token for model usage.</li>
-<li>minCost: Minimum cost.</li>
-<li>maxCost: Maximum cost. (optional)</li>
-</ul>
-</li>
-</ul>
-<pre><code class="language-typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Ainize</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@ainize-team/ainize-js&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainPrivateKey</span><span class="hl-1"> = </span><span class="hl-2">&#39;&#39;</span><span class="hl-1">; </span><span class="hl-9">// Insert your private key here</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">main</span><span class="hl-1"> = </span><span class="hl-5">async</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">try</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">ainize</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Ainize</span><span class="hl-1">(</span><span class="hl-8">1</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(</span><span class="hl-4">ainPrivateKey</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">deployConfig</span><span class="hl-1"> = {</span><br/><span class="hl-1">      </span><span class="hl-4">modelName:</span><span class="hl-1"> </span><span class="hl-2">&#39;YOUR_MODEL_NAME&#39;</span><span class="hl-1">,</span><span class="hl-9">// e.g. meta-llama/Llama-3.1-8B-instruct</span><br/><span class="hl-1">      </span><span class="hl-4">modelUrl:</span><span class="hl-1"> </span><span class="hl-2">&#39;YOUR_MODEL_INFERENCE_URL&#39;</span><span class="hl-1"> </span><span class="hl-9">// e.g. https://ainize-free-inference.ainetwork.xyz</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">    </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">model</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">deploy</span><span class="hl-1">(</span><span class="hl-4">deployConfig</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-4">modelName</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-4">ainize</span><span class="hl-1">.</span><span class="hl-0">logout</span><span class="hl-1">();</span><br/><span class="hl-1">  }</span><span class="hl-3">catch</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">);</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span><br/><span class="hl-0">main</span><span class="hl-1">();</span>
-</code></pre>
-<p>You can stop or run your model container. Only model deployer can use this.</p>
-<pre><code class="language-typescript"><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">stop</span><span class="hl-1">();</span><br/><span class="hl-4">model</span><span class="hl-1">.</span><span class="hl-0">run</span><span class="hl-1">();</span>
-</code></pre>
-</div></div>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>MODEL_NAME</th>
+<th>Insight Link</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LLaMA 3.1 8B</td>
+<td>meta-llama/Llama-3.1-8B-instruct</td>
+<td><a href="https://insight.ainetwork.ai/database/values/apps/meta_llama_llama_3_1_8b_instruct/">Link</a></td>
+</tr>
+</tbody></table>
+<!--
+### Deploy
+
+You can deploy your AI model to ainize. Anyone can use your AI model with AIN token.
+
+CONFIGURATION(JSON)
+
+- modelName: The name you want to deploying model.
+- billingConfig: Billing configuration required for model usage.
+  - depositAddress: The address for receiving AIN deposits.
+  - costPerToken: Cost per token for model usage.
+  - minCost: Minimum cost.
+  - maxCost: Maximum cost. (optional)
+
+```typescript
+import { Ainize } from '@ainize-team/ainize-js';
+const ainPrivateKey = ''; // Insert your private key here
+
+const main = async () => {
+  try {
+    const ainize = new Ainize(1);
+    await ainize.login(ainPrivateKey);
+    const deployConfig = {
+      modelName: 'YOUR_MODEL_NAME',// e.g. meta-llama/Llama-3.1-8B-instruct
+      modelUrl: 'YOUR_MODEL_INFERENCE_URL' // e.g. https://ainize-free-inference.ainetwork.xyz
+    }
+    const model = await ainize.deploy(deployConfig);
+    console.log(model.modelName);
+    ainize.logout();
+  }catch(e) {
+    console.log(e);
+  }
+}
+main();
+```
+
+You can stop or run your model container. Only model deployer can use this.
+
+```typescript
+model.stop();
+model.run();
+```
+--></div></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tree">
 <div class="tree-settings">
