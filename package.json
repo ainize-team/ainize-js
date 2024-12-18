@@ -10,7 +10,7 @@
     "docs": "yarn build && typedoc --options typedoc.json --out docs"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "repository": {
     "type": "git",
