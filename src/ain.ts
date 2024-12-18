@@ -18,18 +18,21 @@ export default class AinModule {
     return AinModule.instance;
   }
 
+  static createAccount() {
+    const blockchainAPIEndpoint = getBlockChainAPIEndpoint(0);
+    const blockchainEventEndpoint = getBlockChainEventEndpoint(0);
+    const ain = new Ain(blockchainAPIEndpoint, blockchainEventEndpoint, 0);
+
+    const newAccount = ain.wallet.create(1)[0];
+    const wallet = ain.wallet.accounts[newAccount];
+    
+    return wallet;
+  }
+
   initAin(chainId: 0 | 1) {
     const blockchainAPIEndpoint = getBlockChainAPIEndpoint(chainId);
     const blockchainEventEndpoint = getBlockChainEventEndpoint(chainId);
     this.ain = new Ain(blockchainAPIEndpoint, blockchainEventEndpoint, chainId);
-  }
-
-  createAccount() {
-    this.checkAinInitiated();
-    const newAccount = this.ain!.wallet.create(1)[0];
-    const wallet = this.ain!.wallet.accounts[newAccount];
-    this.ain!.wallet.remove(newAccount);
-    return wallet;
   }
 
   setDefaultAccount(privateKey: string) {

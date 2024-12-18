@@ -32,7 +32,7 @@ export default class Ainize {
    * @returns {Account} created account.
    */
   static createAinAccount (): Account {
-    return AinModule.getInstance().createAccount();
+    return AinModule.createAccount();
   }
 
   /**
