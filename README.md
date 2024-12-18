@@ -98,7 +98,7 @@ main();
 
 ### Deploy
 
-You can deploy your AI model to ainize. Anyone can use your AI model with AIN token.
+You can deploy your AI model to ainize. Anyone can use your AI model with AIN token. **You need AIN tokens for deploying models.**
 
 CONFIGURATION(JSON)
 
@@ -121,13 +121,13 @@ const main = async () => {
     const ainize = new Ainize(1);
     await ainize.login(ainPrivateKey);
     const deployConfig = {
-      modelName: 'YOUR_MODEL_NAME',// e.g. meta-llama/Llama-3.1-8B-instruct
+      modelName: 'YOUR_MODEL_NAME', // e.g. meta-llama/Llama-3.1-8B-instruct
       modelUrl: 'https://ainize-free-inference.ainetwork.xyz' // This URL is for tutorial.
     }
     const model = await ainize.deploy(deployConfig);
     console.log(model.modelName);
     ainize.logout();
-  }catch(e) {
+  } catch(e) {
     console.log(e);
   }
 }
