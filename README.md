@@ -17,6 +17,7 @@ yarn add @ainize-team/ainize-js
 ```
 
 Then import the libraries in your code:
+
 ```typescript
 // ES6
 import Ainize from '@ainize-team/ainize-js';
@@ -24,9 +25,6 @@ import Ainize from '@ainize-team/ainize-js';
 // CommonJS
 const Ainize = require('@ainize-team/ainize-js').default;
 ```
-
-
-## Usage
 
 ### Create account
 
@@ -45,6 +43,7 @@ console.log(wallet);
 ```
 
 ### Login
+
 ```typescript
 import Ainize from '@ainize-team/ainize-js';
 const ainize = new Ainize(1);// 0 for testnet, 1 for mainnet. You can earn testnet AIN at https://faucet.ainetwork.ai/.
@@ -91,23 +90,27 @@ main();
 ```
 
 ### Currently supported models
+
 | Model    | MODEL_NAME | Insight Link |
 | -------- | ------- | ------- |
 | LLaMA 3.1 8B  | meta-llama/Llama-3.1-8B-instruct | [Link](https://insight.ainetwork.ai/database/values/apps/meta_llama_llama_3_1_8b_instruct/) |
 
-<!--
 ### Deploy
 
-You can deploy your AI model to ainize. Anyone can use your AI model with AIN token.
+You can deploy your AI model to ainize. Anyone can use your AI model with AIN token. **You need AIN tokens for deploying models.**
 
 CONFIGURATION(JSON)
 
 - modelName: The name you want to deploying model.
+- modelUrl: Inference URL wrapped with ainize-wrapper-server.
+
+<!--
 - billingConfig: Billing configuration required for model usage.
   - depositAddress: The address for receiving AIN deposits.
   - costPerToken: Cost per token for model usage.
   - minCost: Minimum cost.
   - maxCost: Maximum cost. (optional)
+-->
 
 ```typescript
 import { Ainize } from '@ainize-team/ainize-js';
@@ -118,23 +121,24 @@ const main = async () => {
     const ainize = new Ainize(1);
     await ainize.login(ainPrivateKey);
     const deployConfig = {
-      modelName: 'YOUR_MODEL_NAME',// e.g. meta-llama/Llama-3.1-8B-instruct
-      modelUrl: 'YOUR_MODEL_INFERENCE_URL' // e.g. https://ainize-free-inference.ainetwork.xyz
+      modelName: 'YOUR_MODEL_NAME', // e.g. meta-llama/Llama-3.1-8B-instruct
+      modelUrl: 'https://ainize-free-inference.ainetwork.xyz' // This URL is for tutorial.
     }
     const model = await ainize.deploy(deployConfig);
     console.log(model.modelName);
     ainize.logout();
-  }catch(e) {
+  } catch(e) {
     console.log(e);
   }
 }
 main();
 ```
 
+<!--
 You can stop or run your model container. Only model deployer can use this.
 
 ```typescript
 model.stop();
 model.run();
-```
 -->
+```
