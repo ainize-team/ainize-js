@@ -58,7 +58,6 @@ const ainize = new Ainize(1);
 ainize.loginWithSigner();
 ```
 
-
 This feature is supported from AIN Wallet version 2.0.5 or later.
 
 ### Using model
@@ -141,4 +140,3 @@ You can stop or run your model container. Only model deployer can use this.
 model.stop();
 model.run();
 -->
-```
