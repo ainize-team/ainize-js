@@ -26,8 +26,6 @@ import Ainize from '@ainize-team/ainize-js';
 const Ainize = require('@ainize-team/ainize-js').default;
 ```
 
-## Usage
-
 ### Create account
 
 You should login to ainize with AI Network account before deploy the container.\
@@ -59,6 +57,7 @@ import Ainize from '@ainize-team/ainize-js';
 const ainize = new Ainize(1);
 ainize.loginWithSigner();
 ```
+
 
 This feature is supported from AIN Wallet version 2.0.5 or later.
 
@@ -104,6 +103,7 @@ CONFIGURATION(JSON)
 
 - modelName: The name you want to deploying model.
 - modelUrl: Inference URL wrapped with ainize-wrapper-server.
+
 <!--
 - billingConfig: Billing configuration required for model usage.
   - depositAddress: The address for receiving AIN deposits.
@@ -140,5 +140,5 @@ You can stop or run your model container. Only model deployer can use this.
 ```typescript
 model.stop();
 model.run();
-```
 -->
+```
